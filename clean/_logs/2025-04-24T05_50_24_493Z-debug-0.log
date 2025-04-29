@@ -1,0 +1,13 @@
+0 verbose cli /home/enigmatix/.nvm/versions/node/v18.20.8/bin/node /home/enigmatix/.nvm/versions/node/v18.20.8/bin/npm
+1 info using npm@10.8.2
+2 info using node@v18.20.8
+3 silly config load:file:/home/enigmatix/.nvm/versions/node/v18.20.8/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/enigmatix/gymai/.npmrc
+5 silly config load:file:/home/enigmatix/.npmrc
+6 silly config load:file:/home/enigmatix/.nvm/versions/node/v18.20.8/etc/npmrc
+7 verbose title npm start
+8 verbose argv "start" "--cache" "clean"
+9 verbose logfile logs-max:10 dir:/home/enigmatix/gymai/clean/_logs/2025-04-24T05_50_24_493Z-
+10 verbose logfile /home/enigmatix/gymai/clean/_logs/2025-04-24T05_50_24_493Z-debug-0.log
+11 silly logfile done cleaning log files
+12 http fetch GET 200 https://registry.npmjs.org/npm 4116ms

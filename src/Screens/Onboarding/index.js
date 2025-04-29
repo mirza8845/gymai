@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
+    Animated,
+    Easing,
     Image,
     StyleSheet,
     Text,
@@ -12,13 +14,13 @@ import personsicon from '../../assets/images/personsVector.png';
 import stepActive from '../../assets/images/stepperactive.png';
 import stepInactive from '../../assets/images/stepperinactive.png';
 import img2 from '../../assets/images/img2.png';
-import img3 from '../../assets/images/img3.png'
-import img1 from '../../assets/images/img1.png'
+import img3 from '../../assets/images/img3.png';
+import img1 from '../../assets/images/img1.png';
 import { useNavigation } from '@react-navigation/native';
 
 const steps = [
     {
-        icon:workout,
+        icon: workout,
         image: img1,
         text: 'Personalised workouts designed around your goals and lifestyle.',
     },
@@ -32,25 +34,43 @@ const steps = [
         image: img3,
         text: 'Join Our Community, Reach Your Potential',
     },
-
 ];
 
 const Onboarding = () => {
     const [stepIndex, setStepIndex] = useState(0);
+    const fadeAnim = useRef(new Animated.Value(1)).current;
     const navigation = useNavigation();
 
     const handleNext = () => {
-        if (stepIndex < steps.length - 1) {
-            setStepIndex(prev => prev + 1);
-        } else {
-            navigation.navigate('login');
-        }
+        Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 200,
+            easing: Easing.out(Easing.ease),
+            useNativeDriver: true,
+        }).start(() => {
+            if (stepIndex < steps.length - 1) {
+                setStepIndex(prev => prev + 1);
+            } else {
+                navigation.navigate('login');
+                return;
+            }
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 200,
+                easing: Easing.out(Easing.ease),
+                useNativeDriver: true,
+            }).start();
+        });
     };
 
     return (
         <View style={styles.container}>
-            <Image source={steps[stepIndex].image} style={styles.backgroundImage} resizeMode="cover" />
-            <View style={styles.content}>
+            <Animated.Image
+                source={steps[stepIndex].image}
+                style={[styles.backgroundImage, { opacity: fadeAnim }]}
+                resizeMode="cover"
+            />
+            <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
                 <Image source={steps[stepIndex].icon} style={styles.logo} resizeMode="contain" />
                 <Text style={styles.description}>{steps[stepIndex].text}</Text>
 
@@ -69,13 +89,12 @@ const Onboarding = () => {
                         {stepIndex === steps.length - 1 ? 'Get Started' : 'Next'}
                     </Text>
                 </TouchableOpacity>
-            </View>
+            </Animated.View>
         </View>
     );
 };
 
 export default Onboarding;
-
 
 const styles = StyleSheet.create({
     container: {
@@ -99,10 +118,10 @@ const styles = StyleSheet.create({
     description: {
         color: 'white',
         fontWeight: '700',
-        fontSize: 20,
+        fontSize: 18,
         textAlign: 'center',
         marginBottom: 10,
-        width:'80%'
+        width: '80%',
     },
     stepperline: {
         flexDirection: 'row',
