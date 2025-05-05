@@ -3,6 +3,7 @@ import React from 'react'
 import WorkoutCard from '../../CommonComponent/WorkoutCard'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTheme } from '@react-navigation/native'
+import TipCard from './TipCard'
 
 const Workout = () => {
   const { colors } = useTheme()
@@ -41,17 +42,19 @@ const Workout = () => {
 
           <Text style={[styles.tipsTitle, { color: colors.text }]}>Tips & Tricks</Text>
 
-          <Text style={[styles.tipCard, styles.tipGreen]}>
-            Progressive Overload:{"\n\n"}Increase weight, reps, or form intensity over time. This should be the aim of every session as it’s essential for building strength and muscle!
-          </Text>
+          <TipCard color={'#DDFF94'}>
+            Progressive Overload:{"\n\n"}
+            Increase weight, reps, or form intensity over time. This should be the aim of every session as it’s essential for building strength and muscle!
+          </TipCard>
 
-          <Text style={[styles.tipCard, styles.tipRed]}>
+          <TipCard color={'#FF8A8A'}>
             Rest Times:{"\n\n"}Rest long enough to push your hardest on the next set—typically at least 2–3 minutes. If you're still fatigued, rest a bit longer!
-          </Text>
+          </TipCard>
 
-          <Text style={[styles.tipCard, styles.tipBlue]}>
+          <TipCard color={'#A6ECFF'}>
             Volume:{"\n\n"}Optimal weekly training volume per muscle is 4–10 sets when training close to failure. More than this adds unnecessary fatigue without extra benefit.
-          </Text>
+          </TipCard>
+
         </View>
       </ScrollView>
     </SafeAreaView>

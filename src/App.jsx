@@ -3,6 +3,7 @@ import React from 'react'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MainNavigator from './Screens/Navigation/MainNavigation'
+import { AuthProvider } from './Screens/Navigation/AuthProvider'
 
 const App = () => {
   const Stack = createNativeStackNavigator();

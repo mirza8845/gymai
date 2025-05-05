@@ -4,31 +4,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import profileImg from '../../assets/images/womanpic.png';
 import Heading from '../../CommonComponent/Heading';
 import Paragraph from '../../CommonComponent/Paragraph';
-import Profilesvg from '../../assets/svg/anotherProfile.svg';
-import Favourite from '../../assets/svg/bigstar.svg';
-import Retake from '../../assets/svg/retake.svg';
-import Setting from '../../assets/svg/setting.svg';
-import Help from '../../assets/svg/help.svg';
-import Logout from '../../assets/svg/logout.svg';
-import { useNavigation } from '@react-navigation/native';
+import CommonInput from '../../CommonComponent/CommonInput';
+import EditIcon from '../../assets/svg/edit.svg';
 
-const Profile = () => {
-  const navigation = useNavigation();
 
-  const profileOptions = [
-    { icon: Profilesvg, title: 'Profile', navigateTo: 'EditProfile' },
-    { icon: Favourite, title: 'Favourite' },
-    { icon: Retake, title: 'Retake Questionnaire' },
-    { icon: Setting, title: 'Setting' },
-    { icon: Help, title: 'Help' },
-    { icon: Logout, title: 'Logout' },
-  ];
-
+const EditProfile = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView>
         <View style={styles.profileContainer}>
-          <Image source={profileImg} style={styles.profileImage} />
+          <View style={styles.imageContainer}>
+            <Image source={profileImg} style={styles.profileImg} />
+            <View style={styles.editIcon}>
+              <EditIcon width={16} height={16} />
+            </View>
+          </View>
+
           <Heading title="Madison Smith" />
           <Paragraph title="madisons@example.com" />
           <Text style={styles.birthdayText}>
@@ -52,24 +43,24 @@ const Profile = () => {
           </View>
         </View>
 
-        <View style={styles.optionsContainer}>
-          {profileOptions.map((item, index) => (
-            <Pressable
-              key={index}
-              style={styles.optionItem}
-              onPress={() => item.navigateTo && navigation.navigate(item.navigateTo)}
-            >
-              <item.icon />
-              <Text style={styles.optionText}>{item.title}</Text>
-            </Pressable>
-          ))}
+        <View style={styles.formSection}>
+          <CommonInput label="Full name" placeholder="Enter Your Full Name" />
+          <CommonInput label="Email" placeholder="Enter your Email" />
+          <CommonInput label="Mobile Number" placeholder="Enter your Mobile Number" />
+          <CommonInput label="Date of birth" placeholder="Enter your Date of birth" />
+          <CommonInput label="Weight" placeholder="Enter your Weight" />
+          <CommonInput label="Height" placeholder="Enter your Height" />
         </View>
+
+        <Pressable style={styles.updateButton}>
+          <Text style={styles.updateButtonText}>Update Profile</Text>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default Profile;
+export default EditProfile;
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -79,7 +70,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 40,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   profileImage: {
     width: 150,
@@ -88,7 +78,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   birthdayText: {
-    flexDirection: 'row',
     marginTop: 10,
   },
   birthdayLabel: {
@@ -103,11 +92,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 52,
-    paddingVertical: 40,
+    paddingVertical: 30,
   },
   statItem: {
     alignItems: 'center',
-    height:23
+    height: 23
   },
   statValue: {
     color: 'white',
@@ -119,17 +108,45 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     fontSize: 18,
   },
-  optionsContainer: {
-    paddingHorizontal: 40,
+  formSection: {
+    width: '85%',
+    alignSelf: 'center',
+    paddingHorizontal: 10,
+    marginBottom: 30,
   },
-  optionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 30,
-    paddingBottom: 20,
+  updateButton: {
+    backgroundColor: 'white',
+    paddingVertical: 7,
+    paddingHorizontal: 30,
+    borderRadius: 50,
+    alignSelf: 'center',
+    marginBottom: 50,
   },
-  optionText: {
-    color: 'white',
+  updateButtonText: {
+    color: 'black',
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  imageContainer: {
+    alignSelf: 'center',
+    marginTop: 20,
+    position: 'relative',
+  },
+  profileImg: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+  },
+  editIcon: {
+    position: 'absolute',
+    bottom: 0,
+    right: 5,
+    backgroundColor: 'white',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
   },
 });

@@ -56,8 +56,8 @@ const PullPushDay = () => {
         ))}
         
         <View style={{flexDirection:'row',justifyContent:'space-between',height:200}}>
-          <Pressable style={styles.addSetButton}>
-            <Text style={styles.addSetText}>+ Add exercise</Text>
+          <Pressable style={styles.addSetButton} onPress={()=>navigation.navigate('AddExercise')}>
+            <Text style={styles.addSetText}>+ Add Exercise</Text>
           </Pressable>
           <Pressable style={styles.addSetButton}>
             <Text style={styles.addSetText}>Finish</Text>

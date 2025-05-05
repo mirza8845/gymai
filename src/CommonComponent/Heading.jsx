@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 28,
         fontWeight: '700',
-        marginBottom: 10,
+        // marginBottom: 10,
         textAlign: 'center',
       },
 })
