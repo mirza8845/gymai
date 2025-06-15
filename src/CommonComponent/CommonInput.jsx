@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import React from "react";
+import { View, Text, TextInput, StyleSheet } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import { Fonts } from "../constants/theme";
 
 const CommonInput = ({ label, placeholder, value, onChangeText, secureTextEntry = false }) => {
   const { colors } = useTheme();
@@ -8,14 +9,7 @@ const CommonInput = ({ label, placeholder, value, onChangeText, secureTextEntry 
   return (
     <View style={styles.inputContainer}>
       <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        placeholderTextColor="gray"
-        value={value}
-        onChangeText={onChangeText}
-        secureTextEntry={secureTextEntry}
-      />
+      <TextInput style={styles.input} placeholder={placeholder} placeholderTextColor="gray" value={value} onChangeText={onChangeText} secureTextEntry={secureTextEntry} />
     </View>
   );
 };
@@ -30,12 +24,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 10,
     marginBottom: 5,
+    fontFamily: Fonts.Medium,
   },
   input: {
     borderWidth: 1,
     borderRadius: 14,
     padding: 10,
-    backgroundColor: 'white',
-    color: 'black',
+    backgroundColor: "white",
+    color: "black",
+    fontFamily: Fonts.Regular,
   },
 });

@@ -6,6 +6,7 @@ import Paragraph from '../../CommonComponent/Paragraph'
 import Button from '../../CommonComponent/Button'
 import HorizontalPicker from '@vseslav/react-native-horizontal-picker';
 import { Dimensions } from 'react-native';
+import { Fonts } from '../../constants/theme'
 
 
 
@@ -113,12 +114,13 @@ const styles = StyleSheet.create({
   pickerItemText: {
     fontSize: 40,
     color: '#1E1E1E',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontFamily:Fonts.Bold
   },
   selectedPickerItemText: {
     fontSize: 48,
     color: 'white',
-    fontWeight: 'bold',
+   fontFamily:Fonts.Bold
   },
   pickerWrapper: {
     width: '100%',

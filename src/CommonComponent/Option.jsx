@@ -1,6 +1,7 @@
 import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Fonts } from '../constants/theme';
 
 const Option = ({ label, selected, onPress }) => {
   const { colors } = useTheme();
@@ -29,10 +30,11 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    fontWeight: '500',
+    // fontWeight: '500',
     color: 'black',
     width: '70%',
     paddingLeft:20,
+    fontFamily:Fonts.Medium
   },
   radioOuter: {
     width: 40,

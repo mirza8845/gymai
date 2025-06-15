@@ -4,6 +4,7 @@ import { useNavigation, useTheme } from '@react-navigation/native';
 import Button from '../../CommonComponent/Button';
 import Option from '../../CommonComponent/Option';
 import Heading from '../../CommonComponent/Heading';
+import { Fonts } from '../../constants/theme';
 
 const goals = ['Aesthetics','Strength training', 'Powerlifting', 'Health'];
 
@@ -51,9 +52,10 @@ const styles = StyleSheet.create({
   },
   subheading: {
     fontSize: 20,
-    fontWeight: '200',
+    // fontWeight: '200',
     marginBottom: 30,
     textAlign: 'center',
+    fontFamily : Fonts.Regular
   },
   goalsContainer: {
     gap: 12,
@@ -88,5 +90,6 @@ const styles = StyleSheet.create({
   goalNoteText: {
     fontSize: 18,
     color: 'black',
+    fontFamily:Fonts.Medium
   },
 });

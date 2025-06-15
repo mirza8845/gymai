@@ -3,6 +3,7 @@ import React from 'react';
 import Heading from '../../CommonComponent/Heading';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import Button from '../../CommonComponent/Button';
+import { Fonts } from '../../constants/theme';
 
 const GymExperience = () => {
   const { colors } = useTheme();
@@ -38,7 +39,8 @@ const styles = StyleSheet.create({
   
   optionText: {
     fontSize: 18,
-    fontWeight: 500,
+    // fontWeight: 500,
+    fontFamily:Fonts.Medium,
     color: 'black', 
     backgroundColor:'white',
     width: '100%',

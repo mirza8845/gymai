@@ -5,6 +5,7 @@ import Heading from '../../CommonComponent/Heading';
 import profileImg from '../../assets/images/womanpic.png';
 import EditIcon from '../../assets/svg/edit.svg';
 import CommonInput from '../../CommonComponent/CommonInput';
+import { Fonts } from '../../constants/theme';
 
 const ProfileQuestionaire = () => {
   const { colors } = useTheme();
@@ -94,7 +95,8 @@ const styles = StyleSheet.create({
   },
   btntext: {
     fontSize: 25,
-    fontWeight: '700',
-    color: 'black'
+    // fontWeight: '700',
+    color: 'black',
+    fontFamily:Fonts.SemiBold
   },
 });

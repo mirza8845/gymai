@@ -6,6 +6,7 @@ import { RulerPicker } from 'react-native-ruler-view';
 import Button from '../../CommonComponent/Button';
 import Heading from '../../CommonComponent/Heading';
 import { Dimensions } from 'react-native';
+import { Fonts } from '../../constants/theme';
 
 
 const AgeQuestionnaire = () => {
@@ -82,8 +83,9 @@ const AgeQuestionnaire = () => {
           longStepColor: 'white',
           textColor: 'white',
           backgroundColor: 'black',
-          fontWeight: '700',
+          // fontWeight: '700',
           fontSize: 10,
+          fontFamily:Fonts.SemiBold
         }}
         accessibility={{
           enabled: true,
@@ -156,9 +158,10 @@ const questionnaireStyles = StyleSheet.create({
     margin: 20,
   },
   unitText: {
-    fontWeight: '700',
+    // fontWeight: '700',
     color: 'black',
     fontSize: 20,
+    fontFamily:Fonts.Bold
   },
   verticalDivider: {
     width: 2,
@@ -172,10 +175,10 @@ const questionnaireStyles = StyleSheet.create({
   },
   heading: {
     fontSize: 32,
-    fontWeight: '700',
     marginBottom: 10,
     textAlign: 'center',
     paddingTop: 60,
+    fontFamily: Fonts.Medium
   },
    selectorLineLeft: {
       position: 'absolute',

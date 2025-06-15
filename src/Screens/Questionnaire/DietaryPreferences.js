@@ -5,6 +5,7 @@ import { useNavigation, useTheme } from '@react-navigation/native';
 import Paragraph from '../../CommonComponent/Paragraph';
 import DoubleButton from '../../CommonComponent/DoubleButton';
 import Button from '../../CommonComponent/Button';
+import { Fonts } from '../../constants/theme';
 
 const DietaryPreferences = () => {
     const { colors } = useTheme();
@@ -29,7 +30,7 @@ const DietaryPreferences = () => {
                 </View>
             </View>
            <View style={{paddingBottom:60}}>
-           <Text style={{ fontSize: 25, marginBottom: 10, color: 'white' }}>Allergies</Text>
+           <Text style={{ fontSize: 25, marginBottom: 10, color: 'white', fontFamily:Fonts.Medium }}>Allergies</Text>
             <Text style={[styles.paragraph, { color: colors.text }]}>Do you have any food allergies we should know about?</Text>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 80 }}>
                 <View>
@@ -57,7 +58,8 @@ const styles = StyleSheet.create({
     },
     paragraph: {
         fontSize: 16,
-        fontWeight: 200,
-        paddingVertical: 8
+        // fontWeight: 200,
+        paddingVertical: 8,
+        fontFamily:Fonts.Regular
     }
 })

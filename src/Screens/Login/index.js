@@ -1,16 +1,17 @@
-import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
-import React, { useState } from 'react';
-import { useNavigation, useTheme } from '@react-navigation/native';
-import Button from '../../CommonComponent/Button';
-import Heading from '../../CommonComponent/Heading';
-import CommonInput from '../../CommonComponent/CommonInput';
-import auth from '@react-native-firebase/auth';
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
+import React, { useState } from "react";
+import { useNavigation, useTheme } from "@react-navigation/native";
+import Button from "../../CommonComponent/Button";
+import Heading from "../../CommonComponent/Heading";
+import CommonInput from "../../CommonComponent/CommonInput";
+import auth from "@react-native-firebase/auth";
+import { Fonts } from "../../constants/theme";
 
 const Login = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = () => {
     if (!email || !password) {
@@ -21,11 +22,11 @@ const Login = () => {
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        navigation.navigate('introQuestionnaire'); 
+        navigation.navigate("introQuestionnaire");
       })
       .catch((err) => {
         console.log(err);
-        Alert.alert("Error", err.message); 
+        Alert.alert("Error", err.message);
       });
   };
 
@@ -34,19 +35,8 @@ const Login = () => {
       <View style={styles.innerContainer}>
         <Heading title="Welcome" />
         <View style={styles.inputView}>
-          <CommonInput
-            label="Username or email"
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail} 
-          />
-          <CommonInput
-            label="Password"
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword} 
-          />
+          <CommonInput label="Username or email" placeholder="Email" value={email} onChangeText={setEmail} />
+          <CommonInput label="Password" placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
 
           <TouchableOpacity style={styles.forgotWrapper}>
             <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>Forgot Password?</Text>
@@ -55,10 +45,8 @@ const Login = () => {
           <Button title="Log In" onPress={handleLogin} />
         </View>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('signup')}>
-        <Text style={[styles.signupBtn, { color: colors.text }]}>
-          Don’t have an account? Sign Up
-        </Text>
+      <TouchableOpacity onPress={() => navigation.navigate("signup")}>
+        <Text style={[styles.signupBtn, { color: colors.text }]}>Don’t have an account? Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
@@ -69,17 +57,17 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     paddingVertical: 20,
   },
   innerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
   },
   inputView: {
-    width: '85%',
+    width: "85%",
     marginTop: 20,
   },
   inputTitle: {
@@ -92,39 +80,43 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 10,
     marginBottom: 10,
-    backgroundColor: 'white',
-    color: 'black',
+    backgroundColor: "white",
+    color: "black",
   },
   forgotWrapper: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginBottom: 20,
   },
   forgotAndSignUpText: {
     fontSize: 11,
+    fontFamily: Fonts.Medium,
   },
   loginBtn: {
-    width: '60%',
+    width: "60%",
     borderRadius: 20,
     height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#383838',
-    borderColor: 'white',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#383838",
+    borderColor: "white",
     borderWidth: 1,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 20,
   },
   loginText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
+    fontFamily: Fonts.Medium,
   },
   signupBtn: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 12,
+    fontFamily: Fonts.Medium,
   },
   selectedText: {
     fontSize: 45,
-    fontWeight: '700',
+    fontWeight: "700",
     marginTop: 15,
-  }
+    fontFamily: Fonts.Medium,
+  },
 });

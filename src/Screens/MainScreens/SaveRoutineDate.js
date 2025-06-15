@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Heading from '../../CommonComponent/Heading'
 import Workout from './Workout'
 import WorkoutCard from '../../CommonComponent/WorkoutCard'
-import CalendarPicker from "react-native-calendar-picker";
+// import CalendarPicker from "react-native-calendar-picker";
 
 
 const SaveRoutineDate = () => {
@@ -28,7 +28,7 @@ const SaveRoutineDate = () => {
                     <Text style={styles.seeMoreBtnText}>See More</Text>
                 </TouchableOpacity>
                 <Text style={{ color: 'white', fontSize: 20 }}>Calendar</Text>
-                <CalendarPicker
+                {/* <CalendarPicker
                     selectedStartDate={selectedDate}
                     onDateChange={(date) => setSelectedDate(date)}
                     allowRangeSelection={false}
@@ -45,7 +45,7 @@ const SaveRoutineDate = () => {
                         calendarBackground: 'black',
                     }}
                     initialDate={null}
-                />
+                /> */}
                   <TouchableOpacity style={styles.btnContainer}>
                     <Text style={styles.btnText}>Monthly Report</Text>
                 </TouchableOpacity>

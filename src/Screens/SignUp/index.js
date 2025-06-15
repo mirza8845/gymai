@@ -1,18 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
-import React, { useState } from 'react';
-import { useNavigation, useTheme } from '@react-navigation/native';
-import Button from '../../CommonComponent/Button';
-import Heading from '../../CommonComponent/Heading';
-import CommonInput from '../../CommonComponent/CommonInput';
-import auth from '@react-native-firebase/auth';
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
+import React, { useState } from "react";
+import { useNavigation, useTheme } from "@react-navigation/native";
+import Button from "../../CommonComponent/Button";
+import Heading from "../../CommonComponent/Heading";
+import CommonInput from "../../CommonComponent/CommonInput";
+import auth from "@react-native-firebase/auth";
+import { Fonts } from "../../constants/theme";
 
 const SignUp = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = () => {
     if (password !== confirmPassword) {
@@ -29,7 +30,7 @@ const SignUp = () => {
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
         Alert.alert("Success", "Account created successfully!");
-        navigation.navigate('login'); 
+        navigation.navigate("login");
       })
       .catch((err) => {
         console.log(err);
@@ -42,49 +43,23 @@ const SignUp = () => {
       <View style={styles.innerContainer}>
         <Heading title="Create Account" />
         <View style={styles.inputView}>
-          <CommonInput
-            label="Full name"
-            placeholder="Enter Your Full Name"
-            value={name}
-            onChangeText={setName}
-          />
-          <CommonInput
-            label="Email"
-            placeholder="example@email.com"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <CommonInput
-            label="Password"
-            placeholder="********"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-          <CommonInput
-            label="Confirm Password"
-            placeholder="********"
-            secureTextEntry
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-          />
+          <CommonInput label="Full name" placeholder="Enter Your Full Name" value={name} onChangeText={setName} />
+          <CommonInput label="Email" placeholder="example@email.com" value={email} onChangeText={setEmail} />
+          <CommonInput label="Password" placeholder="********" secureTextEntry value={password} onChangeText={setPassword} />
+          <CommonInput label="Confirm Password" placeholder="********" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
 
           <TouchableOpacity style={styles.forgotWrapper}>
             <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>
-              By continuing, you agree to{'\n'}
-              <Text style={{ fontWeight: 'bold' }}>
-                Terms of Use and Privacy Policy.
-              </Text>
+              By continuing, you agree to{"\n"}
+              <Text style={{ fontFamily: Fonts.Medium }}>Terms of Use and Privacy Policy.</Text>
             </Text>
           </TouchableOpacity>
 
           <Button title="Sign Up" onPress={handleSubmit} />
         </View>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('login')}>
-        <Text style={[styles.signupBtn, { color: colors.text }]}>
-          Already have an account? Log in
-        </Text>
+      <TouchableOpacity onPress={() => navigation.navigate("login")}>
+        <Text style={[styles.signupBtn, { color: colors.text }]}>Already have an account? Log in</Text>
       </TouchableOpacity>
     </View>
   );
@@ -100,17 +75,17 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
   },
   title: {
-    fontWeight: '700',
+    fontWeight: "700",
     fontSize: 25,
     marginBottom: 40,
   },
   inputView: {
-    width: '85%',
+    width: "85%",
   },
   inputTitle: {
     fontSize: 14,
@@ -122,38 +97,40 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 10,
     marginBottom: 10,
-    backgroundColor: 'white',
-    color: 'black',
+    backgroundColor: "white",
+    color: "black",
   },
   forgotWrapper: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginBottom: 20,
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
   },
   forgotAndSignUpText: {
     fontSize: 11,
-    width: '60%',
+    width: "60%",
+    fontFamily: Fonts.Regular,
   },
   loginBtn: {
-    width: '60%',
+    width: "60%",
     borderRadius: 20,
     height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#383838',
-    borderColor: 'white',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#383838",
+    borderColor: "white",
     borderWidth: 1,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 20,
   },
   loginText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   signupBtn: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 12,
+    fontFamily: Fonts.Regular,
   },
 });

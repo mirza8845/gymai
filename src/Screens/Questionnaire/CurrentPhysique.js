@@ -5,6 +5,7 @@ import { useNavigation, useTheme } from '@react-navigation/native';
 import Paragraph from '../../CommonComponent/Paragraph';
 import Button from '../../CommonComponent/Button';
 import Img from '../../assets/images/currentphysique.png';
+import { Fonts } from '../../constants/theme';
 
 const CurrentPhysique = () => {
   const { colors } = useTheme();
@@ -93,7 +94,8 @@ const styles = StyleSheet.create({
   optionText: {
     position: 'absolute',
     fontSize: 25,
-    fontWeight: '700',
+    // fontWeight: '700',
     color: 'black',
+    fontFamily:Fonts.SemiBold
   },
 });

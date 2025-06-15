@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { RulerPicker } from 'react-native-ruler-view';
 import Button from '../../CommonComponent/Button';
 import Heading from '../../CommonComponent/Heading';
+import { Fonts } from '../../constants/theme';
 
 export default function HeightQuestionnaire() {
   const { colors } = useTheme();
@@ -22,7 +23,7 @@ export default function HeightQuestionnaire() {
         <Text style={[styles.selectedText, { color: colors.text }]}>
           {selectedHeight}
         </Text>
-        <Text style={{ color: colors.text }}>cm</Text>
+        <Text style={{ color: colors.text , fontFamily:Fonts.Regular}}>cm</Text>
       </Text>
       <View
         style={{
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
   },
   selectedText: {
     fontSize: 48,
-    fontWeight: 700,
+    // fontWeight: 700,
+    fontFamily:Fonts.Medium
   },
 });

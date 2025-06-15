@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
+import { Fonts } from '../constants/theme';
 
 const DoubleButton = ({ title }) => {
   const [selected, setSelected] = useState(false);
@@ -45,6 +46,7 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '400',
+    // fontWeight: '400',
+    fontFamily:Fonts.Medium
   },
 });

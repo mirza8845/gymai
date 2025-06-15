@@ -21,6 +21,7 @@ const App = () => {
     <NavigationContainer theme={darkTheme}>
       {/* <AuthStack/> */}
      <MainNavigator/>
+     
     </NavigationContainer>
   );
 };

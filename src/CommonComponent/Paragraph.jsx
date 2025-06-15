@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { useTheme } from '@react-navigation/native'
+import { Fonts } from '../constants/theme'
 
 const Paragraph = ({title}) => {
     const {colors} = useTheme()
@@ -21,5 +22,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 200,
         textAlign: 'center',
+        fontFamily:Fonts.Regular
     },
 })

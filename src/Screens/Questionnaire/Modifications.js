@@ -4,6 +4,7 @@ import Heading from '../../CommonComponent/Heading';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import Paragraph from '../../CommonComponent/Paragraph';
 import Button from '../../CommonComponent/Button';
+import { Fonts } from '../../constants/theme';
 
 const Modifications = () => {
   const { colors } = useTheme();
@@ -44,5 +45,6 @@ const styles = StyleSheet.create({
   modificationsText: {
     fontSize: 18,
     color: 'black',
+    fontFamily:Fonts.Regular
   },
 });
