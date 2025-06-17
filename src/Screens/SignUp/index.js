@@ -4,8 +4,10 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
 import Heading from "../../CommonComponent/Heading";
 import CommonInput from "../../CommonComponent/CommonInput";
-import auth from "@react-native-firebase/auth";
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import { Fonts } from "../../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const SignUp = () => {
   const { colors } = useTheme();
@@ -38,15 +40,74 @@ const SignUp = () => {
       });
   };
 
+  const handleSignUp = async () => {
+    if (
+      values.name &&
+      values.email &&
+      values.password &&
+      values.confirmPassword
+    ) {
+      setLoading(true);
+      try {
+        const userCredential = await auth().createUserWithEmailAndPassword(
+          values.email,
+          values.password,
+        );
+        const user = userCredential.user;
+
+        const fcmToken = await messaging().getToken();
+
+        const userData = {
+          name: values.name,
+          email: values.email,
+          uid: user.uid,
+          profile: null,
+          fcmToken: fcmToken || null,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        };
+
+        await firestore().collection('Users').doc(user.uid).set(userData);
+        await AsyncStorage.setItem('email', values.email);
+        await AsyncStorage.setItem('password', values.password);
+         await AsyncStorage.setItem('notificationsEnabled', JSON.stringify(true));
+
+        Toast.show({
+          type: 'success',
+          text1: 'Sign Up',
+          text2: 'User registered successfully',
+        });
+        navigation.navigate('UserNameSelection');
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Sign Up Failed',
+          text2: error.message || 'Something went wrong',
+        });
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Missing Fields',
+        text2: 'Please fill all required fields',
+      });
+    }
+  };
+
+
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.innerContainer}>
-        <Heading title="Create Account" />
+        <View style={{ marginTop: RFPercentage(10) }}>
+          <Heading title="Create Account" />
+        </View>
         <View style={styles.inputView}>
           <CommonInput label="Full name" placeholder="Enter Your Full Name" value={name} onChangeText={setName} />
           <CommonInput label="Email" placeholder="example@email.com" value={email} onChangeText={setEmail} />
-          <CommonInput label="Password" placeholder="********" secureTextEntry value={password} onChangeText={setPassword} />
-          <CommonInput label="Confirm Password" placeholder="********" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
+          <CommonInput label="Password" placeholder="Enter Password" secureTextEntry value={password} onChangeText={setPassword} />
+          <CommonInput label="Confirm Password" placeholder="Repeat Password" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
 
           <TouchableOpacity style={styles.forgotWrapper}>
             <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>
@@ -54,8 +115,9 @@ const SignUp = () => {
               <Text style={{ fontFamily: Fonts.Medium }}>Terms of Use and Privacy Policy.</Text>
             </Text>
           </TouchableOpacity>
-
-          <Button title="Sign Up" onPress={handleSubmit} />
+          <View style={{ marginTop: RFPercentage(1.5) }}>
+            <Button title="Sign Up" onPress={handleSubmit} />
+          </View>
         </View>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate("login")}>
@@ -75,7 +137,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
   },
@@ -85,7 +147,8 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   inputView: {
-    width: "85%",
+    width: "90%",
+    marginTop: RFPercentage(3),
   },
   inputTitle: {
     fontSize: 14,
@@ -101,16 +164,18 @@ const styles = StyleSheet.create({
     color: "black",
   },
   forgotWrapper: {
-    alignItems: "flex-end",
-    marginBottom: 20,
+    // marginBottom: 20,
     textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: RFPercentage(4),
+    // backgroundColor:'red'
   },
   forgotAndSignUpText: {
-    fontSize: 11,
-    width: "60%",
+    fontSize: RFPercentage(1.5),
+    width: "70%",
     fontFamily: Fonts.Regular,
+    textAlign: "center",
   },
   loginBtn: {
     width: "60%",
@@ -130,7 +195,8 @@ const styles = StyleSheet.create({
   },
   signupBtn: {
     textAlign: "center",
-    fontSize: 12,
+    fontSize: RFPercentage(1.8),
     fontFamily: Fonts.Regular,
+    bottom: RFPercentage(1),
   },
 });

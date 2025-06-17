@@ -5,6 +5,7 @@ import Heading from '../../CommonComponent/Heading';
 import Paragraph from '../../CommonComponent/Paragraph';
 import Option from '../../CommonComponent/Option';
 import Button from '../../CommonComponent/Button';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 const dietsOPtion = ['High in Protein', 'High in Carbohydrates', 'High in Fats', 'High in fiber', 'Balanced with a range of foods providing macro', 'High in Ultra-processed foods', 'Other']
 
@@ -17,7 +18,7 @@ const Diets = () => {
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <Heading title="Diet" />
             <Paragraph title="How would you describe your current diet?" />
-            <View style={{ paddingTop: 14, paddingBottom: 50, gap: 15 }}>
+            <View style={{ paddingTop: RFPercentage(5), paddingBottom: 30, gap: 15 }}>
                 {dietsOPtion.map((opt, index) => (
                     <Option
                         key={index}

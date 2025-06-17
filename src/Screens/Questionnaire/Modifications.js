@@ -5,6 +5,7 @@ import { useNavigation, useTheme } from '@react-navigation/native';
 import Paragraph from '../../CommonComponent/Paragraph';
 import Button from '../../CommonComponent/Button';
 import { Fonts } from '../../constants/theme';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 const Modifications = () => {
   const { colors } = useTheme();
@@ -37,10 +38,10 @@ const styles = StyleSheet.create({
   },
   modificationsNote: {
     backgroundColor: '#fff',
-    borderRadius: 33,
+    borderRadius: 20,
     padding: 18,
-    minHeight: 220,
-    marginTop: 20,
+    minHeight: RFPercentage(25),
+    marginTop: RFPercentage(10),
   },
   modificationsText: {
     fontSize: 18,

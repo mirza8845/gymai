@@ -1,29 +1,24 @@
-import { useNavigation, useTheme } from '@react-navigation/native';
-import * as React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { RulerPicker } from 'react-native-ruler-view';
-import Button from '../../CommonComponent/Button';
-import Heading from '../../CommonComponent/Heading';
-import { Fonts } from '../../constants/theme';
+import { useNavigation, useTheme } from "@react-navigation/native";
+import * as React from "react";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { RulerPicker } from "react-native-ruler-view";
+import Button from "../../CommonComponent/Button";
+import Heading from "../../CommonComponent/Heading";
+import { Fonts } from "../../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default function HeightQuestionnaire() {
   const { colors } = useTheme();
   const [selectedHeight, setSelectedHeight] = React.useState(0);
-  const navigation = useNavigation()
-
+  const navigation = useNavigation();
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}
-    >
+    <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center", paddingTop: RFPercentage(10) }}>
       <Heading title="Height" />
 
-      <Text style={{ paddingTop: 90 }}>
-        <Text style={[styles.selectedText, { color: colors.text }]}>
-          {selectedHeight}
-        </Text>
-        <Text style={{ color: colors.text , fontFamily:Fonts.Regular}}>cm</Text>
+      <Text style={{ marginTop: RFPercentage(6) }}>
+        <Text style={[styles.selectedText, { color: colors.text }]}>{selectedHeight}</Text>
+        <Text style={{ color: colors.text, fontFamily: Fonts.Regular }}>cm</Text>
       </Text>
       <View
         style={{
@@ -31,8 +26,8 @@ export default function HeightQuestionnaire() {
           margin: 0,
           width: 10,
           height: 380,
-          alignItems: 'center',
-          justifyContent: 'center',
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <RulerPicker
@@ -48,7 +43,7 @@ export default function HeightQuestionnaire() {
           showLabels={true}
           gapBetweenSteps={14}
           containerStyle={{
-            backgroundColor: '#4E4E4E',
+            backgroundColor: "#4E4E4E",
             borderRadius: 9,
             padding: 0,
             margin: 0,
@@ -56,17 +51,17 @@ export default function HeightQuestionnaire() {
             height: 350,
           }}
           theme={{
-            indicatorColor: 'white',
-            shortStepColor: 'white',
-            longStepColor: 'white',
-            textColor: 'white',
-            backgroundColor: 'black',
-            fontWeight: '700',
+            indicatorColor: "white",
+            shortStepColor: "white",
+            longStepColor: "white",
+            textColor: "white",
+            backgroundColor: "black",
+            fontWeight: "700",
             fontSize: 10,
           }}
           accessibility={{
             enabled: true,
-            labelFormat: 'Value: ${value}',
+            labelFormat: "Value: ${value}",
             announceValues: true,
           }}
           onValueChange={(val) => setSelectedHeight(val)}
@@ -76,11 +71,11 @@ export default function HeightQuestionnaire() {
               friction: 9,
             },
           }}
-
         />
       </View>
-
-      <Button title="Continue" onPress={() => navigation.navigate('goalsQuestionnaire')} />
+      <View style={{ marginTop: RFPercentage(5) }}>
+        <Button title="Continue" onPress={() => navigation.navigate("goalsQuestionnaire")} />
+      </View>
     </ScrollView>
   );
 }
@@ -89,12 +84,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
-    paddingTop: 140,
-    paddingHorizontal: 70
+    paddingHorizontal: 70,
   },
   selectedText: {
     fontSize: 48,
     // fontWeight: 700,
-    fontFamily:Fonts.Medium
+    fontFamily: Fonts.Medium,
   },
 });

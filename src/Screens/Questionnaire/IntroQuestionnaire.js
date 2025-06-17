@@ -5,6 +5,8 @@ import Icon from "react-native-vector-icons/AntDesign";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
 import { Fonts } from "../../constants/theme";
+import img3 from "../../assets/images/img3.jpg";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const IntroQuestionnaire = () => {
   const { colors } = useTheme();
@@ -12,7 +14,7 @@ const IntroQuestionnaire = () => {
 
   return (
     <View style={[styles.screenContainer, { backgroundColor: colors.background }]}>
-      <Image source={gymImg} style={styles.headerImage} />
+      <Image source={img3} style={styles.headerImage} />
 
       <View style={styles.contentWrapper}>
         <View style={styles.metaInfoRow}>
@@ -24,8 +26,9 @@ const IntroQuestionnaire = () => {
 
         <Text style={[styles.primaryMessage, { color: colors.text }]}>You can skip any questions along the way.</Text>
         <Text style={[styles.secondaryMessage, { color: colors.text }]}>The more you answer, the more personalised your results will be!</Text>
-
-        <Button title="Next" onPress={() => navigation.navigate("genderQuestionnaire")} />
+        <View style={{marginTop:RFPercentage(4)}}>
+          <Button title="Next" onPress={() => navigation.navigate("genderQuestionnaire")} />
+        </View>
       </View>
     </View>
   );
@@ -57,13 +60,13 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Medium,
   },
   primaryMessage: {
-    fontSize: 22,
+    fontSize: RFPercentage(2.3),
     // fontWeight: 500,
     paddingVertical: 30,
     fontFamily: Fonts.Medium,
   },
   secondaryMessage: {
-    fontSize: 20,
+    fontSize: RFPercentage(2.3),
     // fontWeight:500,
     fontFamily: Fonts.Medium,
   },

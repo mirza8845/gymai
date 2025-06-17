@@ -2,6 +2,7 @@ import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Fonts } from '../constants/theme';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 const Option = ({ label, selected, onPress }) => {
   const { colors } = useTheme();
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   text: {
-    fontSize: 18,
+    fontSize: RFPercentage(2.1),
     // fontWeight: '500',
     color: 'black',
     width: '70%',
@@ -37,9 +38,9 @@ const styles = StyleSheet.create({
     fontFamily:Fonts.Medium
   },
   radioOuter: {
-    width: 40,
-    height: 40,
-    borderRadius: 18,
+    width: 35,
+    height: 35,
+    borderRadius: 20,
     borderWidth: 4,
     borderColor: 'black',
     alignItems: 'center',
@@ -49,8 +50,8 @@ const styles = StyleSheet.create({
     borderColor: 'black',
   },
   radioInner: {
-    width: 25,
-    height: 25,
+    width: 22,
+    height: 22,
     borderRadius: 18,
     backgroundColor: 'black',
   },

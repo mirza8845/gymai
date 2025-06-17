@@ -5,6 +5,7 @@ import Heading from '../../CommonComponent/Heading';
 import Paragraph from '../../CommonComponent/Paragraph';
 import Button from '../../CommonComponent/Button';
 import DoubleButton from '../../CommonComponent/DoubleButton';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 
 const AvailableEquipment = () => {
@@ -14,7 +15,7 @@ const AvailableEquipment = () => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Heading title="Available equipment" />
       <Paragraph title="What equipment do you have access to?You can start with nothing!" />
-         <View style={{gap:2,paddingTop:30,paddingBottom:150}}>
+         <View style={{gap:2,paddingTop:50,paddingBottom:100, left:RFPercentage(2)}}>
           <DoubleButton title="Everything"/>
           <DoubleButton title="Nothing"/>
           <DoubleButton title="Cable machine"/>

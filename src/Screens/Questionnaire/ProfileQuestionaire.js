@@ -6,6 +6,7 @@ import profileImg from '../../assets/images/womanpic.png';
 import EditIcon from '../../assets/svg/edit.svg';
 import CommonInput from '../../CommonComponent/CommonInput';
 import { Fonts } from '../../constants/theme';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 const ProfileQuestionaire = () => {
   const { colors } = useTheme();
@@ -40,7 +41,7 @@ const ProfileQuestionaire = () => {
           placeholder="Enter your Mobile Number"
         />
       </View>
-      <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Home')} >
+      <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Tabs')} >
         <Text style={styles.btntext} >Start</Text>
       </TouchableOpacity>
     </View>
@@ -52,7 +53,7 @@ export default ProfileQuestionaire;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 100,
+    paddingTop: RFPercentage(7),
   },
   imageContainer: {
     alignSelf: 'center',
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   button: {
     width: '40%',
     height: 50,
-    borderRadius: 20,
+    borderRadius: 40,
     backgroundColor: '#FFDD03',
     borderWidth: 1,
     alignItems: 'center',
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   btntext: {
-    fontSize: 25,
+    fontSize: RFPercentage(2.6),
     // fontWeight: '700',
     color: 'black',
     fontFamily:Fonts.SemiBold

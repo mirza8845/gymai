@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Fonts } from "../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const CommonInput = ({ label, placeholder, value, onChangeText, secureTextEntry = false }) => {
   const { colors } = useTheme();
@@ -33,5 +34,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     color: "black",
     fontFamily: Fonts.Regular,
+    fontSize: RFPercentage(1.8),
+    paddingHorizontal:RFPercentage(2)
   },
 });

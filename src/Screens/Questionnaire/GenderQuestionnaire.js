@@ -6,6 +6,7 @@ import femaleImg from "../../assets/images/Bot-Gender-Female.png";
 import Button from "../../CommonComponent/Button";
 import Heading from "../../CommonComponent/Heading";
 import { Fonts } from "../../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const GenderQuestionnaire = () => {
   const { colors } = useTheme();
@@ -28,8 +29,9 @@ const GenderQuestionnaire = () => {
 
         <Text style={[styles.other, { color: colors.text }]}>Other</Text>
       </View>
-
-      <Button title="continue" onPress={() => navigation.navigate("ageQuestionnaire")} />
+      <View style={{marginTop:RFPercentage(3)}}>
+        <Button title="continue" onPress={() => navigation.navigate("ageQuestionnaire")} />
+      </View>
     </View>
   );
 };

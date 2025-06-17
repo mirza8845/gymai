@@ -5,6 +5,7 @@ import Heading from '../../CommonComponent/Heading';
 import Paragraph from '../../CommonComponent/Paragraph';
 import Option from '../../CommonComponent/Option';
 import Button from '../../CommonComponent/Button';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 const Challenges = () => {
     const challengesOption =['Not knowing what to do','Lack of motivation & consistency','Equipment limitations','Lack of confidence in the gym','Limited time or busy schedule','Lack of results from past program','other']
@@ -16,7 +17,7 @@ const Challenges = () => {
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <Heading title="Challenges" />
             <Paragraph title="What challenges do you face when it comes to fitness training?" />
-            <View style={{gap:13,paddingTop:6,paddingBottom:20}}>
+            <View style={{gap:13,paddingTop:RFPercentage(4),paddingBottom:20}}>
             {challengesOption.map((opt,index)=>(
                 <Option
                 key={index}

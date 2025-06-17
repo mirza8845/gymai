@@ -6,6 +6,7 @@ import Heading from "../../CommonComponent/Heading";
 import CommonInput from "../../CommonComponent/CommonInput";
 import auth from "@react-native-firebase/auth";
 import { Fonts } from "../../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const Login = () => {
   const { colors } = useTheme();
@@ -33,16 +34,19 @@ const Login = () => {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.innerContainer}>
-        <Heading title="Welcome" />
+        <View style={{ bottom: RFPercentage(3) }}>
+          <Heading title="Welcome To GymAi" />
+        </View>
         <View style={styles.inputView}>
-          <CommonInput label="Username or email" placeholder="Email" value={email} onChangeText={setEmail} />
-          <CommonInput label="Password" placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
+          <CommonInput label="Email" placeholder="Enter email" value={email} onChangeText={setEmail} />
+          <CommonInput label="Password" placeholder="Enter password" secureTextEntry value={password} onChangeText={setPassword} />
 
           <TouchableOpacity style={styles.forgotWrapper}>
             <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>Forgot Password?</Text>
           </TouchableOpacity>
-
-          <Button title="Log In" onPress={handleLogin} />
+          <View style={{marginTop:RFPercentage(3)}}>
+            <Button title="Log In" onPress={handleLogin} />
+          </View>
         </View>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate("signup")}>
@@ -57,7 +61,7 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     paddingVertical: 20,
   },
   innerContainer: {
@@ -65,10 +69,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    // backgroundColor:'red'
   },
   inputView: {
-    width: "85%",
+    width: "90%",
     marginTop: 20,
+    alignSelf: "center",
   },
   inputTitle: {
     fontSize: 14,
@@ -88,7 +94,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   forgotAndSignUpText: {
-    fontSize: 11,
+    fontSize: RFPercentage(1.7),
     fontFamily: Fonts.Medium,
   },
   loginBtn: {
@@ -110,12 +116,12 @@ const styles = StyleSheet.create({
   },
   signupBtn: {
     textAlign: "center",
-    fontSize: 12,
-    fontFamily: Fonts.Medium,
+    fontSize: RFPercentage(1.8),
+    fontFamily: Fonts.Regular,
+    bottom:RFPercentage(2)
   },
   selectedText: {
     fontSize: 45,
-    fontWeight: "700",
     marginTop: 15,
     fontFamily: Fonts.Medium,
   },

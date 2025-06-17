@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1024530144901",
-    "project_id": "loginauth-aebd1",
-    "storage_bucket": "loginauth-aebd1.firebasestorage.app"
+    "project_number": "148417258727",
+    "project_id": "gymai-e5a14",
+    "storage_bucket": "gymai-e5a14.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1024530144901:android:7c40973c0b277e44fd13ec",
+        "mobilesdk_app_id": "1:148417258727:android:92842e933b840105e46e42",
         "android_client_info": {
           "package_name": "com.myapp"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDc8cIKZstbvesnz7VM48a3qwgqIMkxYWk"
+          "current_key": "AIzaSyAVxG-uk6_e4kKJSpF5ihdcRev7Ohyw91I"
         }
       ],
       "services": {
