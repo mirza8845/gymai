@@ -26,7 +26,7 @@ const IntroQuestionnaire = () => {
 
         <Text style={[styles.primaryMessage, { color: colors.text }]}>You can skip any questions along the way.</Text>
         <Text style={[styles.secondaryMessage, { color: colors.text }]}>The more you answer, the more personalised your results will be!</Text>
-        <View style={{marginTop:RFPercentage(4)}}>
+        <View style={{marginTop:RFPercentage(5)}}>
           <Button title="Next" onPress={() => navigation.navigate("genderQuestionnaire")} />
         </View>
       </View>
@@ -42,8 +42,8 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     width: "100%",
-    height: "60%",
-    resizeMode: "contain",
+    height: "56%",
+    resizeMode: "cover",
   },
   contentWrapper: {
     paddingHorizontal: 40,
@@ -60,14 +60,16 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Medium,
   },
   primaryMessage: {
-    fontSize: RFPercentage(2.3),
+    fontSize: RFPercentage(2.1),
     // fontWeight: 500,
-    paddingVertical: 30,
+    // paddingVertical: 30,
     fontFamily: Fonts.Medium,
+    marginTop:RFPercentage(5)
   },
   secondaryMessage: {
-    fontSize: RFPercentage(2.3),
+    fontSize: RFPercentage(2.1),
     // fontWeight:500,
     fontFamily: Fonts.Medium,
+     marginTop:RFPercentage(5)
   },
 });

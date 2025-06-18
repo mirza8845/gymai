@@ -1,16 +1,61 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
-import * as React from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RulerPicker } from "react-native-ruler-view";
 import Button from "../../CommonComponent/Button";
 import Heading from "../../CommonComponent/Heading";
 import { Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
+import Toast from "react-native-toast-message";
 
 export default function HeightQuestionnaire() {
   const { colors } = useTheme();
   const [selectedHeight, setSelectedHeight] = React.useState(0);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+
+  const handleContinue = async () => {
+    if (selectedHeight === 0) {
+      Toast.show({
+        type: "info",
+        text1: "Select Height",
+        text2: "Please select your height to continue.",
+      });
+      return;
+    }
+
+    const currentUser = auth().currentUser;
+    if (!currentUser) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "User not authenticated.",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await firestore()
+        .collection("Users")
+        .doc(currentUser.uid)
+        .update({
+          height: `${selectedHeight}cm`,
+        });
+
+      navigation.navigate("goalsQuestionnaire");
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to update height. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center", paddingTop: RFPercentage(10) }}>
@@ -74,7 +119,7 @@ export default function HeightQuestionnaire() {
         />
       </View>
       <View style={{ marginTop: RFPercentage(5) }}>
-        <Button title="Continue" onPress={() => navigation.navigate("goalsQuestionnaire")} />
+        <Button title="Continue" onPress={handleContinue} loader={loading} disbaled={loading} />
       </View>
     </ScrollView>
   );

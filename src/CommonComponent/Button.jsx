@@ -1,15 +1,23 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { useTheme } from "@react-navigation/native";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Fonts } from "../constants/theme";
 
-const Button = ({ title, onPress }) => {
+const Button = ({ title, onPress, disbaled, loader }) => {
   const { colors } = useTheme();
 
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={[styles.text, { color: colors.text }]}>{title}</Text>
+    <TouchableOpacity style={styles.button} onPress={onPress} disabled={disbaled}>
+      {loader ? (
+        <>
+          <ActivityIndicator size="small" color={"white"} />
+        </>
+      ) : (
+        <>
+          <Text style={[styles.text, { color: colors.text }]}>{title}</Text>
+        </>
+      )}
     </TouchableOpacity>
   );
 };
@@ -31,6 +39,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: RFPercentage(2),
-    fontFamily:Fonts.Medium
+    fontFamily: Fonts.Medium,
   },
 });

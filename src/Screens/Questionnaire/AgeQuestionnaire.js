@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, Image } from "react-native";
+import { Pressable, StyleSheet, Text, View, Image, Alert } from "react-native";
 import React, { useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
@@ -8,6 +8,9 @@ import Heading from "../../CommonComponent/Heading";
 import { Dimensions } from "react-native";
 import { Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
+import Toast from "react-native-toast-message";
 
 const AgeQuestionnaire = () => {
   const [unit, setUnit] = useState("kg");
@@ -16,6 +19,60 @@ const AgeQuestionnaire = () => {
   const navigation = useNavigation();
   const [selectedHeight, setSelectedHeight] = useState(0);
   const [selectedAgeIndex, setSelectedAgeIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const handleContinue = async () => {
+    const age = ageOptions[selectedAgeIndex];
+    const weight = selectedHeight;
+
+    if (age === 0) {
+      Toast.show({
+        type: "info",
+        text1: "Select Age",
+        text2: "Please select your age to continue.",
+      });
+      return;
+    }
+
+    if (weight === 0) {
+      Toast.show({
+        type: "info",
+        text1: "Select Weight",
+        text2: "Please select your weight to continue.",
+      });
+      return;
+    }
+
+    const currentUser = auth().currentUser;
+    if (!currentUser) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "User not authenticated.",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await firestore()
+        .collection("Users")
+        .doc(currentUser.uid)
+        .update({
+          age,
+          weight: `${weight}${unit}`,
+        });
+      navigation.navigate("heightQuestionnaire");
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to update age and weight. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const renderItem = (item, index) => (
     <View style={questionnaireStyles.pickerItem}>
@@ -93,7 +150,7 @@ const AgeQuestionnaire = () => {
         }}
       />
 
-      <Button title="Continue" onPress={() => navigation.navigate("heightQuestionnaire")} />
+      <Button title="Continue" onPress={handleContinue} loader={loading} disbaled={loading} />
     </View>
   );
 };

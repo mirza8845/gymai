@@ -1,9 +1,11 @@
-import { StyleSheet } from 'react-native'
-import React from 'react'
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import MainNavigator from './Screens/Navigation/MainNavigation'
-import { AuthProvider } from './Screens/Navigation/AuthProvider'
+import { StyleSheet } from "react-native";
+import React from "react";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import MainNavigator from "./Screens/Navigation/MainNavigation";
+import { AuthProvider } from "./Screens/Navigation/AuthProvider";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "./utils/toastConfig";
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -12,16 +14,16 @@ const App = () => {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      background: '#000000',
-      text: '#ffffff',
+      background: "#000000",
+      text: "#ffffff",
     },
   };
 
   return (
     <NavigationContainer theme={darkTheme}>
       {/* <AuthStack/> */}
-     <MainNavigator/>
-     
+      <MainNavigator />
+      <Toast config={toastConfig} />
     </NavigationContainer>
   );
 };

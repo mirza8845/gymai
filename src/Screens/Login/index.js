@@ -7,47 +7,87 @@ import CommonInput from "../../CommonComponent/CommonInput";
 import auth from "@react-native-firebase/auth";
 import { Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import * as yup from "yup";
+import { Formik } from "formik";
+import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Please fill in both fields.");
-      return;
-    }
+  let validationSchema = yup.object({
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().required("Password is required"),
+  });
 
-    auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        navigation.navigate("introQuestionnaire");
-      })
-      .catch((err) => {
-        console.log(err);
-        Alert.alert("Error", err.message);
+  const handleSignIn = async (values) => {
+    setLoading(true);
+    try {
+      const userCredential = await auth().signInWithEmailAndPassword(values.email, values.password);
+      Toast.show({
+        type: "success",
+        text1: "Sign In",
+        text2: "Logged in successfully!",
       });
+      navigation.navigate("introQuestionnaire");
+    } catch (error) {
+      console.log("Sign In Error:", error);
+      Toast.show({
+        type: "error",
+        text1: "Sign In Failed",
+        text2: "Invalid credentials",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.innerContainer}>
-        <View style={{ bottom: RFPercentage(3) }}>
+        <View style={{ marginTop: RFPercentage(15) }}>
           <Heading title="Welcome To GymAi" />
         </View>
-        <View style={styles.inputView}>
-          <CommonInput label="Email" placeholder="Enter email" value={email} onChangeText={setEmail} />
-          <CommonInput label="Password" placeholder="Enter password" secureTextEntry value={password} onChangeText={setPassword} />
 
-          <TouchableOpacity style={styles.forgotWrapper}>
-            <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>Forgot Password?</Text>
-          </TouchableOpacity>
-          <View style={{marginTop:RFPercentage(3)}}>
-            <Button title="Log In" onPress={handleLogin} />
-          </View>
-        </View>
+        <Formik
+          initialValues={{
+            email: "",
+            password: "",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => handleSignIn(values)}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            <>
+              <View style={styles.inputView}>
+                <CommonInput label="Email" placeholder="Enter email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
+                {touched.email && errors.email && (
+                  <>
+                    <View style={{}}>
+                      <Text style={{ color: "red", fontFamily: Fonts.Regular, fontSize:RFPercentage(1.6) }}>{errors.email}</Text>
+                    </View>
+                  </>
+                )}
+                <CommonInput label="Password" placeholder="Enter password" secureTextEntry={true} value={values.password} onChangeText={handleChange("password")} handleBlur={handleBlur("password")} />
+                {touched.password && errors.password && (
+                  <>
+                    <View style={{}}>
+                      <Text style={{ color: "red", fontFamily: Fonts.Regular, fontSize:RFPercentage(1.6) }}>{errors.password}</Text>
+                    </View>
+                  </>
+                )}
+                <TouchableOpacity style={styles.forgotWrapper}>
+                  <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>Forgot Password?</Text>
+                </TouchableOpacity>
+                <View style={{ marginTop: RFPercentage(10) }}>
+                  <Button title="Log In" onPress={handleSubmit} loader={loading} disbaled={loading} />
+                </View>
+              </View>
+            </>
+          )}
+        </Formik>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate("signup")}>
         <Text style={[styles.signupBtn, { color: colors.text }]}>Don’t have an account? Sign Up</Text>
@@ -65,7 +105,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   innerContainer: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
@@ -73,7 +113,7 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: "90%",
-    marginTop: 20,
+    marginTop: RFPercentage(3),
     alignSelf: "center",
   },
   inputTitle: {
@@ -91,7 +131,8 @@ const styles = StyleSheet.create({
   },
   forgotWrapper: {
     alignItems: "flex-end",
-    marginBottom: 20,
+    marginTop:6
+    // marginBottom: 20,
   },
   forgotAndSignUpText: {
     fontSize: RFPercentage(1.7),
@@ -107,7 +148,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderWidth: 1,
     alignSelf: "center",
-    marginTop: 20,
+    marginTop: RFPercentage(3),
   },
   loginText: {
     fontSize: 16,
@@ -116,9 +157,9 @@ const styles = StyleSheet.create({
   },
   signupBtn: {
     textAlign: "center",
-    fontSize: RFPercentage(1.8),
+    fontSize: RFPercentage(1.6),
     fontFamily: Fonts.Regular,
-    bottom:RFPercentage(2)
+    marginTop: RFPercentage(2),
   },
   selectedText: {
     fontSize: 45,
