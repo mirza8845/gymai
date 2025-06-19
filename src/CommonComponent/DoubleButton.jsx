@@ -1,20 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
 import { Fonts } from '../constants/theme';
 
-const DoubleButton = ({ title }) => {
-  const [selected, setSelected] = useState(false);
-
-  const toggleRadio = () => {
-    setSelected(!selected);
-  };
-
+const DoubleButton = ({ title, selected, onPress }) => {
   return (
-    <TouchableOpacity onPress={toggleRadio} style={styles.container}>
-      <View style={styles.radioOuter}>
+    <TouchableOpacity onPress={onPress} style={styles.container}>
+      <View style={[styles.radioOuter, selected && styles.radioOuterSelected]}>
         {selected && <View style={styles.radioInner} />}
       </View>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={[styles.title, selected && styles.titleSelected]}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -26,7 +20,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingBottom:5,
+    paddingBottom: 5,
   },
   radioOuter: {
     height: 24,
@@ -37,6 +31,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  radioOuterSelected: {
+    borderColor: 'white',
+  },
   radioInner: {
     height: 12,
     width: 12,
@@ -46,7 +43,9 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: 16,
-    // fontWeight: '400',
-    fontFamily:Fonts.Medium
+    fontFamily: Fonts.Medium,
+  },
+  titleSelected: {
+    fontWeight: 'bold',
   },
 });

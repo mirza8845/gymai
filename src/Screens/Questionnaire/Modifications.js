@@ -1,15 +1,45 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import Heading from '../../CommonComponent/Heading';
-import { useNavigation, useTheme } from '@react-navigation/native';
-import Paragraph from '../../CommonComponent/Paragraph';
-import Button from '../../CommonComponent/Button';
-import { Fonts } from '../../constants/theme';
-import { RFPercentage } from 'react-native-responsive-fontsize';
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
+import Heading from "../../CommonComponent/Heading";
+import { useNavigation, useTheme } from "@react-navigation/native";
+import Paragraph from "../../CommonComponent/Paragraph";
+import Button from "../../CommonComponent/Button";
+import { Fonts } from "../../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
+import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
+import Toast from "react-native-toast-message";
 
 const Modifications = () => {
   const { colors } = useTheme();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+  const [modificationText, setModificationText] = useState("");
+
+  const handleContinue = async () => {
+    
+    const currentUser = auth().currentUser;
+    if (!currentUser) {
+      Toast.show({
+        type: "error",
+        text1: "Authentication Error",
+        text2: "User not authenticated.",
+      });
+      return;
+    }
+
+    try {
+      await firestore().collection("Users").doc(currentUser.uid).update({
+        modifications: modificationText.trim(),
+      });
+      navigation.navigate("availableEquipment");
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to save modifications.",
+      });
+    }
+  };
 
   return (
     <View style={[styles.wrapper, { backgroundColor: colors.background }]}>
@@ -17,10 +47,10 @@ const Modifications = () => {
         <Heading title="Modifications" />
         <Paragraph title="Do you need modifications for injuries or physical limitations?" />
         <View style={styles.modificationsNote}>
-          <Text style={styles.modificationsText}>If yes please explain...</Text>
+          <TextInput placeholder="If yes, please explain..." value={modificationText} onChangeText={setModificationText} multiline style={styles.input} placeholderTextColor="#999" />
         </View>
       </View>
-      <Button title="Continue"  onPress={()=>navigation.navigate('availableEquipment')}/>
+      <Button title="Continue" onPress={handleContinue} />
     </View>
   );
 };
@@ -37,15 +67,17 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   modificationsNote: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 20,
     padding: 18,
     minHeight: RFPercentage(25),
     marginTop: RFPercentage(10),
   },
-  modificationsText: {
-    fontSize: 18,
-    color: 'black',
-    fontFamily:Fonts.Regular
+  input: {
+    fontSize: 16,
+    color: "black",
+    fontFamily: Fonts.Regular,
+    textAlignVertical: "top",
+    flex: 1,
   },
 });
