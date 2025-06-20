@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Heading from "../../CommonComponent/Heading";
 import Paragraph from "../../CommonComponent/Paragraph";
@@ -9,6 +9,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
+import { UserContext } from "../../utils/userContext";
 
 const equipmentOptions = [
   "Everything",
@@ -28,14 +29,26 @@ const equipmentOptions = [
 const AvailableEquipment = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
+  const { userData, setUserData } = useContext(UserContext); // ✅ Context usage
   const [selectedEquipment, setSelectedEquipment] = useState([]);
 
+  // ✅ Prefill from context
+  useEffect(() => {
+    if (userData?.availableEquipment) {
+      setSelectedEquipment(userData.availableEquipment);
+    }
+  }, [userData]);
+
   const toggleEquipment = (item) => {
-    setSelectedEquipment((prev) => (prev.includes(item) ? prev.filter((eq) => eq !== item) : [...prev, item]));
+    setSelectedEquipment((prev) =>
+      prev.includes(item)
+        ? prev.filter((eq) => eq !== item)
+        : [...prev, item]
+    );
   };
 
   const handleContinue = async () => {
-    if (!selectedEquipment) {
+    if (selectedEquipment.length === 0) {
       Toast.show({
         type: "info",
         text1: "Select",
@@ -43,6 +56,7 @@ const AvailableEquipment = () => {
       });
       return;
     }
+
     const currentUser = auth().currentUser;
     if (!currentUser) {
       Toast.show({
@@ -54,9 +68,18 @@ const AvailableEquipment = () => {
     }
 
     try {
-      await firestore().collection("Users").doc(currentUser.uid).update({
+      await firestore()
+        .collection("Users")
+        .doc(currentUser.uid)
+        .update({
+          availableEquipment: selectedEquipment,
+        });
+
+      // ✅ Update context
+      setUserData((prev) => ({
+        ...prev,
         availableEquipment: selectedEquipment,
-      });
+      }));
 
       navigation.navigate("challenges");
     } catch (error) {
@@ -73,9 +96,21 @@ const AvailableEquipment = () => {
       <Heading title="Available equipment" />
       <Paragraph title="What equipment do you have access to? You can start with nothing!" />
 
-      <View style={{ gap: 2, paddingTop: 50, paddingBottom: 100, left: RFPercentage(2) }}>
+      <View
+        style={{
+          gap: 2,
+          paddingTop: 50,
+          paddingBottom: 100,
+          left: RFPercentage(2),
+        }}
+      >
         {equipmentOptions.map((title, index) => (
-          <DoubleButton key={index} title={title} selected={selectedEquipment.includes(title)} onPress={() => toggleEquipment(title)} />
+          <DoubleButton
+            key={index}
+            title={title}
+            selected={selectedEquipment.includes(title)}
+            onPress={() => toggleEquipment(title)}
+          />
         ))}
       </View>
 

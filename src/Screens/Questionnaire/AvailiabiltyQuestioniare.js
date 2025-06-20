@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Paragraph from "../../CommonComponent/Paragraph";
@@ -9,6 +9,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
+import { UserContext } from "../../utils/userContext";
 
 const availabilityOptions = ["1", "2", "3", "4", "5", "6", "7"];
 
@@ -16,6 +17,15 @@ const AvailiabiltyQuestioniare = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const { colors } = useTheme();
   const navigation = useNavigation();
+
+  const { userData, setUserData } = useContext(UserContext); // ✅ Use context
+
+  // ✅ Prefill if available
+  useEffect(() => {
+    if (userData?.weeklyWorkoutCommitment) {
+      setSelectedOption(userData.weeklyWorkoutCommitment);
+    }
+  }, [userData]);
 
   const handleContinue = async () => {
     if (!selectedOption) {
@@ -44,6 +54,13 @@ const AvailiabiltyQuestioniare = () => {
         .update({
           weeklyWorkoutCommitment: selectedOption,
         });
+
+      // ✅ Update context
+      setUserData((prev) => ({
+        ...prev,
+        weeklyWorkoutCommitment: selectedOption,
+      }));
+
       navigation.navigate("modifications");
     } catch (error) {
       Toast.show({

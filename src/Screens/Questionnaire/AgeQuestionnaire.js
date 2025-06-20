@@ -1,25 +1,44 @@
-import { Pressable, StyleSheet, Text, View, Image, Alert } from "react-native";
-import React, { useState } from "react";
+import { Pressable, StyleSheet, Text, View, Dimensions } from "react-native";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
 import { RulerPicker } from "react-native-ruler-view";
 import Button from "../../CommonComponent/Button";
 import Heading from "../../CommonComponent/Heading";
-import { Dimensions } from "react-native";
 import { Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
+import { UserContext } from "../../utils/userContext";
 
 const AgeQuestionnaire = () => {
   const [unit, setUnit] = useState("kg");
   const { colors } = useTheme();
-  const ageOptions = Array.from(Array(100).keys());
   const navigation = useNavigation();
-  const [selectedHeight, setSelectedHeight] = useState(0);
+  const ageOptions = Array.from(Array(100).keys());
+
+  const { userData, setUserData } = useContext(UserContext); // 👈 use context
+
   const [selectedAgeIndex, setSelectedAgeIndex] = useState(0);
+  const [selectedHeight, setSelectedHeight] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // 👇 Pre-fill values from userData if available
+  useEffect(() => {
+    if (userData?.age) {
+      const index = ageOptions.findIndex((item) => item === userData.age);
+      if (index !== -1) setSelectedAgeIndex(index);
+    }
+
+    if (userData?.weight) {
+      const weightStr = userData.weight.toString();
+      const unitType = weightStr.includes("LB") ? "LB" : "kg";
+      const numberPart = parseInt(weightStr);
+      setUnit(unitType);
+      setSelectedHeight(numberPart || 0);
+    }
+  }, [userData]);
 
   const handleContinue = async () => {
     const age = ageOptions[selectedAgeIndex];
@@ -62,6 +81,14 @@ const AgeQuestionnaire = () => {
           age,
           weight: `${weight}${unit}`,
         });
+
+      // 👇 Update userData context
+      setUserData((prev) => ({
+        ...prev,
+        age,
+        weight: `${weight}${unit}`,
+      }));
+
       navigation.navigate("heightQuestionnaire");
     } catch (error) {
       Toast.show({
@@ -83,30 +110,34 @@ const AgeQuestionnaire = () => {
   return (
     <View style={[questionnaireStyles.container, { backgroundColor: colors.background }]}>
       <Heading title="Age" />
+
       <View style={questionnaireStyles.pickerWrapper}>
         <HorizontalPicker
           data={ageOptions}
           renderItem={renderItem}
-          itemWidth={100}
+          itemWidth={50} // reduced from 100 to 50
           snapToAlignment="center"
-          snapToInterval={100}
-          decelerationRate="fast"
+          decelerationRate="normal" // smoother scroll
           contentContainerStyle={{
-            paddingHorizontal: (Dimensions.get("window").width - 100) / 2,
+            paddingHorizontal: (Dimensions.get("window").width - 50) / 2,
           }}
           onChange={(index) => setSelectedAgeIndex(index)}
           initialIndex={selectedAgeIndex}
+          showsHorizontalScrollIndicator={false}
         />
         <View style={questionnaireStyles.selectorLineRight} />
         <View style={questionnaireStyles.selectorLineLeft} />
       </View>
+
       <Text style={[questionnaireStyles.heading, { color: colors.text }]}>Weight</Text>
+
       <View style={questionnaireStyles.weightToggle}>
         <Pressable onPress={() => setUnit("kg")}>
           <Text style={questionnaireStyles.unitText}>KG</Text>
         </Pressable>
 
         <View style={questionnaireStyles.verticalDivider} />
+
         <Pressable onPress={() => setUnit("LB")}>
           <Text style={questionnaireStyles.unitText}>LB</Text>
         </Pressable>
@@ -132,7 +163,6 @@ const AgeQuestionnaire = () => {
           longStepColor: "white",
           textColor: "white",
           backgroundColor: "black",
-          // fontWeight: '700',
           fontSize: 10,
           fontFamily: Fonts.SemiBold,
         }}
@@ -157,6 +187,7 @@ const AgeQuestionnaire = () => {
 
 export default AgeQuestionnaire;
 
+// 👇 your existing styles (unchanged)
 const questionnaireStyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -206,7 +237,6 @@ const questionnaireStyles = StyleSheet.create({
     margin: 20,
   },
   unitText: {
-    // fontWeight: '700',
     color: "black",
     fontSize: 20,
     fontFamily: Fonts.Bold,

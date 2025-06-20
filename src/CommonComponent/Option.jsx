@@ -8,7 +8,7 @@ const Option = ({ label, selected, onPress }) => {
   const { colors } = useTheme();
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={onPress}>
       <Text style={styles.text}>{label}</Text>
       <View style={[styles.radioOuter, selected && styles.radioOuterSelected]}>
         {selected && <View style={styles.radioInner} />}
@@ -20,7 +20,7 @@ const Option = ({ label, selected, onPress }) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 55,
+    height: 50,
     backgroundColor: '#fff',
     borderRadius: 30,
     paddingHorizontal: 10,
@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     fontFamily:Fonts.Medium
   },
   radioOuter: {
-    width: 35,
-    height: 35,
+    width: 30,
+    height: 30,
     borderRadius: 20,
     borderWidth: 4,
     borderColor: 'black',
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
     borderColor: 'black',
   },
   radioInner: {
-    width: 22,
-    height: 22,
+    width: 20,
+    height: 20,
     borderRadius: 18,
     backgroundColor: 'black',
   },

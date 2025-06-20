@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
+import React, { useState, useContext, useEffect } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Paragraph from "../../CommonComponent/Paragraph";
@@ -9,14 +9,22 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
+import { UserContext } from "../../utils/userContext";
 
 const Modifications = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
+  const { userData, setUserData } = useContext(UserContext); // ✅ use context
   const [modificationText, setModificationText] = useState("");
 
+  // ✅ Prefill if available
+  useEffect(() => {
+    if (userData?.modifications) {
+      setModificationText(userData.modifications);
+    }
+  }, [userData]);
+
   const handleContinue = async () => {
-    
     const currentUser = auth().currentUser;
     if (!currentUser) {
       Toast.show({
@@ -28,9 +36,18 @@ const Modifications = () => {
     }
 
     try {
+      const trimmed = modificationText.trim();
+
       await firestore().collection("Users").doc(currentUser.uid).update({
-        modifications: modificationText.trim(),
+        modifications: trimmed,
       });
+
+      // ✅ Update context
+      setUserData((prev) => ({
+        ...prev,
+        modifications: trimmed,
+      }));
+
       navigation.navigate("availableEquipment");
     } catch (error) {
       Toast.show({
@@ -47,7 +64,14 @@ const Modifications = () => {
         <Heading title="Modifications" />
         <Paragraph title="Do you need modifications for injuries or physical limitations?" />
         <View style={styles.modificationsNote}>
-          <TextInput placeholder="If yes, please explain..." value={modificationText} onChangeText={setModificationText} multiline style={styles.input} placeholderTextColor="#999" />
+          <TextInput
+            placeholder="If yes, please explain..."
+            value={modificationText}
+            onChangeText={setModificationText}
+            multiline
+            style={styles.input}
+            placeholderTextColor="#999"
+          />
         </View>
       </View>
       <Button title="Continue" onPress={handleContinue} />

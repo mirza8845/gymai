@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import Heading from '../../CommonComponent/Heading';
 import Paragraph from '../../CommonComponent/Paragraph';
@@ -9,6 +9,7 @@ import { RFPercentage } from 'react-native-responsive-fontsize';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import Toast from 'react-native-toast-message';
+import { UserContext } from '../../utils/userContext';
 
 const dietsOption = [
   'High in Protein',
@@ -22,8 +23,15 @@ const dietsOption = [
 
 const Diets = () => {
   const { colors } = useTheme();
-  const [selectedOption, setSelectedOption] = useState(null);
   const navigation = useNavigation();
+  const { userData, setUserData } = useContext(UserContext); // ✅ UserContext
+
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  // ✅ Load saved diet from context
+  useEffect(() => {
+    if (userData?.currentDiet) setSelectedOption(userData.currentDiet);
+  }, [userData]);
 
   const handleContinue = async () => {
     if (!selectedOption) {
@@ -49,6 +57,13 @@ const Diets = () => {
       await firestore().collection('Users').doc(currentUser.uid).update({
         currentDiet: selectedOption,
       });
+
+      // ✅ Update UserContext
+      setUserData((prev) => ({
+        ...prev,
+        currentDiet: selectedOption,
+      }));
+
       navigation.navigate('healthQuestionaire');
     } catch (error) {
       Toast.show({

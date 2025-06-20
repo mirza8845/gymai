@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Paragraph from "../../CommonComponent/Paragraph";
@@ -9,6 +9,8 @@ import { Fonts } from "../../constants/theme";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
+import { UserContext } from "../../utils/userContext";
+
 
 const dietaryOptions = ["Vegetarian", "Vegan", "Gluten-Free", "Keto", "Paleo", "No preferences"];
 const allergyOptions = ["Nuts", "Dairy", "Shellfish", "Eggs", "No allergies"];
@@ -16,8 +18,16 @@ const allergyOptions = ["Nuts", "Dairy", "Shellfish", "Eggs", "No allergies"];
 const DietaryPreferences = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
+  const { userData, setUserData } = useContext(UserContext); // ✅ UserContext
+
   const [selectedDietary, setSelectedDietary] = useState([]);
   const [selectedAllergies, setSelectedAllergies] = useState([]);
+
+  // ✅ Load from UserContext if available
+  useEffect(() => {
+    if (userData?.dietaryPreferences) setSelectedDietary(userData.dietaryPreferences);
+    if (userData?.foodAllergies) setSelectedAllergies(userData.foodAllergies);
+  }, [userData]);
 
   const toggleSelection = (item, selectedList, setSelectedList) => {
     if (selectedList.includes(item)) {
@@ -28,7 +38,7 @@ const DietaryPreferences = () => {
   };
 
   const handleContinue = async () => {
-    if (!selectedDietary || !selectedAllergies) {
+    if (!selectedDietary.length || !selectedAllergies.length) {
       Toast.show({
         type: "info",
         text1: "Please Select",
@@ -36,6 +46,7 @@ const DietaryPreferences = () => {
       });
       return;
     }
+
     const currentUser = auth().currentUser;
     if (!currentUser) {
       Toast.show({
@@ -51,6 +62,14 @@ const DietaryPreferences = () => {
         dietaryPreferences: selectedDietary,
         foodAllergies: selectedAllergies,
       });
+
+      // ✅ Update context
+      setUserData((prev) => ({
+        ...prev,
+        dietaryPreferences: selectedDietary,
+        foodAllergies: selectedAllergies,
+      }));
+
       navigation.navigate("diets");
     } catch (error) {
       Toast.show({
@@ -65,33 +84,59 @@ const DietaryPreferences = () => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Heading title="Dietary Preferences" />
       <View style={{ marginTop: 70, marginBottom: 60 }}>
-        <Text style={[styles.paragraph, { color: colors.text }]}>What are your dietary preferences?</Text>
+        <Text style={[styles.paragraph, { color: colors.text }]}>
+          What are your dietary preferences?
+        </Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View>
             {dietaryOptions.slice(0, 3).map((item) => (
-              <DoubleButton key={item} title={item} selected={selectedDietary.includes(item)} onPress={() => toggleSelection(item, selectedDietary, setSelectedDietary)} />
+              <DoubleButton
+                key={item}
+                title={item}
+                selected={selectedDietary.includes(item)}
+                onPress={() => toggleSelection(item, selectedDietary, setSelectedDietary)}
+              />
             ))}
           </View>
           <View>
             {dietaryOptions.slice(3).map((item) => (
-              <DoubleButton key={item} title={item} selected={selectedDietary.includes(item)} onPress={() => toggleSelection(item, selectedDietary, setSelectedDietary)} />
+              <DoubleButton
+                key={item}
+                title={item}
+                selected={selectedDietary.includes(item)}
+                onPress={() => toggleSelection(item, selectedDietary, setSelectedDietary)}
+              />
             ))}
           </View>
         </View>
       </View>
 
       <View style={{ paddingBottom: 60 }}>
-        <Text style={{ fontSize: 25, marginBottom: 10, color: "white", fontFamily: Fonts.Medium }}>Allergies</Text>
-        <Text style={[styles.paragraph, { color: colors.text }]}>Do you have any food allergies we should know about?</Text>
+        <Text style={{ fontSize: 25, marginBottom: 10, color: "white", fontFamily: Fonts.Medium }}>
+          Allergies
+        </Text>
+        <Text style={[styles.paragraph, { color: colors.text }]}>
+          Do you have any food allergies we should know about?
+        </Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 80 }}>
           <View>
             {allergyOptions.slice(0, 3).map((item) => (
-              <DoubleButton key={item} title={item} selected={selectedAllergies.includes(item)} onPress={() => toggleSelection(item, selectedAllergies, setSelectedAllergies)} />
+              <DoubleButton
+                key={item}
+                title={item}
+                selected={selectedAllergies.includes(item)}
+                onPress={() => toggleSelection(item, selectedAllergies, setSelectedAllergies)}
+              />
             ))}
           </View>
           <View>
             {allergyOptions.slice(3).map((item) => (
-              <DoubleButton key={item} title={item} selected={selectedAllergies.includes(item)} onPress={() => toggleSelection(item, selectedAllergies, setSelectedAllergies)} />
+              <DoubleButton
+                key={item}
+                title={item}
+                selected={selectedAllergies.includes(item)}
+                onPress={() => toggleSelection(item, selectedAllergies, setSelectedAllergies)}
+              />
             ))}
           </View>
         </View>

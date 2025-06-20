@@ -6,6 +6,7 @@ import MainNavigator from "./Screens/Navigation/MainNavigation";
 import { AuthProvider } from "./Screens/Navigation/AuthProvider";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "./utils/toastConfig";
+import { UserProvider } from "./utils/userContext";
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -20,11 +21,13 @@ const App = () => {
   };
 
   return (
-    <NavigationContainer theme={darkTheme}>
-      {/* <AuthStack/> */}
-      <MainNavigator />
-      <Toast config={toastConfig} />
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer theme={darkTheme}>
+        {/* <AuthStack/> */}
+        <MainNavigator />
+        <Toast config={toastConfig} />
+      </NavigationContainer>
+    </UserProvider>
   );
 };
 

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
 import Option from "../../CommonComponent/Option";
@@ -9,15 +9,25 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import Toast from "react-native-toast-message";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+import { UserContext } from "../../utils/userContext";
 
 const goals = ["Aesthetics", "Strength training", "Powerlifting", "Health"];
 
 const GoalsQuestionnaire = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
+
+  const { userData, setUserData } = useContext(UserContext); // ✅ Access context
+
   const [selectedOption, setSelectedOption] = useState(null);
   const [goalNote, setGoalNote] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // ✅ Prefill from userData
+  useEffect(() => {
+    if (userData?.goal) setSelectedOption(userData.goal);
+    if (userData?.goalNote) setGoalNote(userData.goalNote);
+  }, [userData]);
 
   const handleContinue = async () => {
     if (!selectedOption) {
@@ -46,6 +56,13 @@ const GoalsQuestionnaire = () => {
         goalNote: goalNote.trim(),
       });
 
+      // ✅ Update context
+      setUserData((prev) => ({
+        ...prev,
+        goal: selectedOption,
+        goalNote: goalNote.trim(),
+      }));
+
       navigation.navigate("currentPhysique");
     } catch (error) {
       Toast.show({
@@ -65,16 +82,29 @@ const GoalsQuestionnaire = () => {
 
       <View style={styles.goalsContainer}>
         {goals.map((opt, index) => (
-          <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
+          <Option
+            key={index}
+            label={opt}
+            selected={selectedOption === opt}
+            onPress={() => setSelectedOption(opt)}
+          />
         ))}
 
         <View style={styles.goalNote}>
-          <TextInput placeholder="Tell us more about your goals..." placeholderTextColor="#999" style={styles.goalNoteInput} multiline numberOfLines={4} value={goalNote} onChangeText={setGoalNote} />
+          <TextInput
+            placeholder="Tell us more about your goals..."
+            placeholderTextColor="#999"
+            style={styles.goalNoteInput}
+            multiline
+            numberOfLines={4}
+            value={goalNote}
+            onChangeText={setGoalNote}
+          />
         </View>
       </View>
 
       <View style={{ top: RFPercentage(4) }}>
-        <Button title={"Continue"} onPress={handleContinue} disabled={loading} loader={loading} />
+        <Button title="Continue" onPress={handleContinue} disabled={loading} loader={loading} />
       </View>
     </View>
   );
@@ -95,18 +125,15 @@ const styles = StyleSheet.create({
     padding: 16,
     height: RFPercentage(25),
   },
-
   goalNoteInput: {
     fontSize: RFPercentage(2.2),
     color: "black",
     fontFamily: Fonts.Medium,
-    textAlignVertical: "top", // for Android multiline alignment
+    textAlignVertical: "top",
     flex: 1,
   },
-
   subheading: {
     fontSize: RFPercentage(2),
-    // fontWeight: '200',
     marginBottom: 30,
     textAlign: "center",
     fontFamily: Fonts.Regular,
@@ -114,36 +141,5 @@ const styles = StyleSheet.create({
   },
   goalsContainer: {
     gap: 12,
-  },
-  goalOption: {
-    width: "100%",
-    height: 55,
-    backgroundColor: "#fff",
-    borderRadius: 30,
-    paddingHorizontal: 20,
-    marginBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  goalText: {
-    fontSize: 18,
-    fontWeight: "500",
-    color: "black",
-  },
-  goalIcon: {
-    width: 24,
-    height: 24,
-  },
-  goalNote: {
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 16,
-    height: RFPercentage(25),
-  },
-  goalNoteText: {
-    fontSize: RFPercentage(2.2),
-    color: "black",
-    fontFamily: Fonts.Medium,
   },
 });

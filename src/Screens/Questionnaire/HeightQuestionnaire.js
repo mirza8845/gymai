@@ -1,6 +1,6 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
-import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { RulerPicker } from "react-native-ruler-view";
 import Button from "../../CommonComponent/Button";
 import Heading from "../../CommonComponent/Heading";
@@ -9,12 +9,27 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
+import { UserContext } from "../../utils/userContext";
 
 export default function HeightQuestionnaire() {
   const { colors } = useTheme();
-  const [selectedHeight, setSelectedHeight] = React.useState(0);
   const navigation = useNavigation();
+
+  const { userData, setUserData } = useContext(UserContext); // ✅ use context
+
+  const [selectedHeight, setSelectedHeight] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // ✅ Pre-fill height if available
+  useEffect(() => {
+    if (userData?.height) {
+      const heightStr = userData.height.toString();
+      const heightVal = parseInt(heightStr.replace("cm", ""));
+      if (!isNaN(heightVal)) {
+        setSelectedHeight(heightVal);
+      }
+    }
+  }, [userData]);
 
   const handleContinue = async () => {
     if (selectedHeight === 0) {
@@ -45,6 +60,12 @@ export default function HeightQuestionnaire() {
           height: `${selectedHeight}cm`,
         });
 
+      // ✅ Update context state
+      setUserData((prev) => ({
+        ...prev,
+        height: `${selectedHeight}cm`,
+      }));
+
       navigation.navigate("goalsQuestionnaire");
     } catch (error) {
       Toast.show({
@@ -65,6 +86,7 @@ export default function HeightQuestionnaire() {
         <Text style={[styles.selectedText, { color: colors.text }]}>{selectedHeight}</Text>
         <Text style={{ color: colors.text, fontFamily: Fonts.Regular }}>cm</Text>
       </Text>
+
       <View
         style={{
           padding: 0,
@@ -78,11 +100,10 @@ export default function HeightQuestionnaire() {
         <RulerPicker
           unit=""
           min={0}
-          max={1000}
+          max={300}
           step={1}
           width={10}
           indicatorHeight={80}
-          initialValue={20}
           height={350}
           vertical
           showLabels={true}
@@ -109,7 +130,9 @@ export default function HeightQuestionnaire() {
             labelFormat: "Value: ${value}",
             announceValues: true,
           }}
-          onValueChange={(val) => setSelectedHeight(val)}
+          onValueChange={(val) => setSelectedHeight(Math.round(val))}
+          formatLabel={(val) => `${parseInt(val)}`} // 👈 This removes the ".0"
+          initialValue={selectedHeight}
           animationConfig={{
             springConfig: {
               tension: 40,
@@ -118,6 +141,7 @@ export default function HeightQuestionnaire() {
           }}
         />
       </View>
+
       <View style={{ marginTop: RFPercentage(5) }}>
         <Button title="Continue" onPress={handleContinue} loader={loading} disbaled={loading} />
       </View>
@@ -133,7 +157,6 @@ const styles = StyleSheet.create({
   },
   selectedText: {
     fontSize: 48,
-    // fontWeight: 700,
     fontFamily: Fonts.Medium,
   },
 });

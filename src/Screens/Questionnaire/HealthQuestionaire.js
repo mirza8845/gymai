@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Dimensions } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Paragraph from "../../CommonComponent/Paragraph";
@@ -10,25 +10,48 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
+import { UserContext } from "../../utils/userContext";
+
+const pickerData = Array.from({ length: 24 }, (_, i) => i + 1); // 1-24
 
 const HealthQuestionaire = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
+  const { userData, setUserData } = useContext(UserContext); // ✅
 
   const [sleepIndex, setSleepIndex] = useState(0);
   const [waterIndex, setWaterIndex] = useState(0);
   const [energyIndex, setEnergyIndex] = useState(0);
 
-  const pickerData = Array.from({ length: 24 }, (_, i) => i + 1); // e.g., 1 to 24
+  // ✅ Load data from UserContext
+  useEffect(() => {
+    if (userData?.sleepHours)
+      setSleepIndex(pickerData.indexOf(userData.sleepHours));
+    if (userData?.waterIntakeLiters)
+      setWaterIndex(pickerData.indexOf(userData.waterIntakeLiters));
+    if (userData?.energyLevel)
+      setEnergyIndex(userData.energyLevel - 1); // 1-based to 0-based
+  }, [userData]);
 
   const renderItem = (item, index, selectedIndex) => (
     <View style={styles.pickerItem}>
-      <Text style={[styles.pickerItemText, index === selectedIndex && styles.selectedPickerItemText]}>{item}</Text>
+      <Text
+        style={[
+          styles.pickerItemText,
+          index === selectedIndex && styles.selectedPickerItemText,
+        ]}
+      >
+        {item}
+      </Text>
     </View>
   );
 
   const handleContinue = async () => {
-    if (sleepIndex === 0 || waterIndex === 0 || energyIndex === 0) {
+    const sleepHours = pickerData[sleepIndex];
+    const waterIntake = pickerData[waterIndex];
+    const energy = energyIndex + 1;
+
+    if (!sleepHours || !waterIntake || !energy) {
       Toast.show({
         type: "info",
         text1: "Incomplete",
@@ -36,6 +59,7 @@ const HealthQuestionaire = () => {
       });
       return;
     }
+
     const user = auth().currentUser;
     if (!user) {
       Toast.show({
@@ -48,10 +72,18 @@ const HealthQuestionaire = () => {
 
     try {
       await firestore().collection("Users").doc(user.uid).update({
-        sleepHours: pickerData[sleepIndex],
-        waterIntakeLiters: pickerData[waterIndex],
-        energyLevel: pickerData[energyIndex],
+        sleepHours,
+        waterIntakeLiters: waterIntake,
+        energyLevel: energy,
       });
+
+      // ✅ Update context
+      setUserData((prev) => ({
+        ...prev,
+        sleepHours,
+        waterIntakeLiters: waterIntake,
+        energyLevel: energy,
+      }));
 
       navigation.navigate("profileQuestionaire");
     } catch (error) {
@@ -72,11 +104,11 @@ const HealthQuestionaire = () => {
         <HorizontalPicker
           data={pickerData}
           renderItem={(item, index) => renderItem(item, index, sleepIndex)}
-          itemWidth={100}
+          itemWidth={50}
           onChange={(index) => setSleepIndex(index)}
           initialIndex={sleepIndex}
           snapToAlignment="center"
-          snapToInterval={100}
+          // snapToInterval={100}
           decelerationRate="fast"
           contentContainerStyle={{
             paddingHorizontal: (Dimensions.get("window").width - 100) / 2,
@@ -91,11 +123,11 @@ const HealthQuestionaire = () => {
         <HorizontalPicker
           data={pickerData}
           renderItem={(item, index) => renderItem(item, index, waterIndex)}
-          itemWidth={100}
+          itemWidth={50}
           onChange={(index) => setWaterIndex(index)}
           initialIndex={waterIndex}
           snapToAlignment="center"
-          snapToInterval={100}
+          // snapToInterval={100}
           decelerationRate="fast"
           contentContainerStyle={{
             paddingHorizontal: (Dimensions.get("window").width - 100) / 2,
@@ -110,11 +142,11 @@ const HealthQuestionaire = () => {
         <HorizontalPicker
           data={[1, 2, 3, 4, 5]}
           renderItem={(item, index) => renderItem(item, index, energyIndex)}
-          itemWidth={100}
+          itemWidth={50}
           onChange={(index) => setEnergyIndex(index)}
           initialIndex={energyIndex}
           snapToAlignment="center"
-          snapToInterval={100}
+          // snapToInterval={100}
           decelerationRate="fast"
           contentContainerStyle={{
             paddingHorizontal: (Dimensions.get("window").width - 100) / 2,

@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Heading from "../../CommonComponent/Heading";
 import profileImg from "../../assets/images/womanpic.png";
@@ -10,15 +10,27 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
+import { UserContext } from "../../utils/userContext";
 
 const ProfileQuestionaire = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
+  const { userData, setUserData } = useContext(UserContext);
 
   const [fullName, setFullName] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
+
+  // ✅ Prefill user data on load
+  useEffect(() => {
+    if (userData) {
+      setFullName(userData.fullName || "");
+      setNickname(userData.nickname || "");
+      setEmail(auth().currentUser?.email || ""); // use Firebase Auth for email
+      setMobile(userData.mobile || "");
+    }
+  }, [userData]);
 
   const handleStart = async () => {
     const user = auth().currentUser;
@@ -41,12 +53,10 @@ const ProfileQuestionaire = () => {
     }
 
     try {
-      await firestore().collection("Users").doc(user.uid).update({
-        fullName,
-        nickname,
-        email,
-        mobile,
-      });
+      const updatedInfo = { fullName, nickname, mobile };
+
+      await firestore().collection("Users").doc(user.uid).update(updatedInfo);
+      setUserData({ ...userData, ...updatedInfo }); // ✅ update context
 
       Toast.show({
         type: "success",
@@ -79,7 +89,13 @@ const ProfileQuestionaire = () => {
         <View style={styles.formSection}>
           <CommonInput label="Full name" placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
           <CommonInput label="Nickname" placeholder="Enter your Nick name" value={nickname} onChangeText={setNickname} />
-          <CommonInput label="Email" placeholder="Enter your Email" value={email} onChangeText={setEmail} />
+          <CommonInput
+            label="Email"
+            placeholder="Enter your Email"
+            value={email}
+            editable={false} // ✅ email is disabled
+            textInputStyle={{ color: "#888" }} // optional: greyed out
+          />
           <CommonInput label="Mobile Number" placeholder="Enter your Mobile Number" value={mobile} onChangeText={setMobile} />
         </View>
 
