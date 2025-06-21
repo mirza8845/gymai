@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View, Dimensions } from "react-native";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
 import { RulerPicker } from "react-native-ruler-view";
@@ -13,18 +13,20 @@ import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
 
 const AgeQuestionnaire = () => {
-  const [unit, setUnit] = useState("kg");
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const ageOptions = Array.from(Array(100).keys());
+  const ageOptions = Array.from({ length: 100 }, (_, i) => i + 1);
 
-  const { userData, setUserData } = useContext(UserContext); // 👈 use context
+  const { userData, setUserData } = useContext(UserContext);
 
   const [selectedAgeIndex, setSelectedAgeIndex] = useState(0);
-  const [selectedHeight, setSelectedHeight] = useState(0);
+  const [selectedWeight, setSelectedWeight] = useState(0);
+  const [unit, setUnit] = useState("kg");
   const [loading, setLoading] = useState(false);
 
-  // 👇 Pre-fill values from userData if available
+  console.log(selectedAgeIndex)
+
+  // Pre-fill values from context
   useEffect(() => {
     if (userData?.age) {
       const index = ageOptions.findIndex((item) => item === userData.age);
@@ -36,28 +38,19 @@ const AgeQuestionnaire = () => {
       const unitType = weightStr.includes("LB") ? "LB" : "kg";
       const numberPart = parseInt(weightStr);
       setUnit(unitType);
-      setSelectedHeight(numberPart || 0);
+      setSelectedWeight(numberPart || 0);
     }
   }, [userData]);
 
   const handleContinue = async () => {
     const age = ageOptions[selectedAgeIndex];
-    const weight = selectedHeight;
+    const weight = selectedWeight;
 
-    if (age === 0) {
+    if (!age || !weight) {
       Toast.show({
         type: "info",
-        text1: "Select Age",
-        text2: "Please select your age to continue.",
-      });
-      return;
-    }
-
-    if (weight === 0) {
-      Toast.show({
-        type: "info",
-        text1: "Select Weight",
-        text2: "Please select your weight to continue.",
+        text1: "Incomplete",
+        text2: "Please select both age and weight.",
       });
       return;
     }
@@ -66,8 +59,7 @@ const AgeQuestionnaire = () => {
     if (!currentUser) {
       Toast.show({
         type: "error",
-        text1: "Error",
-        text2: "User not authenticated.",
+        text1: "Not Authenticated",
       });
       return;
     }
@@ -82,7 +74,6 @@ const AgeQuestionnaire = () => {
           weight: `${weight}${unit}`,
         });
 
-      // 👇 Update userData context
       setUserData((prev) => ({
         ...prev,
         age,
@@ -93,53 +84,56 @@ const AgeQuestionnaire = () => {
     } catch (error) {
       Toast.show({
         type: "error",
-        text1: "Error",
-        text2: "Failed to update age and weight. Please try again.",
+        text1: "Error updating",
+        text2: error.message,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const renderItem = (item, index) => (
-    <View style={questionnaireStyles.pickerItem}>
-      <Text style={[questionnaireStyles.pickerItemText, index === selectedAgeIndex && questionnaireStyles.selectedPickerItemText]}>{item}</Text>
-    </View>
+  const renderItem = useCallback(
+    (item, index) => (
+      <View style={styles.pickerItem}>
+        <Text style={[styles.pickerItemText, index === selectedAgeIndex && styles.selectedPickerItemText]}>{item}</Text>
+      </View>
+    ),
+    [selectedAgeIndex]
   );
 
   return (
-    <View style={[questionnaireStyles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Heading title="Age" />
 
-      <View style={questionnaireStyles.pickerWrapper}>
+      <View style={styles.pickerWrapper}>
         <HorizontalPicker
           data={ageOptions}
           renderItem={renderItem}
-          itemWidth={50} // reduced from 100 to 50
+          itemWidth={80}
           snapToAlignment="center"
-          decelerationRate="normal" // smoother scroll
-          contentContainerStyle={{
-            paddingHorizontal: (Dimensions.get("window").width - 50) / 2,
-          }}
+          decelerationRate="normal"
           onChange={(index) => setSelectedAgeIndex(index)}
           initialIndex={selectedAgeIndex}
+          contentContainerStyle={{
+            paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
+          }}
           showsHorizontalScrollIndicator={false}
         />
-        <View style={questionnaireStyles.selectorLineRight} />
-        <View style={questionnaireStyles.selectorLineLeft} />
+        <View style={styles.selectorLineLeft} />
+        <View style={styles.selectorLineRight} />
       </View>
 
-      <Text style={[questionnaireStyles.heading, { color: colors.text }]}>Weight</Text>
+      <Text style={[styles.heading, { color: colors.text }]}>Weight</Text>
 
-      <View style={questionnaireStyles.weightToggle}>
+      <View style={styles.weightToggle}>
         <Pressable onPress={() => setUnit("kg")}>
-          <Text style={questionnaireStyles.unitText}>KG</Text>
+          <Text style={[styles.unitText, unit === "kg" && { color: "black", fontWeight: "bold" }]}>KG</Text>
         </Pressable>
 
-        <View style={questionnaireStyles.verticalDivider} />
+        <View style={styles.verticalDivider} />
 
         <Pressable onPress={() => setUnit("LB")}>
-          <Text style={questionnaireStyles.unitText}>LB</Text>
+          <Text style={[styles.unitText, unit === "LB" && { color: "black", fontWeight: "bold" }]}>LB</Text>
         </Pressable>
       </View>
 
@@ -152,6 +146,7 @@ const AgeQuestionnaire = () => {
         indicatorHeight={80}
         height={50}
         showLabels={true}
+        value={selectedWeight}
         containerStyle={{
           backgroundColor: "#4E4E4E",
           borderRadius: 5,
@@ -166,12 +161,7 @@ const AgeQuestionnaire = () => {
           fontSize: 10,
           fontFamily: Fonts.SemiBold,
         }}
-        accessibility={{
-          enabled: true,
-          labelFormat: `Value: \${value} ${unit}`,
-          announceValues: true,
-        }}
-        onValueChange={(val) => setSelectedHeight(val)}
+        onValueChange={(val) => setSelectedWeight(val)}
         animationConfig={{
           springConfig: {
             tension: 40,
@@ -187,12 +177,11 @@ const AgeQuestionnaire = () => {
 
 export default AgeQuestionnaire;
 
-// 👇 your existing styles (unchanged)
-const questionnaireStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+    paddingTop:RFPercentage(5)
   },
   pickerWrapper: {
     width: "100%",
@@ -204,8 +193,8 @@ const questionnaireStyles = StyleSheet.create({
     position: "relative",
   },
   pickerItem: {
-    width: 100,
-    height: 60,
+    width: 80, // must match itemWidth
+    height: 70,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#4E4E4E",
@@ -216,9 +205,16 @@ const questionnaireStyles = StyleSheet.create({
     fontWeight: "bold",
   },
   selectedPickerItemText: {
-    fontSize: 48,
+    fontSize: 40,
     color: "white",
     fontWeight: "bold",
+  },
+  heading: {
+    fontSize: RFPercentage(3),
+    marginBottom: 10,
+    textAlign: "center",
+    fontFamily: Fonts.SemiBold,
+    paddingTop: 30,
   },
   weightToggle: {
     flexDirection: "row",
@@ -237,7 +233,7 @@ const questionnaireStyles = StyleSheet.create({
     margin: 20,
   },
   unitText: {
-    color: "black",
+    color: "gray",
     fontSize: 20,
     fontFamily: Fonts.Bold,
   },
@@ -246,17 +242,6 @@ const questionnaireStyles = StyleSheet.create({
     height: 20,
     backgroundColor: "black",
     marginHorizontal: 10,
-  },
-  selectedText: {
-    fontSize: 45,
-    fontWeight: "700",
-  },
-  heading: {
-    fontSize: RFPercentage(3),
-    marginBottom: 10,
-    textAlign: "center",
-    paddingTop: 60,
-    fontFamily: Fonts.SemiBold,
   },
   selectorLineLeft: {
     position: "absolute",

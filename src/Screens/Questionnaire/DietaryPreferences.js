@@ -111,7 +111,7 @@ const DietaryPreferences = () => {
         </View>
       </View>
 
-      <View style={{ paddingBottom: 60 }}>
+      <View style={{  }}>
         <Text style={{ fontSize: 25, marginBottom: 10, color: "white", fontFamily: Fonts.Medium }}>
           Allergies
         </Text>

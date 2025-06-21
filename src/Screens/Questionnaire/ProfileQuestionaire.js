@@ -75,8 +75,8 @@ const ProfileQuestionaire = () => {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]} keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background, flexGrow: 1 }]} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <Heading title="Fill Your Profile" />
 
         <View style={styles.imageContainer}>
@@ -89,13 +89,7 @@ const ProfileQuestionaire = () => {
         <View style={styles.formSection}>
           <CommonInput label="Full name" placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
           <CommonInput label="Nickname" placeholder="Enter your Nick name" value={nickname} onChangeText={setNickname} />
-          <CommonInput
-            label="Email"
-            placeholder="Enter your Email"
-            value={email}
-            editable={false} // ✅ email is disabled
-            textInputStyle={{ color: "#888" }} // optional: greyed out
-          />
+          <CommonInput label="Email" placeholder="Enter your Email" value={email} editable={false} textInputStyle={{ color: "#888" }} />
           <CommonInput label="Mobile Number" placeholder="Enter your Mobile Number" value={mobile} onChangeText={setMobile} />
         </View>
 
@@ -111,9 +105,11 @@ export default ProfileQuestionaire;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingTop: RFPercentage(7),
+    paddingBottom: 40, // Add some bottom padding
   },
+
   imageContainer: {
     alignSelf: "center",
     marginTop: 20,

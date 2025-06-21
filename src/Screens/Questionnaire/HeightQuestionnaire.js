@@ -106,6 +106,8 @@ export default function HeightQuestionnaire() {
           indicatorHeight={80}
           height={350}
           vertical
+          fractionDigits={0}
+          initialValue={0}
           showLabels={true}
           gapBetweenSteps={14}
           containerStyle={{
@@ -115,6 +117,10 @@ export default function HeightQuestionnaire() {
             margin: 0,
             width: 10,
             height: 350,
+          }}
+          valueTextStyle	={{
+            // color:'red',
+            right:10
           }}
           theme={{
             indicatorColor: "white",
@@ -131,8 +137,7 @@ export default function HeightQuestionnaire() {
             announceValues: true,
           }}
           onValueChange={(val) => setSelectedHeight(Math.round(val))}
-          formatLabel={(val) => `${parseInt(val)}`} // 👈 This removes the ".0"
-          initialValue={selectedHeight}
+          formatLabel={(val) => `${Math.round(val)}`}
           animationConfig={{
             springConfig: {
               tension: 40,

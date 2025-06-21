@@ -11,7 +11,7 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
-import MaterialDesignIcons from "react-native-vector-icons/MaterialDesignIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const GenderQuestionnaire = () => {
   const { colors } = useTheme();
@@ -74,12 +74,12 @@ const GenderQuestionnaire = () => {
 
       <View style={styles.genderOptionsContainer}>
         <TouchableOpacity style={[styles.genderOption, { backgroundColor: gender === "Male" ? "white" : "transparent" }]} onPress={() => setGender("Male")}>
-          <MaterialDesignIcons name="gender-male" color={gender === "Male" ? "black" : "white"} size={RFPercentage(8)} />
+          <MaterialCommunityIcons name="gender-male" color={gender === "Male" ? "black" : "white"} size={RFPercentage(8)} />
         </TouchableOpacity>
         <Text style={[styles.genderLabel, { color: colors.text }]}>Male</Text>
 
         <TouchableOpacity style={[styles.genderOption, { backgroundColor: gender === "Female" ? "white" : "transparent" }]} onPress={() => setGender("Female")}>
-          <MaterialDesignIcons name="gender-female" color={gender === "Female" ? "black" : "white"} size={RFPercentage(8)} />
+          <MaterialCommunityIcons name="gender-female" color={gender === "Female" ? "black" : "white"} size={RFPercentage(8)} />
         </TouchableOpacity>
         <Text style={[styles.genderLabel, { color: colors.text }]}>Female</Text>
 

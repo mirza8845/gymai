@@ -26,7 +26,7 @@ const CurrentPhysique = () => {
   const [goalPhysique, setGoalPhysique] = useState(null);
 
   const currentOptions = ["Skinny", "Weak", "Bulky", "Fatty"];
-  const goalOptions = ["Slim", "Average", "Athletic", "Overweight"];
+  const goalOptions = ["Slim", "Average", "Athletic", "Husky"];
   const displayOptions = hasTitleChanged ? goalOptions : currentOptions;
 
   // ✅ Prefill from context
@@ -105,9 +105,9 @@ const CurrentPhysique = () => {
         {displayOptions.map((option, index) => {
           const positions = [
             { top: "20%", left: "15%" },
-            { top: "20%", right: "15%" },
+            { top: "20%", right: "17%" },
             { bottom: "20%", left: "15%" },
-            { bottom: "20%", right: "15%" },
+            { bottom: "20%", right: "17%" },
           ];
 
           const isSelected = (!hasTitleChanged && currentPhysique === option) || (hasTitleChanged && goalPhysique === option);

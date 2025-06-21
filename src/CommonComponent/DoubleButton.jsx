@@ -5,7 +5,7 @@ import { Fonts } from '../constants/theme';
 const DoubleButton = ({ title, selected, onPress }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
-      <View style={[styles.radioOuter, selected && styles.radioOuterSelected]}>
+      <View style={[styles.radioOuter]}>
         {selected && <View style={styles.radioInner} />}
       </View>
       <Text style={[styles.title, selected && styles.titleSelected]}>{title}</Text>
@@ -46,6 +46,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Medium,
   },
   titleSelected: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
 });

@@ -10,6 +10,7 @@ import img3 from "../../assets/images/img3.jpg";
 import img1 from "../../assets/images/img1.jpg";
 import { useNavigation } from "@react-navigation/native";
 import { Fonts } from "../../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const steps = [
   {
@@ -58,7 +59,11 @@ const Onboarding = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.Image source={steps[stepIndex].image} style={[styles.backgroundImage,]} resizeMode="" />
+      <Animated.Image source={steps[stepIndex].image} style={styles.backgroundImage} resizeMode="cover" />
+
+      {/* Black Overlay */}
+      <View style={styles.overlay} />
+
       <Animated.View style={[styles.content]}>
         <Image source={steps[stepIndex].icon} style={styles.logo} resizeMode="contain" />
         <Text style={styles.description}>{steps[stepIndex].text}</Text>
@@ -116,10 +121,10 @@ const styles = StyleSheet.create({
     height: 3,
   },
   button: {
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    paddingVertical: 10,
-    paddingHorizontal: 70,
-    borderRadius: 20,
+    backgroundColor: "rgba(196, 184, 184, 0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 30,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.25)",
     shadowColor: "#000",
@@ -127,11 +132,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 20,
+    width: RFPercentage(20),
+    height: RFPercentage(6),
   },
   buttonText: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: RFPercentage(2),
     textAlign: "center",
-    fontFamily:Fonts.Bold
+    fontFamily: Fonts.SemiBold,
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.6)", // Adjust opacity as needed
   },
 });

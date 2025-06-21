@@ -64,17 +64,12 @@ const Modifications = () => {
         <Heading title="Modifications" />
         <Paragraph title="Do you need modifications for injuries or physical limitations?" />
         <View style={styles.modificationsNote}>
-          <TextInput
-            placeholder="If yes, please explain..."
-            value={modificationText}
-            onChangeText={setModificationText}
-            multiline
-            style={styles.input}
-            placeholderTextColor="#999"
-          />
+          <TextInput placeholder="If yes, please explain..." value={modificationText} onChangeText={setModificationText} multiline style={styles.input} placeholderTextColor="#999" />
         </View>
       </View>
-      <Button title="Continue" onPress={handleContinue} />
+      <View style={{top:50}}>
+        <Button title="Continue" onPress={handleContinue} />
+      </View>
     </View>
   );
 };
@@ -88,7 +83,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 37,
   },
   container: {
-    flexGrow: 1,
+    // flexGrow: 1,
+    // backgroundColor:'red'
   },
   modificationsNote: {
     backgroundColor: "#fff",

@@ -19,7 +19,7 @@ export default Paragraph
 
 const styles = StyleSheet.create({
     subheading: {
-        // paddingHorizontal:20,
+        paddingHorizontal:20,
         fontSize: RFPercentage(2),
         textAlign: 'center',
         fontFamily:Fonts.Regular,

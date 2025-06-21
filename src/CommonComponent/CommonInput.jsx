@@ -4,13 +4,13 @@ import { useTheme } from "@react-navigation/native";
 import { Fonts } from "../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
-const CommonInput = ({ label, placeholder, value, onChangeText, secureTextEntry = false , handleBlur}) => {
+const CommonInput = ({ label, placeholder, value, onChangeText, secureTextEntry = false , handleBlur, editable=true}) => {
   const { colors } = useTheme();
 
   return (
     <View style={styles.inputContainer}>
       <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
-      <TextInput style={styles.input} placeholder={placeholder} placeholderTextColor="gray" value={value} onChangeText={onChangeText} secureTextEntry={secureTextEntry}  onBlur={handleBlur} />
+      <TextInput style={styles.input} placeholder={placeholder} placeholderTextColor="gray" value={value} onChangeText={onChangeText} secureTextEntry={secureTextEntry}  onBlur={handleBlur} editable={editable} />
     </View>
   );
 };

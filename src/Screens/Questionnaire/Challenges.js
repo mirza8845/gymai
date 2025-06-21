@@ -1,4 +1,10 @@
-import { StyleSheet, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Heading from "../../CommonComponent/Heading";
@@ -24,10 +30,9 @@ const challengesOption = [
 const Challenges = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const { userData, setUserData } = useContext(UserContext); // ✅ Context usage
+  const { userData, setUserData } = useContext(UserContext);
   const [selectedOption, setSelectedOption] = useState(null);
 
-  // ✅ Preload from context if exists
   useEffect(() => {
     if (userData?.fitnessChallenge) {
       setSelectedOption(userData.fitnessChallenge);
@@ -59,7 +64,6 @@ const Challenges = () => {
         fitnessChallenge: selectedOption,
       });
 
-      // ✅ Update context
       setUserData((prev) => ({
         ...prev,
         fitnessChallenge: selectedOption,
@@ -76,16 +80,33 @@ const Challenges = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Heading title="Challenges" />
-      <Paragraph title="What challenges do you face when it comes to fitness training?" />
-      <View style={{ gap: 13, paddingTop: RFPercentage(4), paddingBottom: 20 }}>
-        {challengesOption.map((opt, index) => (
-          <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
-        ))}
-      </View>
-      <Button title="Continue" onPress={handleContinue} />
-    </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={[
+          styles.container,
+          { backgroundColor: colors.background },
+        ]}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Heading title="Challenges" />
+        <Paragraph title="What challenges do you face when it comes to fitness training?" />
+        <View style={{ gap: 13, paddingTop: RFPercentage(4), paddingBottom: 20 }}>
+          {challengesOption.map((opt, index) => (
+            <Option
+              key={index}
+              label={opt}
+              selected={selectedOption === opt}
+              onPress={() => setSelectedOption(opt)}
+            />
+          ))}
+        </View>
+        <Button title="Continue" onPress={handleContinue} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -93,6 +114,7 @@ export default Challenges;
 
 const styles = StyleSheet.create({
   container: {
+    flexGrow: 1,
     paddingVertical: 80,
     paddingHorizontal: 27,
     justifyContent: "center",

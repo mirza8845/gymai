@@ -99,19 +99,20 @@ const HealthQuestionaire = () => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Heading title="Health" />
 
+
       <Paragraph title="How many hours do you sleep every night?" />
       <View style={styles.pickerWrapper}>
         <HorizontalPicker
           data={pickerData}
           renderItem={(item, index) => renderItem(item, index, sleepIndex)}
-          itemWidth={50}
+          itemWidth={80}
           onChange={(index) => setSleepIndex(index)}
           initialIndex={sleepIndex}
           snapToAlignment="center"
           // snapToInterval={100}
           decelerationRate="fast"
           contentContainerStyle={{
-            paddingHorizontal: (Dimensions.get("window").width - 100) / 2,
+            paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
           }}
         />
         <View style={styles.selectorLineRight} />
@@ -123,14 +124,14 @@ const HealthQuestionaire = () => {
         <HorizontalPicker
           data={pickerData}
           renderItem={(item, index) => renderItem(item, index, waterIndex)}
-          itemWidth={50}
+          itemWidth={80}
           onChange={(index) => setWaterIndex(index)}
           initialIndex={waterIndex}
           snapToAlignment="center"
           // snapToInterval={100}
           decelerationRate="fast"
           contentContainerStyle={{
-            paddingHorizontal: (Dimensions.get("window").width - 100) / 2,
+            paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
           }}
         />
         <View style={styles.selectorLineRight} />
@@ -142,14 +143,14 @@ const HealthQuestionaire = () => {
         <HorizontalPicker
           data={[1, 2, 3, 4, 5]}
           renderItem={(item, index) => renderItem(item, index, energyIndex)}
-          itemWidth={50}
+          itemWidth={80}
           onChange={(index) => setEnergyIndex(index)}
           initialIndex={energyIndex}
           snapToAlignment="center"
           // snapToInterval={100}
           decelerationRate="fast"
           contentContainerStyle={{
-            paddingHorizontal: (Dimensions.get("window").width - 100) / 2,
+            paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
           }}
         />
         <View style={styles.selectorLineRight} />
@@ -171,8 +172,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   pickerItem: {
-    width: 100,
-    height: 60,
+    width: 80,
+    height: 70,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#4E4E4E",
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Bold,
   },
   selectedPickerItemText: {
-    fontSize: 48,
+    fontSize: 40,
     color: "white",
     fontFamily: Fonts.Bold,
   },

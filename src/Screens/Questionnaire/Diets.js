@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import Heading from '../../CommonComponent/Heading';
@@ -18,17 +25,15 @@ const dietsOption = [
   'High in fiber',
   'Balanced with a range of foods providing macro',
   'High in Ultra-processed foods',
-  'Other'
+  'Other',
 ];
 
 const Diets = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const { userData, setUserData } = useContext(UserContext); // ✅ UserContext
-
+  const { userData, setUserData } = useContext(UserContext);
   const [selectedOption, setSelectedOption] = useState(null);
 
-  // ✅ Load saved diet from context
   useEffect(() => {
     if (userData?.currentDiet) setSelectedOption(userData.currentDiet);
   }, [userData]);
@@ -58,7 +63,6 @@ const Diets = () => {
         currentDiet: selectedOption,
       });
 
-      // ✅ Update UserContext
       setUserData((prev) => ({
         ...prev,
         currentDiet: selectedOption,
@@ -75,21 +79,29 @@ const Diets = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Heading title="Diet" />
-      <Paragraph title="How would you describe your current diet?" />
-      <View style={{ paddingTop: RFPercentage(5), paddingBottom: 30, gap: 15 }}>
-        {dietsOption.map((opt, index) => (
-          <Option
-            key={index}
-            label={opt}
-            selected={selectedOption === opt}
-            onPress={() => setSelectedOption(opt)}
-          />
-        ))}
-      </View>
-      <Button title="Continue" onPress={handleContinue} />
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={{ flex: 1 }}
+    >
+      <ScrollView
+        contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Heading title="Diet" />
+        <Paragraph title="How would you describe your current diet?" />
+        <View style={{ paddingTop: RFPercentage(5), paddingBottom: 30, gap: 15 }}>
+          {dietsOption.map((opt, index) => (
+            <Option
+              key={index}
+              label={opt}
+              selected={selectedOption === opt}
+              onPress={() => setSelectedOption(opt)}
+            />
+          ))}
+        </View>
+        <Button title="Continue" onPress={handleContinue} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -97,6 +109,7 @@ export default Diets;
 
 const styles = StyleSheet.create({
   container: {
+    flexGrow: 1,
     paddingVertical: 80,
     paddingHorizontal: 24,
     justifyContent: 'center',

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import React, { useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
@@ -17,7 +17,7 @@ const Login = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
-  let validationSchema = yup.object({
+  const validationSchema = yup.object({
     email: yup.string().email("Invalid email").required("Email is required"),
     password: yup.string().required("Password is required"),
   });
@@ -25,7 +25,7 @@ const Login = () => {
   const handleSignIn = async (values) => {
     setLoading(true);
     try {
-      const userCredential = await auth().signInWithEmailAndPassword(values.email, values.password);
+      await auth().signInWithEmailAndPassword(values.email, values.password);
       Toast.show({
         type: "success",
         text1: "Sign In",
@@ -45,54 +45,46 @@ const Login = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.innerContainer}>
-        <View style={{ marginTop: RFPercentage(15) }}>
-          <Heading title="Welcome To GymAi" />
-        </View>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }} keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 50}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+          <View style={styles.innerContainer}>
+            <View style={{ marginTop: RFPercentage(15) }}>
+              <Heading title="Welcome To GymAi" />
+            </View>
 
-        <Formik
-          initialValues={{
-            email: "",
-            password: "",
-          }}
-          validationSchema={validationSchema}
-          onSubmit={(values) => handleSignIn(values)}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-            <>
-              <View style={styles.inputView}>
-                <CommonInput label="Email" placeholder="Enter email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
-                {touched.email && errors.email && (
-                  <>
-                    <View style={{}}>
-                      <Text style={{ color: "red", fontFamily: Fonts.Regular, fontSize:RFPercentage(1.6) }}>{errors.email}</Text>
+            <Formik initialValues={{ email: "", password: "" }} validationSchema={validationSchema} onSubmit={handleSignIn}>
+              {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                <>
+                  <View style={styles.inputView}>
+                    <CommonInput label="Email" placeholder="Enter email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
+                    {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+                    <CommonInput
+                      label="Password"
+                      placeholder="Enter password"
+                      secureTextEntry={true}
+                      value={values.password}
+                      onChangeText={handleChange("password")}
+                      handleBlur={handleBlur("password")}
+                    />
+                    {touched.password && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+                    <TouchableOpacity style={styles.forgotWrapper}>
+                      <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                    <View style={{ marginTop: RFPercentage(10) }}>
+                      <Button title="Log In" onPress={handleSubmit} loader={loading} disbaled={loading} />
                     </View>
-                  </>
-                )}
-                <CommonInput label="Password" placeholder="Enter password" secureTextEntry={true} value={values.password} onChangeText={handleChange("password")} handleBlur={handleBlur("password")} />
-                {touched.password && errors.password && (
-                  <>
-                    <View style={{}}>
-                      <Text style={{ color: "red", fontFamily: Fonts.Regular, fontSize:RFPercentage(1.6) }}>{errors.password}</Text>
-                    </View>
-                  </>
-                )}
-                <TouchableOpacity style={styles.forgotWrapper}>
-                  <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>Forgot Password?</Text>
-                </TouchableOpacity>
-                <View style={{ marginTop: RFPercentage(10) }}>
-                  <Button title="Log In" onPress={handleSubmit} loader={loading} disbaled={loading} />
-                </View>
-              </View>
-            </>
-          )}
-        </Formik>
-      </View>
-      <TouchableOpacity onPress={() => navigation.navigate("signup")}>
-        <Text style={[styles.signupBtn, { color: colors.text }]}>Don’t have an account? Sign Up</Text>
-      </TouchableOpacity>
-    </View>
+                  </View>
+                </>
+              )}
+            </Formik>
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate("signup")}>
+            <Text style={[styles.signupBtn, { color: colors.text }]}>Don’t have an account? Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -131,7 +123,7 @@ const styles = StyleSheet.create({
   },
   forgotWrapper: {
     alignItems: "flex-end",
-    marginTop:6
+    marginTop: 6,
     // marginBottom: 20,
   },
   forgotAndSignUpText: {
@@ -161,9 +153,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Regular,
     marginTop: RFPercentage(2),
   },
-  selectedText: {
-    fontSize: 45,
-    marginTop: 15,
-    fontFamily: Fonts.Medium,
+  errorText: {
+    fontSize: 13,
+    top: 3,
+    fontFamily: Fonts.Regular,
+    color:'red'
   },
 });
