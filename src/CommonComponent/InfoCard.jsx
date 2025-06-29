@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import { Fonts } from '../constants/theme';
 
 const InfoCard = ({ title, subtitle, imageSource, customWrapperStyle, customCardStyle }) => {
   return (
@@ -33,16 +34,18 @@ const styles = StyleSheet.create({
   },
   infoCardTitle: {
     fontSize: 20,
-    fontWeight: '500',
     color: 'black',
+    fontFamily:Fonts.SemiBold
   },
   infoCardSubtitle: {
     fontSize: 14,
     color: 'black',
+        fontFamily:Fonts.Regular
+
   },
   infoCardImage: {
     width: 127,
-    height: 110,
+    height: 122,
    borderRadius:20,
     position: 'absolute', 
     right: 0,

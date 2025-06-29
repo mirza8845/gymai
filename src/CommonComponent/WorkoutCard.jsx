@@ -1,6 +1,8 @@
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { Fonts } from '../constants/theme';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 const WorkoutCard = ({ title, description, time, button, onPress, buttons = [], onCardPress }) => {
   return (
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
   workoutCardContainer: {
     marginTop: 10,
     paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingHorizontal: RFPercentage(1.7),
     backgroundColor: 'white',
     borderRadius: 21,
     shadowColor: '#000',
@@ -76,13 +78,15 @@ const styles = StyleSheet.create({
   },
   workoutTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    // fontWeight: '600',
+    fontFamily:Fonts.SemiBold,
     color: 'black',
   },
   workoutDescription: {
     color: 'black',
     fontSize: 14,
     marginTop: 4,
+    fontFamily:Fonts.Regular,
   },
   rightContent: {
     alignItems: 'flex-end',
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   startWorkoutButton: {
-    width: 110,
+    width: RFPercentage(14),
     height: 40,
     borderRadius: 20,
     backgroundColor: '#D9D9D9',
@@ -111,9 +115,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   startWorkoutButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#000',
-    fontWeight: '500',
+    fontFamily:Fonts.SemiBold,
+    top:2
   },
   multiButtonContainer: {
     justifyContent: 'center',

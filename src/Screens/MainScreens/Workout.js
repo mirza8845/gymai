@@ -1,14 +1,15 @@
-import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native'
-import React from 'react'
-import WorkoutCard from '../../CommonComponent/WorkoutCard'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useTheme } from '@react-navigation/native'
-import TipCard from './TipCard'
+import { View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
+import React from "react";
+import WorkoutCard from "../../CommonComponent/WorkoutCard";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "@react-navigation/native";
+import TipCard from "./TipCard";
+import { Fonts } from "../../constants/theme";
 
 const Workout = () => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
   return (
-    <SafeAreaView >
+    <SafeAreaView>
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.header}>Track My Progress</Text>
@@ -24,44 +25,29 @@ const Workout = () => {
             </Pressable>
           </View>
 
-          <WorkoutCard
-            title="Push"
-            description="Bench press, shoulder press, l..."
-            button="Start now"
-          />
-          <WorkoutCard
-            title="Pull"
-            description="Pullups, face pull, Seated Row..."
-            button="Start now"
-          />
-          <WorkoutCard
-            title="Legs"
-            description="Barbell squat, Seated leg curl..."
-            button="Start now"
-          />
+          <WorkoutCard title="Push" description="Bench press, shoulder press, l..." button="Start now" />
+          <WorkoutCard title="Pull" description="Pullups, face pull, Seated Row..." button="Start now" />
+          <WorkoutCard title="Legs" description="Barbell squat, Seated leg curl..." button="Start now" />
 
           <Text style={[styles.tipsTitle, { color: colors.text }]}>Tips & Tricks</Text>
 
-          <TipCard color={'#DDFF94'}>
+          <TipCard color={"#DDFF94"}>
             Progressive Overload:{"\n\n"}
             Increase weight, reps, or form intensity over time. This should be the aim of every session as it’s essential for building strength and muscle!
           </TipCard>
 
-          <TipCard color={'#FF8A8A'}>
-            Rest Times:{"\n\n"}Rest long enough to push your hardest on the next set—typically at least 2–3 minutes. If you're still fatigued, rest a bit longer!
-          </TipCard>
+          <TipCard color={"#FF8A8A"}>Rest Times:{"\n\n"}Rest long enough to push your hardest on the next set—typically at least 2–3 minutes. If you're still fatigued, rest a bit longer!</TipCard>
 
-          <TipCard color={'#A6ECFF'}>
+          <TipCard color={"#A6ECFF"}>
             Volume:{"\n\n"}Optimal weekly training volume per muscle is 4–10 sets when training close to failure. More than this adds unnecessary fatigue without extra benefit.
           </TipCard>
-
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Workout
+export default Workout;
 
 const styles = StyleSheet.create({
   container: {
@@ -69,36 +55,39 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   header: {
-    fontSize: 30,
-    backgroundColor: 'white',
+    fontSize: 22,
+    backgroundColor: "white",
     margin: 10,
     padding: 10,
-    textAlign: 'center',
+    textAlign: "center",
     borderRadius: 30,
-    fontWeight: 'bold',
+    fontFamily: Fonts.SemiBold,
   },
   startWorkoutButton: {
     fontSize: 20,
     letterSpacing: 2,
     paddingBottom: 30,
     paddingTop: 10,
+    fontFamily: Fonts.SemiBold,
   },
   routineHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   routineTitle: {
     fontSize: 17,
+    fontFamily: Fonts.Medium,
   },
   addRoutine: {
     fontSize: 17,
+    fontFamily: Fonts.Medium,
   },
   tipsTitle: {
     fontSize: 25,
     paddingTop: 30,
     paddingBottom: 10,
-    fontWeight: 'bold',
+    fontFamily: Fonts.SemiBold,
   },
   tipCard: {
     fontSize: 17,
@@ -106,14 +95,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     letterSpacing: 1,
     marginVertical: 10,
+    fontFamily:Fonts.SemiBold
   },
   tipGreen: {
-    backgroundColor: '#DDFF94',
+    backgroundColor: "#DDFF94",
   },
   tipRed: {
-    backgroundColor: '#FF8A8A',
+    backgroundColor: "#FF8A8A",
   },
   tipBlue: {
-    backgroundColor: '#A6ECFF',
+    backgroundColor: "#A6ECFF",
   },
-})
+});

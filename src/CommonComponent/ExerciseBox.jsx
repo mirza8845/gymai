@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Pressable, Image, StyleSheet } from 'react-native'
 import { Table, Row, Rows, Col, TableWrapper } from 'react-native-table-component'
+import { Fonts } from '../constants/theme'
 
 const ExerciseBox = ({
   title,
@@ -51,7 +52,7 @@ const ExerciseBox = ({
         </View>
 
         <View style={styles.imageContainer}>
-          <Image source={image} style={styles.exerciseImage} />
+          <Image source={image} style={styles.exerciseImage} resizeMode='cover'/>
           <Text style={styles.howToText}>How to perform</Text>
         </View>
       </View>
@@ -76,10 +77,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontFamily:Fonts.SemiBold
   },
   removeText: {
     color: '#FF0000',
+    fontFamily:Fonts.Medium
   },
   content: {
     flexDirection: 'row',
@@ -101,13 +104,16 @@ const styles = StyleSheet.create({
     height: 28,
   },
   tableText: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontFamily:Fonts.SemiBold
   },
   addSetButton: {
     paddingTop: 10,
   },
   addSetText: {
     fontSize: 14,
+    fontFamily:Fonts.SemiBold,
+    color :'#676767'
   },
   imageContainer: {
     flex: 1,
@@ -117,8 +123,8 @@ const styles = StyleSheet.create({
   exerciseImage: {
     width: 110,
     height: 100,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
   howToText: {
     borderBottomLeftRadius: 15,
@@ -128,5 +134,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderLeftWidth: 2,
     borderRightWidth: 2,
+    fontSize:10,
+    fontFamily:Fonts.Medium,
+    width:110,
+    textAlign:'center'
   },
 })

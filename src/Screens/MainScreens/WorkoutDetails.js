@@ -1,12 +1,15 @@
-import { FlatList, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useTheme } from '@react-navigation/native'
+import { useNavigation, useTheme } from '@react-navigation/native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import BenchPress from '../../assets/images/benchPress.png'
+import { RFPercentage } from 'react-native-responsive-fontsize'
+import { Fonts } from '../../constants/theme'
 
 const WorkoutDetails = () => {
   const { colors } = useTheme()
+  const navigation =useNavigation()
   
   const properForm = ['Setup: Lie flat on the bench with feet planted firmly on the ground.', 
                       'Grip: Hold the bar just wider than shoulder-width, wrists stacked over elbows.', 
@@ -28,12 +31,15 @@ const WorkoutDetails = () => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <ScrollView style={styles.scrollContainer}>
+        <TouchableOpacity onPress={()=> navigation.goBack()} style={{ position: "absolute", top:15 }}>
+          <AntDesign name="arrowleft" size={RFPercentage(4)} color={colors.text} />
+        </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>Bench Press</Text>
         <View style={styles.dateContainer}>
           <AntDesign name="clockcircle" size={17} style={{ color: colors.text }} />
-          <Text style={[styles.dateText, { color: colors.text }]}>Published on September 15</Text>
+          <Text style={[styles.dateText]}>Published on September 15</Text>
         </View>
-        <Image source={BenchPress} style={styles.image} />
+        <Image source={BenchPress} style={styles.image} resizeMode='contain' />
         
         <Text style={[styles.sectionTitle, { color: colors.text }]}>🔹 Proper Form </Text>
         <FlatList
@@ -73,15 +79,22 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
-    marginBottom: 10,
+    // marginBottom: 10,
+    top:10,
+    left:40,
+    fontFamily:Fonts.SemiBold
   },
   dateContainer: {
     flexDirection: 'row',
     gap: 6,
-    marginBottom: 10,
+    // marginBottom: 10,
+    marginTop:10,
+    left:40
   },
   dateText: {
-    fontSize: 16,
+    fontSize: 14,
+    color:'grey',
+    fontFamily:Fonts.Regular
   },
   image: {
     height: 200,
@@ -90,12 +103,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
+   marginBottom: 10,
+   fontFamily:Fonts.SemiBold
   },
   text: {
-    fontSize: 18,
+    fontSize: 17,
     marginBottom: 10,
+    fontFamily:Fonts.Regular
   },
   spacing: {
     marginVertical: 20,

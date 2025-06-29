@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { Dropdown } from 'react-native-element-dropdown';
+import { Fonts } from '../constants/theme';
 
 
 const CommonDropdown = ({text}) => {
@@ -22,11 +23,13 @@ export default CommonDropdown
 const styles = StyleSheet.create({
   Dropdown:{
     paddingVertical:30,
-    paddingHorizontal:20
+    paddingHorizontal:20,
+    fontFamily:Fonts.Regular
   },
   placeholderStyle:{
     color:'white',
     fontSize:18,
+    fontFamily:Fonts.Medium
     
   },
   iconStyle:{

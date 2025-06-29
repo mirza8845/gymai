@@ -6,6 +6,7 @@ import Img from "../../assets/images/gymGirl.png";
 import Icon from 'react-native-vector-icons/Feather';
 import SendIcon from '../../assets/svg/send.svg';
 import InfoCard from '../../CommonComponent/InfoCard';
+import { Fonts } from '../../constants/theme';
 
 const ChatScreen = () => {
   return (
@@ -94,8 +95,8 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: 'white',
     fontSize: 20,
-    fontWeight: '500',
     paddingTop: 10,
+    fontFamily:Fonts.SemiBold
   },
   statusWrapper: {
     flexDirection: 'row',

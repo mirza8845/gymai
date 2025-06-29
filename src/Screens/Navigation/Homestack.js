@@ -2,6 +2,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import tabRoutes from './TabRoutes';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 const Tab = createBottomTabNavigator();
 
@@ -11,7 +12,7 @@ const Homestack = () => {
       screenOptions={{
         tabBarActiveTintColor: 'yellow',
         tabBarInactiveTintColor: 'white',
-        tabBarStyle: { backgroundColor: 'black' },
+        tabBarStyle: { backgroundColor: 'black' , paddingTop:RFPercentage(1), height:RFPercentage(8)},
         headerShown: false,
       }}
     >

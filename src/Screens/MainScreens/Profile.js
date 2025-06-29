@@ -1,27 +1,31 @@
-import { View, Text, ScrollView, Image, StyleSheet, Pressable } from 'react-native';
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import profileImg from '../../assets/images/womanpic.png';
-import Heading from '../../CommonComponent/Heading';
-import Paragraph from '../../CommonComponent/Paragraph';
-import Profilesvg from '../../assets/svg/anotherProfile.svg';
-import Favourite from '../../assets/svg/bigstar.svg';
-import Retake from '../../assets/svg/retake.svg';
-import Setting from '../../assets/svg/setting.svg';
-import Help from '../../assets/svg/help.svg';
-import Logout from '../../assets/svg/logout.svg';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, ScrollView, Image, StyleSheet, Pressable } from "react-native";
+import React, { useContext } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import profileImg from "../../assets/images/womanpic.png";
+import Heading from "../../CommonComponent/Heading";
+import Paragraph from "../../CommonComponent/Paragraph";
+import Profilesvg from "../../assets/svg/anotherProfile.svg";
+import Favourite from "../../assets/svg/bigstar.svg";
+import Retake from "../../assets/svg/retake.svg";
+import Setting from "../../assets/svg/setting.svg";
+import Help from "../../assets/svg/help.svg";
+import Logout from "../../assets/svg/logout.svg";
+import { useNavigation } from "@react-navigation/native";
+import { UserContext } from "../../utils/userContext";
+import { Fonts } from "../../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const Profile = () => {
   const navigation = useNavigation();
+  const { userData } = useContext(UserContext);
 
   const profileOptions = [
-    { icon: Profilesvg, title: 'Profile', navigateTo: 'EditProfile' },
-    { icon: Favourite, title: 'Favourite' },
-    { icon: Retake, title: 'Retake Questionnaire' },
-    { icon: Setting, title: 'Setting' },
-    { icon: Help, title: 'Help' },
-    { icon: Logout, title: 'Logout' },
+    { icon: Profilesvg, title: "Profile", navigateTo: "EditProfile" },
+    { icon: Favourite, title: "Favourite" },
+    { icon: Help, title: "Retake Questionnaire" },
+    { icon: Setting, title: "Setting" },
+    { icon: Help, title: "Help" },
+    { icon: Logout, title: "Logout" },
   ];
 
   return (
@@ -29,24 +33,35 @@ const Profile = () => {
       <ScrollView>
         <View style={styles.profileContainer}>
           <Image source={profileImg} style={styles.profileImage} />
-          <Heading title="Madison Smith" />
-          <Paragraph title="madisons@example.com" />
+          <Heading title={userData?.name} />
+          <Text style={{ color: "white", fontFamily: Fonts.Medium }}>{userData?.email}</Text>
           <Text style={styles.birthdayText}>
-            <Text style={styles.birthdayLabel}>Birthday: </Text>
-            <Text style={styles.birthdayValue}>April 1st</Text>
+            <Text style={styles.birthdayLabel}>Nickname: </Text>
+            <Text style={styles.birthdayValue}>{userData?.nickname}</Text>
           </Text>
 
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>75 Kg{'\n'}</Text>
+              <Text style={styles.statValue}>
+                {userData?.weight}
+                {"\n"}
+              </Text>
               <Text style={styles.statLabel}>Weight</Text>
             </View>
+            <View style={{width:2, height:50, backgroundColor:'yellow', top:5}}></View>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>28{'\n'}</Text>
+              <Text style={styles.statValue}>
+                {userData?.age}
+                {"\n"}
+              </Text>
               <Text style={styles.statLabel}>Years Old</Text>
             </View>
+             <View style={{width:2, height:50, backgroundColor:'yellow', top:5}}></View>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>1.65 CM{'\n'}</Text>
+              <Text style={styles.statValue}>
+                {userData?.height}
+                {"\n"}
+              </Text>
               <Text style={styles.statLabel}>Height</Text>
             </View>
           </View>
@@ -54,12 +69,8 @@ const Profile = () => {
 
         <View style={styles.optionsContainer}>
           {profileOptions.map((item, index) => (
-            <Pressable
-              key={index}
-              style={styles.optionItem}
-              onPress={() => item.navigateTo && navigation.navigate(item.navigateTo)}
-            >
-              <item.icon />
+            <Pressable key={index} style={styles.optionItem} onPress={() => item.navigateTo && navigation.navigate(item.navigateTo)}>
+              <item.icon style={{width:20, height:20}} />
               <Text style={styles.optionText}>{item.title}</Text>
             </Pressable>
           ))}
@@ -78,8 +89,8 @@ const styles = StyleSheet.create({
   profileContainer: {
     paddingHorizontal: 20,
     paddingVertical: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   profileImage: {
     width: 150,
@@ -88,48 +99,61 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   birthdayText: {
-    flexDirection: 'row',
-    marginTop: 10,
+    flexDirection: "row",
+    // marginTop: 10,
   },
   birthdayLabel: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontFamily: Fonts.SemiBold,
   },
   birthdayValue: {
-    color: 'white',
-    fontWeight: '200',
+    color: "white",
+    fontFamily: Fonts.Regular,
   },
   statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 52,
-    paddingVertical: 40,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 30,
+    // paddingVertical: 40,
+    marginTop: 30,
   },
   statItem: {
-    alignItems: 'center',
-    height:23
+    alignItems: "center",
+    height: RFPercentage(4),
   },
   statValue: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 18,
+    color: "white",
+    fontSize: 15,
+    fontFamily: Fonts.SemiBold,
+    top: 6,
   },
   statLabel: {
-    color: 'white',
-    fontWeight: '200',
-    fontSize: 18,
+    color: "grey",
+    // fontWeight: "200",
+    fontSize: 16,
+    fontFamily: Fonts.Regular,
   },
   optionsContainer: {
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
+    marginTop: 20,
+    paddingBottom:20
   },
   optionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 30,
-    paddingBottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    width:'100%',
+    // backgroundColor:'red',
+    marginTop:20,
+    borderWidth: 1,
+    borderColor: "rgba(135, 134, 134, 0.3)",
+    borderRadius:10,
+    height:50,
+    paddingHorizontal:10
   },
   optionText: {
-    color: 'white',
-    fontSize: 18,
+    color: "white",
+    fontSize: 16,
+    fontFamily:Fonts.Medium,
+    left:10
   },
 });

@@ -4,6 +4,7 @@ import { useNavigation, useTheme } from '@react-navigation/native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import WorkoutCard from '../../CommonComponent/WorkoutCard';
 import CommonDropdown from '../../CommonComponent/CommonDropdown';
+import { Fonts } from '../../constants/theme';
 
 const Myplan = () => {
   const { colors } = useTheme();
@@ -70,8 +71,9 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 17,
-    fontWeight: '500',
+    // fontWeight: '500',
     marginBottom: 15,
+    fontFamily:Fonts.SemiBold
   },
   dropdownSection: {
     paddingTop: 20,

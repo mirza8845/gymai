@@ -9,6 +9,7 @@ import gymPic from '../../assets/images/womengyms.png';
 import Dot from '../../assets/svg/dot.svg';
 import Fire from '../../assets/svg/fire.svg';
 import Star from '../../assets/svg/star.svg';
+import { Fonts } from '../../constants/theme';
 
 const Health = () => {
   const [selectedCategory, setSelectedCategory] = useState('Recovery');
@@ -109,8 +110,8 @@ const styles = StyleSheet.create({
   },
   categoryButtonText: {
     fontSize: 15,
-    fontWeight: '500',
     textAlign: 'center',
+    fontFamily:Fonts.SemiBold
   },
   activeButton: {
     backgroundColor: 'white',
@@ -121,16 +122,17 @@ const styles = StyleSheet.create({
     color: 'white',
     lineHeight: 25,
     fontSize: 15,
-    fontWeight: '200',
     letterSpacing: 1,
     paddingHorizontal: 20,
     paddingVertical: 40,
+    fontFamily:Fonts.Regular
   },
   recipeSectionTitle: {
     color: 'white',
     fontSize: 20,
     paddingTop: 30,
     paddingBottom: 15,
+    fontFamily:Fonts.SemiBold
   },
 
   // Gym Pic and Recipe Overlay
@@ -147,11 +149,11 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: '#FFDD03',
     fontSize: 17,
-    fontWeight: '700',
     paddingHorizontal: 10,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 20,
+    fontFamily:Fonts.SemiBold
   },
   recipeDetailsContainer: {
     position: 'absolute',
@@ -163,17 +165,18 @@ const styles = StyleSheet.create({
     height: 40,
     letterSpacing: 1,
     paddingHorizontal: 20,
+    fontFamily:Fonts.SemiBold
   },
   recipeDetailsText: {
     color: 'white',
-    fontSize: 17,
-    fontWeight: '200',
+    fontSize: 14,
+    fontFamily:Fonts.Regular
   },
   recipeDetailsSubText: {
     color: 'white',
-    fontSize: 11,
-    fontWeight: '200',
+    fontSize: 10,
     letterSpacing: 1,
+    fontFamily:Fonts.Regular
   },
   fireIcon: {
     paddingHorizontal: 10,

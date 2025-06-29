@@ -1,13 +1,13 @@
 import React, { useRef, useState } from "react";
 import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import workout from "../../assets/images/workout.png";
-import appleicon from "../../assets/images/appleVector.png";
-import personsicon from "../../assets/images/personsVector.png";
+import workout from "../../assets/images/WorkOut.png";
+import appleicon from "../../assets/images/Nutrition.png";
+import personsicon from "../../assets/images/Community.png";
 import stepActive from "../../assets/images/stepperactive.png";
 import stepInactive from "../../assets/images/stepperinactive.png";
-import img2 from "../../assets/images/img2.jpg";
-import img3 from "../../assets/images/img3.jpg";
-import img1 from "../../assets/images/img1.jpg";
+import img2 from "../../assets/images/3rd.png";
+import img3 from "../../assets/images/4th.png";
+import img1 from "../../assets/images/2nd.png";
 import { useNavigation } from "@react-navigation/native";
 import { Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
@@ -100,40 +100,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   logo: {
-    width: 30,
+    width: 50,
     height: 50,
   },
   description: {
     color: "white",
-    fontSize: 18,
+    fontSize: 20,
     textAlign: "center",
-    marginBottom: 10,
     width: "80%",
     fontFamily: Fonts.Bold,
+    marginTop:10
   },
   stepperline: {
     flexDirection: "row",
-    marginBottom: 30,
     gap: 3,
+    marginTop:10
   },
   stepIcon: {
     width: 18,
-    height: 3,
+    height: 5,
+    borderRadius:20
   },
   button: {
-    backgroundColor: "rgba(196, 184, 184, 0.15)",
+    backgroundColor: "rgba(214, 211, 211, 0.15)",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 30,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.25)",
+    borderColor: "rgba(255, 255, 255, 0.85)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 20,
-    width: RFPercentage(20),
+    width: RFPercentage(22),
     height: RFPercentage(6),
+    marginTop:40
   },
   buttonText: {
     color: "#fff",
