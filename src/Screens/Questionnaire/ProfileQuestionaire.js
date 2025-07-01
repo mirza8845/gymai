@@ -64,7 +64,7 @@ const ProfileQuestionaire = () => {
         text2: "Your profile has been saved successfully.",
       });
 
-      navigation.navigate("Tabs");
+      navigation.navigate("WorkoutGenerating");
     } catch (error) {
       Toast.show({
         type: "error",

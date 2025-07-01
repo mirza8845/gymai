@@ -1,9 +1,8 @@
 import { View, Text, ScrollView, Pressable, StyleSheet, Image } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 import TipCard from './TipCard';
-import Food1 from '../../assets/images/dietFood.png';
-import Food2 from '../../assets/images/dietFoodSamon.png';
 import InfoCard from '../../CommonComponent/InfoCard';
 import gymPic from '../../assets/images/womengyms.png';
 import Dot from '../../assets/svg/dot.svg';
@@ -13,9 +12,14 @@ import { Fonts } from '../../constants/theme';
 
 const Health = () => {
   const [selectedCategory, setSelectedCategory] = useState('Recovery');
+  const workoutPlan = useSelector((state) => state.workout.workoutPlan);
+  const nutrition = workoutPlan?.nutrition;
+  const recovery = workoutPlan?.recovery;
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Category Toggle */}
         <View style={styles.categoryButtonRow}>
           <Pressable
             style={[styles.categoryButton, selectedCategory === 'Recovery' && styles.activeButton]}
@@ -31,64 +35,100 @@ const Health = () => {
           </Pressable>
         </View>
 
-        {selectedCategory === 'Recovery' && (
+        {/* ───────────── RECOVERY SECTION ───────────── */}
+        {selectedCategory === 'Recovery' && recovery && (
           <>
             <TipCard color="#DDFF94">
               Sleep:{'\n\n'}
-              Aim for 7–9 hours of high-quality sleep each night. Maintain a consistent sleep schedule, avoid screens and blue light 30–60 mins before bedtime, and prioritize deep REM sleep to enhance muscle repair, mental clarity, and recovery.
+              Target: {recovery.sleep?.target_hours} hrs/night{'\n'}
+              {recovery.sleep?.strategies?.map((s) => `• ${s}`).join('\n')}
             </TipCard>
 
             <TipCard color="#FF8A8A">
               Active Recovery:{'\n\n'}
-              Incorporate light, low-intensity activities like stretching, yoga, gentle walking, or mobility exercises on rest days. These improve blood flow, reduce muscle stiffness, and help speed up your body's recovery process.
+              {recovery.active_recovery?.map((a) => `• ${a}`).join('\n')}
             </TipCard>
 
             <TipCard color="#A6ECFF">
-              Water:{'\n\n'}
-              Aim for around 3 liters of water daily to keep hydrated. Good hydration boosts energy, improves focus, supports muscular function, and accelerates overall recovery.
+              Water Intake:{'\n\n'}
+              Target: {recovery.water_intake?.target_liters} L/day{'\n'}
+              {recovery.water_intake?.tips?.map((tip) => `• ${tip}`).join('\n')}
             </TipCard>
           </>
         )}
 
-        {selectedCategory === 'Nutrition' && (
+        {/* ───────────── NUTRITION SECTION ───────────── */}
+        {selectedCategory === 'Nutrition' && nutrition && (
           <View>
+            {/* Macro Summary */}
             <Text style={styles.nutritionSummaryText}>
-              Calorie goal: 2100{'\n'}Macronutrients{'\n'}Protein Goal: 120{'\n'}Carb Goal: 260{'\n'}Fat goal: 60
+              Calorie Goal: {nutrition.calorie_goal}{'\n'}
+              Macronutrients{'\n'}
+              Protein: {nutrition.macros_g?.protein} g{'\n'}
+              Carbs: {nutrition.macros_g?.carbs} g{'\n'}
+              Fats: {nutrition.macros_g?.fats} g
             </Text>
+
+            {/* Micronutrient Focus */}
             <TipCard color="#A6ECFF">
-              Micronutrients:{'\n\n'}
-              Micronutrients (vitamins & minerals) are essential for energy, immunity, recovery, and overall health. Include a variety of:{'\n'}
-              • Fruits & Vegetables: Vitamins A, C, and folate for immunity and recovery.{'\n'}
-              • Whole Grains: B vitamins, iron, and magnesium for energy.{'\n'}
-              • Dairy & Leafy Greens: Calcium and Vitamin D for bone strength.{'\n'}
-              • Nuts, Seeds & Lean Meats: Iron, zinc, and selenium for metabolism and hormonal balance.{'\n'}
-              Aim for dietary variety to cover all essential nutrients.
+              Micronutrient Focus:{'\n\n'}
+              {nutrition.micronutrient_focus?.map((item) => `• ${item}`).join('\n')}
             </TipCard>
-            <View>
-              <Text style={styles.recipeSectionTitle}>Recipes for you</Text>
-              <InfoCard title="Shoulder Press Form" subtitle="Tap to learn more" imageSource={Food1} />
-              <InfoCard title="Shoulder Press Form" subtitle="Tap to learn more" imageSource={Food2} />
-              <View style={styles.gymPicContainer}>
-                <Image source={gymPic} style={styles.gymPic} />
-                <Text style={styles.recipeOfTheDayText}>Recipe of the day</Text>
-                <View style={styles.recipeDetailsContainer}>
-                  <Text style={styles.recipeDetailsText}>Carrot and orange smoothie</Text>
+
+            {/* Recipe of the Day */}
+            <Text style={styles.recipeSectionTitle}>Recipe of the Day</Text>
+
+            <View style={styles.gymPicContainer}>
+              <Image source={gymPic} style={styles.gymPic} />
+              <Text style={styles.recipeOfTheDayText}>Recipe of the day</Text>
+              <View style={styles.recipeDetailsContainer}>
+                <Text style={styles.recipeDetailsText}>{nutrition.recipe_of_the_day?.title}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                  <Dot />
                   <Text style={styles.recipeDetailsSubText}>
-                    <Dot />
-                    10 Minutes
-                    <Fire style={styles.fireIcon} />
-                    70 Cal
+                    {nutrition.recipe_of_the_day?.meal_type} • ~15 mins
                   </Text>
-                  <Star style={styles.starIcon} />
+                  <Fire style={styles.fireIcon} />
+                  <Text style={styles.recipeDetailsSubText}>
+                    {nutrition.recipe_of_the_day?.macros?.calories || 0} Cal
+                  </Text>
                 </View>
+                <Star style={styles.starIcon} />
               </View>
             </View>
+
+            {/* Ingredients + Instructions */}
+            <TipCard color="#DDFF94">
+              Ingredients:{'\n\n'}
+              {nutrition.recipe_of_the_day?.ingredients?.map((ing) => `• ${ing}`).join('\n')}
+              {'\n\n'}Instructions:{'\n\n'}
+              {nutrition.recipe_of_the_day?.instructions?.map((step, i) => `${i + 1}. ${step}`).join('\n')}
+            </TipCard>
+
+            {/* Extra Recipes (if any) */}
+            {nutrition.recipes?.length > 0 && (
+              <>
+                <Text style={styles.recipeSectionTitle}>More Ideas</Text>
+                {nutrition.recipes.map((rec, idx) => (
+                  <InfoCard
+                    key={idx}
+                    title={rec.title}
+                    subtitle={`Meal: ${rec.meal_type}`}
+                    imageSource={gymPic}
+                  />
+                ))}
+              </>
+            )}
           </View>
         )}
       </ScrollView>
     </SafeAreaView>
   );
 };
+
+export default Health;
+
+// ───────────────────── STYLES ─────────────────────
 
 const styles = StyleSheet.create({
   container: {
@@ -111,13 +151,11 @@ const styles = StyleSheet.create({
   categoryButtonText: {
     fontSize: 15,
     textAlign: 'center',
-    fontFamily:Fonts.SemiBold
+    fontFamily: Fonts.SemiBold,
   },
   activeButton: {
     backgroundColor: 'white',
   },
-
-  // Recovery/Nutrition Section
   nutritionSummaryText: {
     color: 'white',
     lineHeight: 25,
@@ -125,17 +163,15 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     paddingHorizontal: 20,
     paddingVertical: 40,
-    fontFamily:Fonts.Regular
+    fontFamily: Fonts.Regular,
   },
   recipeSectionTitle: {
     color: 'white',
     fontSize: 20,
     paddingTop: 30,
     paddingBottom: 15,
-    fontFamily:Fonts.SemiBold
+    fontFamily: Fonts.SemiBold,
   },
-
-  // Gym Pic and Recipe Overlay
   gymPicContainer: {
     position: 'relative',
   },
@@ -153,7 +189,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 20,
-    fontFamily:Fonts.SemiBold
+    fontFamily: Fonts.SemiBold,
   },
   recipeDetailsContainer: {
     position: 'absolute',
@@ -162,21 +198,20 @@ const styles = StyleSheet.create({
     width: '100%',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    height: 40,
-    letterSpacing: 1,
+    height: 50,
+    justifyContent: 'center',
     paddingHorizontal: 20,
-    fontFamily:Fonts.SemiBold
   },
   recipeDetailsText: {
     color: 'white',
     fontSize: 14,
-    fontFamily:Fonts.Regular
+    fontFamily: Fonts.Regular,
   },
   recipeDetailsSubText: {
     color: 'white',
     fontSize: 10,
     letterSpacing: 1,
-    fontFamily:Fonts.Regular
+    fontFamily: Fonts.Regular,
   },
   fireIcon: {
     paddingHorizontal: 10,
@@ -188,5 +223,3 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-
-export default Health;

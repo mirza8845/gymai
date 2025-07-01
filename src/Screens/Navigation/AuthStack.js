@@ -20,6 +20,7 @@ import Diets from "../Questionnaire/Diets";
 import HealthQuestionaire from "../Questionnaire/HealthQuestionaire";
 import ProfileQuestionaire from "../Questionnaire/ProfileQuestionaire";
 import Splash from "../Splash";
+import WorkoutGenerating from "../Questionnaire/WorkoutGenerating";
 
 const AuthStack = () => {
   const Stack = createNativeStackNavigator();
@@ -50,6 +51,7 @@ const AuthStack = () => {
       <Stack.Screen name="diets" component={Diets} />
       <Stack.Screen name="healthQuestionaire" component={HealthQuestionaire} />
       <Stack.Screen name="profileQuestionaire" component={ProfileQuestionaire} />
+      <Stack.Screen name="WorkoutGenerating" component={WorkoutGenerating} />
     </Stack.Navigator>
   );
 };

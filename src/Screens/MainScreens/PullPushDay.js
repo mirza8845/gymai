@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, ScrollView, StyleSheet, Pressable, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme, useRoute, useNavigation } from "@react-navigation/native";
 import menGym from "../../assets/images/man-gym.png";
@@ -12,23 +19,28 @@ const PullPushDay = () => {
   const { colors } = useTheme();
   const route = useRoute();
   const navigation = useNavigation();
-  const { day, exercises } = route.params;
+  const { day, label, exercises } = route.params;
 
   return (
     <SafeAreaView style={styles.screen}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.headerRow}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            accessibilityLabel="Go back"
+          >
             <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
           </TouchableOpacity>
-          <Text style={[styles.title, { color: colors.text }]}>{day}</Text>
-          <View style={{ width: RFPercentage(4) }} /> {/* Spacer for symmetry */}
+          <Text style={[styles.title, { color: colors.text }]}>
+            {label || day}
+          </Text>
+          <View style={{ width: RFPercentage(4) }} />
         </View>
 
         {exercises?.length > 0 ? (
           exercises.map((exercise, index) => (
             <ExerciseBox
-              key={index}
+              key={exercise.name || index}
               title={exercise.name}
               tableHead={["Set", "Previous", "KG", "Reps"]}
               tableTitle={["1", "2"]}
@@ -39,21 +51,35 @@ const PullPushDay = () => {
               image={menGym}
               onPress={() =>
                 navigation.navigate("WorkoutDetails", {
-                  exercise: exercise,
-                  day: day,
+                  exercise,
+                  day,
                 })
               }
             />
           ))
         ) : (
-          <Text style={[styles.noDataText, { color: colors.text }]}>No exercises for this day.</Text>
+          <Text style={[styles.noDataText, { color: colors.text }]}>
+            No exercises for this day.
+          </Text>
         )}
 
         <View style={styles.buttonRow}>
-          <Pressable style={styles.addSetButton} onPress={() => navigation.navigate("AddExercise", { day })}>
+          <Pressable
+            style={styles.addSetButton}
+            onPress={() => navigation.navigate("AddExercise", { day })}
+            accessibilityLabel="Add a new exercise"
+          >
             <Text style={styles.addSetText}>+ Add Exercise</Text>
           </Pressable>
-          <Pressable style={styles.addSetButton}>
+          <Pressable
+            style={styles.addSetButton}
+            onPress={() => {
+              // Add desired finish logic here
+              console.log("Workout Finished");
+              navigation.goBack();
+            }}
+            accessibilityLabel="Finish workout"
+          >
             <Text style={styles.addSetText}>Finish</Text>
           </Pressable>
         </View>

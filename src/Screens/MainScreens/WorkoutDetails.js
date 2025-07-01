@@ -14,7 +14,7 @@ const WorkoutDetails = () => {
   const { exercise, day } = route.params;
 
   const renderBulletList = (title, list = []) => {
-    if (!list.length) return null;
+    if (!Array.isArray(list) || list.length === 0) return null;
     return (
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>{title}</Text>
@@ -30,18 +30,24 @@ const WorkoutDetails = () => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <AntDesign name="arrowleft" size={RFPercentage(4)} color={colors.text} />
-        </TouchableOpacity>
+        <View style={{flexDirection:'row', alignItems:"center", justifyContent:'center'}}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton} accessibilityLabel="Go back">
+            <AntDesign name="arrowleft" size={RFPercentage(4)} color={colors.text} />
+          </TouchableOpacity>
 
-        <Text style={[styles.title, { color: colors.text }]}>{exercise?.name || "Exercise"}</Text>
+          <Text style={[styles.title, { color: colors.text }]}>{exercise?.name || "Exercise"}</Text>
+        </View>
 
         <View style={styles.dateContainer}>
           <AntDesign name="clockcircle" size={17} color={colors.text} />
           <Text style={styles.dateText}>{day || "Training Day"}</Text>
         </View>
 
-        <Image source={menGym} style={styles.image} resizeMode="cover" />
+        <Image
+          source={menGym} // Replace with dynamically generated image when ready
+          style={styles.image}
+          resizeMode="cover"
+        />
 
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Reps & Sets</Text>
@@ -57,9 +63,7 @@ const WorkoutDetails = () => {
 
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Muscles Targeted</Text>
-          <Text style={[styles.text, { color: colors.text }]}>
-            {exercise?.muscles_targeted?.join(", ") || "Full Body"}
-          </Text>
+          <Text style={[styles.text, { color: colors.text }]}>{exercise?.muscles_targeted?.join(", ") || "Full Body"}</Text>
         </View>
 
         {renderBulletList("Proper Form", exercise?.proper_form)}
@@ -83,16 +87,14 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: "absolute",
-    top: 10,
-    left: 10,
+    left: 0,
     zIndex: 10,
+
   },
   title: {
     fontSize: 25,
     fontFamily: Fonts.SemiBold,
     alignSelf: "center",
-    marginTop: 20,
-    marginBottom: 10,
   },
   dateContainer: {
     flexDirection: "row",
@@ -100,6 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 6,
     marginBottom: 20,
+    marginTop:10
   },
   dateText: {
     fontSize: 14,

@@ -1,46 +1,104 @@
-import { View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
 import React from "react";
-import WorkoutCard from "../../CommonComponent/WorkoutCard";
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "@react-navigation/native";
+import { useTheme, useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+
+import WorkoutCard from "../../CommonComponent/WorkoutCard";
 import TipCard from "./TipCard";
 import { Fonts } from "../../constants/theme";
 
 const Workout = () => {
   const { colors } = useTheme();
+  const navigation = useNavigation();
+
+  const workoutPlan = useSelector((state) => state.workout.workoutPlan);
+  const loading = workoutPlan === null;
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#FFDD03" />
+      </View>
+    );
+  }
+
+  if (!workoutPlan) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: colors.text }}>Workout plan not found.</Text>
+      </View>
+    );
+  }
+
+  const renderRoutineCards = () =>
+    workoutPlan.weekly_split.map((dayLabel, idx) => {
+      const dayKey = `Day ${idx + 1}`;
+      const isRestDay = dayLabel.toLowerCase().includes("rest");
+      const exercises = workoutPlan.daily_workouts?.[dayKey] ?? [];
+
+      const description = isRestDay
+        ? "Take full rest and allow your muscles to recover."
+        : exercises
+            .slice(0, 3)
+            .map((e) => e.name)
+            .join(", ") + (exercises.length > 3 ? "..." : "");
+
+      return (
+        <WorkoutCard
+          key={dayKey}
+          title={dayLabel}
+          description={description}
+          button={!isRestDay ? "Start now" : null}
+          onPress={
+            !isRestDay
+              ? () =>
+                  navigation.navigate("PullPushDay", {
+                    day: dayKey,
+                    label: dayLabel,
+                    exercises,
+                  })
+              : undefined
+          }
+        />
+      );
+    });
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
       <ScrollView>
         <View style={styles.container}>
-          <Text style={styles.header}>Track My Progress</Text>
+          <Text style={[styles.header, { backgroundColor: colors.card, color: 'black' }]}>
+            Track My Progress
+          </Text>
 
           <Pressable>
-            <Text style={[styles.startWorkoutButton, { color: colors.text }]}>+ Start New Workout</Text>
+            <Text style={[styles.startWorkoutButton, { color: colors.text }]}>
+              + Start New Workout
+            </Text>
           </Pressable>
 
           <View style={styles.routineHeader}>
             <Text style={[styles.routineTitle, { color: colors.text }]}>My Routines</Text>
             <Pressable>
-              <Text style={[styles.addRoutine, , { color: colors.text }]}>+ Add new routine</Text>
+              <Text style={[styles.addRoutine, { color: colors.text }]}>
+                + Add new routine
+              </Text>
             </Pressable>
           </View>
 
-          <WorkoutCard title="Push" description="Bench press, shoulder press, l..." button="Start now" />
-          <WorkoutCard title="Pull" description="Pullups, face pull, Seated Row..." button="Start now" />
-          <WorkoutCard title="Legs" description="Barbell squat, Seated leg curl..." button="Start now" />
+          {renderRoutineCards()}
 
           <Text style={[styles.tipsTitle, { color: colors.text }]}>Tips & Tricks</Text>
 
-          <TipCard color={"#DDFF94"}>
-            Progressive Overload:{"\n\n"}
-            Increase weight, reps, or form intensity over time. This should be the aim of every session as it’s essential for building strength and muscle!
-          </TipCard>
-
-          <TipCard color={"#FF8A8A"}>Rest Times:{"\n\n"}Rest long enough to push your hardest on the next set—typically at least 2–3 minutes. If you're still fatigued, rest a bit longer!</TipCard>
-
-          <TipCard color={"#A6ECFF"}>
-            Volume:{"\n\n"}Optimal weekly training volume per muscle is 4–10 sets when training close to failure. More than this adds unnecessary fatigue without extra benefit.
-          </TipCard>
+          <TipCard color="#DDFF94">{workoutPlan.notes}</TipCard>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -50,13 +108,9 @@ const Workout = () => {
 export default Workout;
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 30,
-    paddingVertical: 30,
-  },
+  container: { paddingHorizontal: 30, paddingVertical: 30 },
   header: {
-    fontSize: 22,
-    backgroundColor: "white",
+    fontSize: 20,
     margin: 10,
     padding: 10,
     textAlign: "center",
@@ -75,35 +129,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  routineTitle: {
-    fontSize: 17,
-    fontFamily: Fonts.Medium,
-  },
-  addRoutine: {
-    fontSize: 17,
-    fontFamily: Fonts.Medium,
-  },
+  routineTitle: { fontSize: 17, fontFamily: Fonts.Medium },
+  addRoutine: { fontSize: 17, fontFamily: Fonts.Medium },
   tipsTitle: {
     fontSize: 25,
     paddingTop: 30,
     paddingBottom: 10,
     fontFamily: Fonts.SemiBold,
-  },
-  tipCard: {
-    fontSize: 17,
-    padding: 25,
-    borderRadius: 20,
-    letterSpacing: 1,
-    marginVertical: 10,
-    fontFamily:Fonts.SemiBold
-  },
-  tipGreen: {
-    backgroundColor: "#DDFF94",
-  },
-  tipRed: {
-    backgroundColor: "#FF8A8A",
-  },
-  tipBlue: {
-    backgroundColor: "#A6ECFF",
   },
 });

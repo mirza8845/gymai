@@ -8,7 +8,7 @@ const Button = ({ title, onPress, disbaled, loader }) => {
   const { colors } = useTheme();
 
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress} disabled={disbaled}>
+    <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={onPress} disabled={disbaled}>
       {loader ? (
         <>
           <ActivityIndicator size="small" color={"white"} />
