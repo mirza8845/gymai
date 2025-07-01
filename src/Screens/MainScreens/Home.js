@@ -1,5 +1,14 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
-import React, { useContext } from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -10,6 +19,9 @@ import WomenGym from "../../assets/images/womangym.png";
 import MenGym from "../../assets/images/mengym.png";
 import { Fonts } from "../../constants/theme";
 import DoubleCard from "../../CommonComponent/DoubleCard";
+import { generateWorkoutPlan } from "../../services/generateWorkoutPlan";
+import { useDispatch, useSelector } from "react-redux";
+import { setWorkoutPlan } from "../../redux/Actions";
 
 const data = [
   {
@@ -24,13 +36,39 @@ const data = [
       duration: "3 Minutes",
     },
   },
-  // Add more rows here
 ];
 
 const Home = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
   const { userData } = useContext(UserContext);
+  const dispatch = useDispatch();
+  const workoutPlan = useSelector((state) => state.workout.workoutPlan);
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getWorkoutPlan();
+  }, []);
+
+  const getWorkoutPlan = async () => {
+    try {
+      setLoading(true);
+      const plan = await generateWorkoutPlan(userData);
+      dispatch(setWorkoutPlan(plan));
+    } catch (error) {
+      console.log("Workout plan error:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Find first non-rest workout day
+  const firstWorkoutDay = workoutPlan?.weekly_split?.find(
+    (day) => !day.toLowerCase().includes("rest")
+  );
+  const workoutDayKey = firstWorkoutDay?.split(":")[0]?.trim(); // e.g., "Day 1"
+  const firstDayExercises = workoutPlan?.daily_workouts?.[workoutDayKey];
 
   return (
     <SafeAreaProvider>
@@ -38,28 +76,52 @@ const Home = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.greetingText}>Hi, {userData?.name}</Text>
 
-          <Text style={[styles.descriptionText, { color: colors.text }]}>
-            Your Personalised 3-Day Workout Plan is Ready!{"\n"}
-            You'll follow a Push-Pull-Legs split—a highly effective way to train your whole body each week.{"\n"}
-            Discover your exercises, helpful tips, and step-by-step tutorials to train smarter!
-          </Text>
+          {loading ? (
+            <ActivityIndicator size="large" color="#FFDD03" style={{ marginTop: 30 }} />
+          ) : workoutPlan?.weekly_split ? (
+            <>
+              <Text style={[styles.descriptionText, { color: colors.text }]}>
+                {`Your Personalised ${userData?.weeklyWorkoutCommitment}-Day Workout Plan is Ready! You'll follow a weekly routine including: ${workoutPlan?.weekly_split?.join(
+                  ", "
+                )}. Discover your exercises, warm-up tips, and cool-down steps to train smarter!`}
+              </Text>
 
-          <TouchableOpacity style={styles.planButton} onPress={() => navigation.navigate("MyPlan")}>
-            <Text style={styles.planButtonText} onPress={() => navigation.navigate("MyPlan")}>
-              My Plan
+              <TouchableOpacity
+                style={styles.planButton}
+                onPress={() => navigation.navigate("MyPlan")}
+              >
+                <Text style={styles.planButtonText}>My Plan</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.sectionTitle}>Next Workout</Text>
+
+              {firstDayExercises ? (
+                <WorkoutCard
+                  title={firstWorkoutDay?.split(":")[1]?.trim() || "Workout"}
+                  description={firstDayExercises
+                    .map((ex) => ex.name)
+                    .slice(0, 2)
+                    .join(", ") + "..."}
+                  button="Start now"
+                />
+              ) : (
+                <Text style={{ color: colors.text }}>Rest day or workout not available.</Text>
+              )}
+            </>
+          ) : (
+            <Text style={[styles.descriptionText, { color: colors.text }]}>
+              Failed to generate workout plan. Please try again later.
             </Text>
-          </TouchableOpacity>
-
-          <Text style={styles.sectionTitle}>Next Workout</Text>
-
-          <WorkoutCard title="Push" description="Bench press, shoulder press, l..." button="Start now" />
+          )}
 
           <Text style={styles.sectionTitle}>Discover</Text>
 
           <View style={styles.imageCardContainer}>
             <View style={styles.textBlock}>
               <Text style={styles.cardTitle}>Myth Busters</Text>
-              <Text style={{ color: "black", fontFamily: Fonts.Regular }}>Popular fitness myths debunked!</Text>
+              <Text style={{ color: "black", fontFamily: Fonts.Regular }}>
+                Popular fitness myths debunked!
+              </Text>
             </View>
             <Image source={gymImg} style={styles.cardImage} resizeMode="contain" />
           </View>
@@ -67,9 +129,11 @@ const Home = () => {
           <FlatList
             data={data}
             keyExtractor={(_, index) => index.toString()}
-            renderItem={({ item }) => <DoubleCard leftItem={item.leftItem} rightItem={item.rightItem} />}
-            // contentContainerStyl, paddingBottom: 30 }}
+            renderItem={({ item }) => (
+              <DoubleCard leftItem={item.leftItem} rightItem={item.rightItem} />
+            )}
           />
+
           <TouchableOpacity style={styles.seeMoreBtn}>
             <Text style={styles.seeMoreBtnText}>See More</Text>
           </TouchableOpacity>
@@ -87,9 +151,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   scrollContainer: {
-    // paddingHorizontal: 30,
-    width:'90%',
-    alignSelf:'center',
+    width: "90%",
+    alignSelf: "center",
     paddingVertical: 40,
   },
   greetingText: {
@@ -132,25 +195,21 @@ const styles = StyleSheet.create({
     height: 130,
     backgroundColor: "#ffffff",
     borderRadius: 15,
-    // padding: 20,
     marginTop: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     alignSelf: "center",
-    // width:'95%'
   },
   textBlock: {
     width: "50%",
-    left:15
+    left: 15,
   },
   cardTitle: {
     fontSize: 18,
     color: "#000",
     fontFamily: Fonts.SemiBold,
-    // marginBottom: 7,
   },
-
   cardImage: {
     width: 180,
     height: 180,
@@ -198,14 +257,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: "center",
     alignItems: "center",
-    justifyContent:'center',
-    // marginTop: 10,
+    justifyContent: "center",
     alignSelf: "flex-end",
   },
   seeMoreBtnText: {
     fontSize: 18,
     color: "black",
-    fontFamily:Fonts.SemiBold
-    // fontWeight: "500",
+    fontFamily: Fonts.SemiBold,
   },
 });

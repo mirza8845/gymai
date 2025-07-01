@@ -1,23 +1,27 @@
-import { View, Text, ScrollView, Image, StyleSheet, Pressable } from "react-native";
 import React, { useContext } from "react";
+import { View, Text, ScrollView, Image, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import profileImg from "../../assets/images/womanpic.png";
 import Heading from "../../CommonComponent/Heading";
-import Paragraph from "../../CommonComponent/Paragraph";
+import { useNavigation } from "@react-navigation/native";
+import { UserContext } from "../../utils/userContext";
+import { Fonts } from "../../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
+
+// SVGs
 import Profilesvg from "../../assets/svg/anotherProfile.svg";
 import Favourite from "../../assets/svg/bigstar.svg";
 import Retake from "../../assets/svg/retake.svg";
 import Setting from "../../assets/svg/setting.svg";
 import Help from "../../assets/svg/help.svg";
 import Logout from "../../assets/svg/logout.svg";
-import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../../utils/userContext";
-import { Fonts } from "../../constants/theme";
-import { RFPercentage } from "react-native-responsive-fontsize";
+
+// AsyncStorage
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Profile = () => {
   const navigation = useNavigation();
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
 
   const profileOptions = [
     { icon: Profilesvg, title: "Profile", navigateTo: "EditProfile" },
@@ -27,6 +31,16 @@ const Profile = () => {
     { icon: Help, title: "Help" },
     { icon: Logout, title: "Logout" },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("email");
+      await AsyncStorage.removeItem("password");
+      setUserData(null);
+    } catch (error) {
+      console.log("Logout error:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -48,7 +62,7 @@ const Profile = () => {
               </Text>
               <Text style={styles.statLabel}>Weight</Text>
             </View>
-            <View style={{width:2, height:50, backgroundColor:'yellow', top:5}}></View>
+            <View style={{ width: 2, height: 50, backgroundColor: "yellow", top: 5 }} />
             <View style={styles.statItem}>
               <Text style={styles.statValue}>
                 {userData?.age}
@@ -56,7 +70,7 @@ const Profile = () => {
               </Text>
               <Text style={styles.statLabel}>Years Old</Text>
             </View>
-             <View style={{width:2, height:50, backgroundColor:'yellow', top:5}}></View>
+            <View style={{ width: 2, height: 50, backgroundColor: "yellow", top: 5 }} />
             <View style={styles.statItem}>
               <Text style={styles.statValue}>
                 {userData?.height}
@@ -69,8 +83,18 @@ const Profile = () => {
 
         <View style={styles.optionsContainer}>
           {profileOptions.map((item, index) => (
-            <Pressable key={index} style={styles.optionItem} onPress={() => item.navigateTo && navigation.navigate(item.navigateTo)}>
-              <item.icon style={{width:20, height:20}} />
+            <Pressable
+              key={index}
+              style={styles.optionItem}
+              onPress={() => {
+                if (item.title === "Logout") {
+                  handleLogout();
+                } else if (item.navigateTo) {
+                  navigation.navigate(item.navigateTo);
+                }
+              }}
+            >
+              <item.icon style={{ width: 20, height: 20 }} />
               <Text style={styles.optionText}>{item.title}</Text>
             </Pressable>
           ))}
@@ -100,7 +124,6 @@ const styles = StyleSheet.create({
   },
   birthdayText: {
     flexDirection: "row",
-    // marginTop: 10,
   },
   birthdayLabel: {
     color: "white",
@@ -114,7 +137,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 30,
-    // paddingVertical: 40,
     marginTop: 30,
   },
   statItem: {
@@ -129,31 +151,29 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     color: "grey",
-    // fontWeight: "200",
     fontSize: 16,
     fontFamily: Fonts.Regular,
   },
   optionsContainer: {
     paddingHorizontal: 20,
     marginTop: 20,
-    paddingBottom:20
+    paddingBottom: 20,
   },
   optionItem: {
     flexDirection: "row",
     alignItems: "center",
-    width:'100%',
-    // backgroundColor:'red',
-    marginTop:20,
+    width: "100%",
+    marginTop: 20,
     borderWidth: 1,
     borderColor: "rgba(135, 134, 134, 0.3)",
-    borderRadius:10,
-    height:50,
-    paddingHorizontal:10
+    borderRadius: 10,
+    height: 50,
+    paddingHorizontal: 10,
   },
   optionText: {
     color: "white",
     fontSize: 16,
-    fontFamily:Fonts.Medium,
-    left:10
+    fontFamily: Fonts.Medium,
+    left: 10,
   },
 });

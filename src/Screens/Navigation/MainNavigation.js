@@ -34,6 +34,7 @@ const isProfileComplete = (user) => {
     "sleepHours",
     "waterIntakeLiters",
     "weeklyWorkoutCommitment",
+    "fullName"
   ];
   return requiredFields.every((field) => user[field]);
 };
@@ -41,14 +42,14 @@ const isProfileComplete = (user) => {
 const MainNavigator = () => {
   const { userData } = useContext(UserContext);
 
-  if (userData === null) {
-    // Still loading user data
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#FFDD03" />
-      </View>
-    );
-  }
+  // if (userData === null) {
+  //   // Still loading user data
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+  //       <ActivityIndicator size="large" color="#FFDD03" />
+  //     </View>
+  //   );
+  // }
 
   const isComplete = isProfileComplete(userData);
 
@@ -59,6 +60,10 @@ const MainNavigator = () => {
       ) : (
         <Stack.Screen name="AuthStack" component={AuthStack} />
       )}
+
+        {/* <Stack.Screen name="AuthStack" component={AuthStack} /> */}
+
+
 
       {/* Shared Screens */}
       <Stack.Screen name="MyPlan" component={Myplan} />

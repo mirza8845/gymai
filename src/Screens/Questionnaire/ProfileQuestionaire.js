@@ -11,6 +11,7 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import axios from "axios";
 
 const ProfileQuestionaire = () => {
   const { colors } = useTheme();
@@ -22,7 +23,6 @@ const ProfileQuestionaire = () => {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
 
-  // ✅ Prefill user data on load
   useEffect(() => {
     if (userData) {
       setFullName(userData.fullName || "");
@@ -56,7 +56,7 @@ const ProfileQuestionaire = () => {
       const updatedInfo = { fullName, nickname, mobile };
 
       await firestore().collection("Users").doc(user.uid).update(updatedInfo);
-      setUserData({ ...userData, ...updatedInfo }); // ✅ update context
+      setUserData({ ...userData, ...updatedInfo }); 
 
       Toast.show({
         type: "success",
@@ -73,6 +73,8 @@ const ProfileQuestionaire = () => {
       });
     }
   };
+
+
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
