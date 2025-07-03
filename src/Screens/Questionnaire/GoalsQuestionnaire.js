@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
@@ -10,6 +10,7 @@ import Toast from "react-native-toast-message";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const goals = ["Aesthetics", "Strength training", "Powerlifting", "Health"];
 
@@ -17,13 +18,12 @@ const GoalsQuestionnaire = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
 
-  const { userData, setUserData } = useContext(UserContext); // ✅ Access context
+  const { userData, setUserData } = useContext(UserContext);
 
   const [selectedOption, setSelectedOption] = useState(null);
   const [goalNote, setGoalNote] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✅ Prefill from userData
   useEffect(() => {
     if (userData?.goal) setSelectedOption(userData.goal);
     if (userData?.goalNote) setGoalNote(userData.goalNote);
@@ -56,7 +56,6 @@ const GoalsQuestionnaire = () => {
         goalNote: goalNote.trim(),
       });
 
-      // ✅ Update context
       setUserData((prev) => ({
         ...prev,
         goal: selectedOption,
@@ -77,29 +76,21 @@ const GoalsQuestionnaire = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Heading title="Goals" />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title="Your Goals" />
+      </View>
       <Text style={[styles.subheading]}>What are you interested in?</Text>
 
       <View style={styles.goalsContainer}>
         {goals.map((opt, index) => (
-          <Option
-            key={index}
-            label={opt}
-            selected={selectedOption === opt}
-            onPress={() => setSelectedOption(opt)}
-          />
+          <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
         ))}
 
         <View style={styles.goalNote}>
-          <TextInput
-            placeholder="Tell us more about your goals..."
-            placeholderTextColor="#999"
-            style={styles.goalNoteInput}
-            multiline
-            numberOfLines={4}
-            value={goalNote}
-            onChangeText={setGoalNote}
-          />
+          <TextInput placeholder="Tell us more about your goals..." placeholderTextColor="#999" style={styles.goalNoteInput} multiline numberOfLines={4} value={goalNote} onChangeText={setGoalNote} />
         </View>
       </View>
 
@@ -115,9 +106,8 @@ export default GoalsQuestionnaire;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 80,
-    paddingHorizontal: 24,
-    justifyContent: "center",
+    paddingHorizontal: RFPercentage(2),
+    paddingTop:RFPercentage(5)
   },
   goalNote: {
     backgroundColor: "#fff",
@@ -141,5 +131,6 @@ const styles = StyleSheet.create({
   },
   goalsContainer: {
     gap: 12,
+    marginTop:RFPercentage(4)
   },
 });

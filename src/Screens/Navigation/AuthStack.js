@@ -21,6 +21,8 @@ import HealthQuestionaire from "../Questionnaire/HealthQuestionaire";
 import ProfileQuestionaire from "../Questionnaire/ProfileQuestionaire";
 import Splash from "../Splash";
 import WorkoutGenerating from "../Questionnaire/WorkoutGenerating";
+import ForgetPassword from "../ForgetPassword";
+import Homestack from "./Homestack";
 
 const AuthStack = () => {
   const Stack = createNativeStackNavigator();
@@ -36,6 +38,7 @@ const AuthStack = () => {
       <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="login" component={Login} />
       <Stack.Screen name="signup" component={SignUp} />
+      <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="introQuestionnaire" component={IntroQuestionnaire} />
       <Stack.Screen name="genderQuestionnaire" component={GenderQuestionnaire} />
       <Stack.Screen name="ageQuestionnaire" component={AgeQuestionnaire} />
@@ -52,6 +55,7 @@ const AuthStack = () => {
       <Stack.Screen name="healthQuestionaire" component={HealthQuestionaire} />
       <Stack.Screen name="profileQuestionaire" component={ProfileQuestionaire} />
       <Stack.Screen name="WorkoutGenerating" component={WorkoutGenerating} />
+      <Stack.Screen name="Tabs" component={Homestack} />
     </Stack.Navigator>
   );
 };

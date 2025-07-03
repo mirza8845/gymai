@@ -1,6 +1,6 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { RulerPicker } from "react-native-ruler-view";
 import Button from "../../CommonComponent/Button";
 import Heading from "../../CommonComponent/Heading";
@@ -10,17 +10,17 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 export default function HeightQuestionnaire() {
   const { colors } = useTheme();
   const navigation = useNavigation();
 
-  const { userData, setUserData } = useContext(UserContext); // ✅ use context
+  const { userData, setUserData } = useContext(UserContext);
 
   const [selectedHeight, setSelectedHeight] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Pre-fill height if available
   useEffect(() => {
     if (userData?.height) {
       const heightStr = userData.height.toString();
@@ -79,8 +79,13 @@ export default function HeightQuestionnaire() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center", paddingTop: RFPercentage(10) }}>
-      <Heading title="Height" />
+    <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center", paddingTop: RFPercentage(5) }}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title="Height Selection" />
+      </View>
 
       <Text style={{ marginTop: RFPercentage(6) }}>
         <Text style={[styles.selectedText, { color: colors.text }]}>{selectedHeight}</Text>
@@ -118,9 +123,9 @@ export default function HeightQuestionnaire() {
             width: 10,
             height: 350,
           }}
-          valueTextStyle	={{
+          valueTextStyle={{
             // color:'red',
-            right:10
+            right: 10,
           }}
           theme={{
             indicatorColor: "white",
@@ -157,8 +162,6 @@ export default function HeightQuestionnaire() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
-    paddingHorizontal: 70,
   },
   selectedText: {
     fontSize: 48,

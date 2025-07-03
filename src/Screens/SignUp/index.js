@@ -168,12 +168,12 @@ const SignUp = () => {
                       </View>
                     )}
 
-                    <TouchableOpacity style={styles.forgotWrapper}>
+                    <View style={styles.forgotWrapper}>
                       <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>
                         By continuing, you agree to{"\n"}
                         <Text style={{ fontFamily: Fonts.Medium }}>Terms of Use and Privacy Policy.</Text>
                       </Text>
-                    </TouchableOpacity>
+                    </View>
 
                     <View style={{ marginTop: RFPercentage(1.5) }}>
                       <Button title="Sign Up" onPress={handleSubmit} loader={loading} disbaled={loading} />

@@ -48,6 +48,12 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>UIAppFonts</key>
+	<key>NSCameraUsageDescription</key>
+    <string>This app requires access to the camera</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires access to your photo library</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app saves photos to your photo library</string>
 	<array>
 		<string>Poppins-Bold.ttf</string>
 		<string>Poppins-ExtraBold.ttf</string>

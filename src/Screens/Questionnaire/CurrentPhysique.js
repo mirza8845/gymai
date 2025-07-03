@@ -11,6 +11,7 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const CurrentPhysique = () => {
   const { colors } = useTheme();
@@ -29,7 +30,6 @@ const CurrentPhysique = () => {
   const goalOptions = ["Slim", "Average", "Athletic", "Husky"];
   const displayOptions = hasTitleChanged ? goalOptions : currentOptions;
 
-  // ✅ Prefill from context
   useEffect(() => {
     if (userData?.currentPhysique) setCurrentPhysique(userData.currentPhysique);
     if (userData?.goalPhysique) setGoalPhysique(userData.goalPhysique);
@@ -75,7 +75,6 @@ const CurrentPhysique = () => {
           goalPhysique,
         });
 
-        // ✅ Update context
         setUserData((prev) => ({
           ...prev,
           currentPhysique,
@@ -95,7 +94,13 @@ const CurrentPhysique = () => {
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
-      <Heading title={title} />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title={title} />
+      </View>
+
       <Paragraph title={para} />
 
       <View style={styles.previewPlaceholder}>
@@ -104,10 +109,10 @@ const CurrentPhysique = () => {
 
         {displayOptions.map((option, index) => {
           const positions = [
-            { top: "20%", left: "15%" },
-            { top: "20%", right: "17%" },
-            { bottom: "20%", left: "15%" },
-            { bottom: "20%", right: "17%" },
+            { top: "20%", left: "11%" },
+            { top: "20%", right: "11%" },
+            { bottom: "18%", left: "11%" },
+            { bottom: "18%", right: "11%" },
           ];
 
           const isSelected = (!hasTitleChanged && currentPhysique === option) || (hasTitleChanged && goalPhysique === option);
@@ -116,7 +121,11 @@ const CurrentPhysique = () => {
             <TouchableOpacity
               key={index}
               onPress={() => (hasTitleChanged ? setGoalPhysique(option) : setCurrentPhysique(option))}
-              style={[styles.optionButton, positions[index], { backgroundColor: isSelected ? "#ddd" : "transparent" }]}
+              style={[
+                styles.optionButton,
+                positions[index],
+                { backgroundColor: isSelected ? "#ddd" : "rgba(255,255,255,0.6)" },
+              ]}
             >
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
@@ -134,7 +143,9 @@ export default CurrentPhysique;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: RFPercentage(5),
+    paddingHorizontal: RFPercentage(2),
   },
   previewPlaceholder: {
     backgroundColor: "white",
@@ -144,7 +155,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 80,
+    marginTop: 120,
     position: "relative",
   },
   image: {
@@ -163,12 +174,16 @@ const styles = StyleSheet.create({
   },
   optionButton: {
     position: "absolute",
-    padding: 8,
-    borderRadius: 8,
+    width: RFPercentage(13),
+    height: RFPercentage(6),
+    borderRadius: RFPercentage(1),
+    justifyContent: "center",
+    alignItems: "center",
   },
   optionText: {
-    fontSize: RFPercentage(2.6),
+    fontSize: RFPercentage(2.4),
     fontFamily: Fonts.SemiBold,
     color: "black",
+    textAlign: "center",
   },
 });

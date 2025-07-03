@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
@@ -10,7 +10,8 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
-
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const dietaryOptions = ["Vegetarian", "Vegan", "Gluten-Free", "Keto", "Paleo", "No preferences"];
 const allergyOptions = ["Nuts", "Dairy", "Shellfish", "Eggs", "No allergies"];
@@ -18,12 +19,11 @@ const allergyOptions = ["Nuts", "Dairy", "Shellfish", "Eggs", "No allergies"];
 const DietaryPreferences = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const { userData, setUserData } = useContext(UserContext); // ✅ UserContext
+  const { userData, setUserData } = useContext(UserContext);
 
   const [selectedDietary, setSelectedDietary] = useState([]);
   const [selectedAllergies, setSelectedAllergies] = useState([]);
 
-  // ✅ Load from UserContext if available
   useEffect(() => {
     if (userData?.dietaryPreferences) setSelectedDietary(userData.dietaryPreferences);
     if (userData?.foodAllergies) setSelectedAllergies(userData.foodAllergies);
@@ -63,7 +63,6 @@ const DietaryPreferences = () => {
         foodAllergies: selectedAllergies,
       });
 
-      // ✅ Update context
       setUserData((prev) => ({
         ...prev,
         dietaryPreferences: selectedDietary,
@@ -82,61 +81,41 @@ const DietaryPreferences = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Heading title="Dietary Preferences" />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title="Dietary Preferences" />
+      </View>
+
       <View style={{ marginTop: 70, marginBottom: 60 }}>
-        <Text style={[styles.paragraph, { color: colors.text }]}>
-          What are your dietary preferences?
-        </Text>
+        <Text style={[styles.paragraph, { color: colors.text }]}>What are your dietary preferences?</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View>
             {dietaryOptions.slice(0, 3).map((item) => (
-              <DoubleButton
-                key={item}
-                title={item}
-                selected={selectedDietary.includes(item)}
-                onPress={() => toggleSelection(item, selectedDietary, setSelectedDietary)}
-              />
+              <DoubleButton key={item} title={item} selected={selectedDietary.includes(item)} onPress={() => toggleSelection(item, selectedDietary, setSelectedDietary)} />
             ))}
           </View>
           <View>
             {dietaryOptions.slice(3).map((item) => (
-              <DoubleButton
-                key={item}
-                title={item}
-                selected={selectedDietary.includes(item)}
-                onPress={() => toggleSelection(item, selectedDietary, setSelectedDietary)}
-              />
+              <DoubleButton key={item} title={item} selected={selectedDietary.includes(item)} onPress={() => toggleSelection(item, selectedDietary, setSelectedDietary)} />
             ))}
           </View>
         </View>
       </View>
 
-      <View style={{  }}>
-        <Text style={{ fontSize: 25, marginBottom: 10, color: "white", fontFamily: Fonts.Medium }}>
-          Allergies
-        </Text>
-        <Text style={[styles.paragraph, { color: colors.text }]}>
-          Do you have any food allergies we should know about?
-        </Text>
+      <View style={{}}>
+        <Text style={{ fontSize: 25, marginBottom: 10, color: "white", fontFamily: Fonts.Medium }}>Allergies</Text>
+        <Text style={[styles.paragraph, { color: colors.text }]}>Do you have any food allergies we should know about?</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 80 }}>
           <View>
             {allergyOptions.slice(0, 3).map((item) => (
-              <DoubleButton
-                key={item}
-                title={item}
-                selected={selectedAllergies.includes(item)}
-                onPress={() => toggleSelection(item, selectedAllergies, setSelectedAllergies)}
-              />
+              <DoubleButton key={item} title={item} selected={selectedAllergies.includes(item)} onPress={() => toggleSelection(item, selectedAllergies, setSelectedAllergies)} />
             ))}
           </View>
           <View>
             {allergyOptions.slice(3).map((item) => (
-              <DoubleButton
-                key={item}
-                title={item}
-                selected={selectedAllergies.includes(item)}
-                onPress={() => toggleSelection(item, selectedAllergies, setSelectedAllergies)}
-              />
+              <DoubleButton key={item} title={item} selected={selectedAllergies.includes(item)} onPress={() => toggleSelection(item, selectedAllergies, setSelectedAllergies)} />
             ))}
           </View>
         </View>
@@ -151,8 +130,8 @@ export default DietaryPreferences;
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 80,
-    paddingHorizontal: 25,
+    paddingTop: RFPercentage(5),
+    paddingHorizontal: RFPercentage(2),
   },
   paragraph: {
     fontSize: 16,

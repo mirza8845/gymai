@@ -74,7 +74,7 @@ const Onboarding = () => {
           ))}
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
+        <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={handleNext}>
           <Text style={styles.buttonText}>{stepIndex === steps.length - 1 ? "Get Started" : "Next"}</Text>
         </TouchableOpacity>
       </Animated.View>

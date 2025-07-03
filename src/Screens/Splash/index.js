@@ -16,12 +16,6 @@ const Splash = () => {
   return (
     <View style={styles.container}>
       <Image source={splash} style={styles.image} resizeMode="cover" />
-
-      {/* <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Next</Text>
-          </TouchableOpacity>
-        </View> */}
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View , TouchableOpacity} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
@@ -9,6 +9,9 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { RFPercentage } from "react-native-responsive-fontsize";
+import Paragraph from "../../CommonComponent/Paragraph";
 
 
 const availabilityOptions = [
@@ -22,10 +25,9 @@ const GymExperience = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
 
-  const { userData, setUserData } = useContext(UserContext); // ✅ Access userData and setUserData
+  const { userData, setUserData } = useContext(UserContext); 
   const [selectedOption, setSelectedOption] = useState(null);
 
-  // ✅ Prefill if userData has gymExperience
   useEffect(() => {
     if (userData?.gymExperience) {
       setSelectedOption(userData.gymExperience);
@@ -60,7 +62,6 @@ const GymExperience = () => {
           gymExperience: selectedOption,
         });
 
-      // ✅ Update context
       setUserData((prev) => ({
         ...prev,
         gymExperience: selectedOption,
@@ -78,7 +79,14 @@ const GymExperience = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Heading title="Gym Experience" />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title={"Gym Experience"} />
+      </View>
+
+       <Paragraph title={"Select your gym experience"} />
       <View style={styles.optionsContainer}>
         {availabilityOptions.map((opt, index) => (
           <Option
@@ -89,6 +97,7 @@ const GymExperience = () => {
           />
         ))}
       </View>
+
       <Button title="Continue" onPress={handleContinue} />
     </View>
   );
@@ -99,12 +108,14 @@ export default GymExperience;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 80,
-    paddingHorizontal: 40,
+    paddingTop: RFPercentage(5),
+    paddingHorizontal: RFPercentage(2),
   },
   optionsContainer: {
     gap: 15,
-    marginVertical: 120,
     alignItems: "center",
+    marginTop:RFPercentage(12),
+    paddingHorizontal:RFPercentage(2),
+    marginBottom:RFPercentage(5)
   },
 });

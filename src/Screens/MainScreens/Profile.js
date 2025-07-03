@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../utils/userContext";
 import { Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import auth from "@react-native-firebase/auth";
 
 // SVGs
 import Profilesvg from "../../assets/svg/anotherProfile.svg";
@@ -47,8 +48,8 @@ const Profile = () => {
       <ScrollView>
         <View style={styles.profileContainer}>
           <Image source={profileImg} style={styles.profileImage} />
-          <Heading title={userData?.name} />
-          <Text style={{ color: "white", fontFamily: Fonts.Medium }}>{userData?.email}</Text>
+          <Heading title={userData?.fullName} />
+          <Text style={{ color: "white", fontFamily: Fonts.Medium }}>{auth().currentUser?.email}</Text>
           <Text style={styles.birthdayText}>
             <Text style={styles.birthdayLabel}>Nickname: </Text>
             <Text style={styles.birthdayValue}>{userData?.nickname}</Text>

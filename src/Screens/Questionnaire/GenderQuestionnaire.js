@@ -12,6 +12,7 @@ import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const GenderQuestionnaire = () => {
   const { colors } = useTheme();
@@ -70,7 +71,12 @@ const GenderQuestionnaire = () => {
 
   return (
     <View style={styles.screen}>
-      <Heading title="What’s Your Gender" />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width:'100%' }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title="What’s Your Gender" />
+      </View>
 
       <View style={styles.genderOptionsContainer}>
         <TouchableOpacity style={[styles.genderOption, { backgroundColor: gender === "Male" ? "white" : "transparent" }]} onPress={() => setGender("Male")}>
@@ -78,18 +84,18 @@ const GenderQuestionnaire = () => {
         </TouchableOpacity>
         <Text style={[styles.genderLabel, { color: colors.text }]}>Male</Text>
 
-        <TouchableOpacity style={[styles.genderOption, { backgroundColor: gender === "Female" ? "white" : "transparent" }]} onPress={() => setGender("Female")}>
+        <TouchableOpacity style={[styles.genderOption, { backgroundColor: gender === "Female" ? "white" : "transparent", marginTop:RFPercentage(4) }]} onPress={() => setGender("Female")}>
           <MaterialCommunityIcons name="gender-female" color={gender === "Female" ? "black" : "white"} size={RFPercentage(8)} />
         </TouchableOpacity>
         <Text style={[styles.genderLabel, { color: colors.text }]}>Female</Text>
 
         <TouchableOpacity onPress={() => setGender("Other")}>
-          <Text style={[styles.other, { color: colors.text }]}>Other</Text>
+          <Text style={[styles.other,{ color: colors.text, fontFamily:Fonts.Medium, fontSize:18 }]}>Other</Text>
         </TouchableOpacity>
       </View>
 
       <View style={{ marginTop: RFPercentage(3) }}>
-        <Text style={[styles.other, { color: colors.text }]}>Selected Gender: {gender ? gender : "None"}</Text>
+        <Text style={[styles.other, { color: colors.text, fontFamily:Fonts.Medium, fontSize:18 }]}>Selected Gender: {gender ? gender : "None"}</Text>
       </View>
 
       <View style={{ marginTop: RFPercentage(7) }}>
@@ -105,8 +111,8 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: "center",
-    paddingHorizontal: 50,
-    paddingTop: RFPercentage(8),
+    paddingHorizontal: RFPercentage(2),
+    paddingTop: RFPercentage(5),
   },
   genderOptionsContainer: {
     marginTop: RFPercentage(3),
@@ -133,7 +139,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Medium,
   },
   other: {
-    paddingTop: 20,
+    marginTop: RFPercentage(5),
     fontFamily: Fonts.Regular,
   },
 });

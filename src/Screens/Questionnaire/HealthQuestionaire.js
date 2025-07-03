@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
@@ -11,38 +11,28 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const pickerData = Array.from({ length: 24 }, (_, i) => i + 1); // 1-24
 
 const HealthQuestionaire = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const { userData, setUserData } = useContext(UserContext); // ✅
+  const { userData, setUserData } = useContext(UserContext);
 
   const [sleepIndex, setSleepIndex] = useState(0);
   const [waterIndex, setWaterIndex] = useState(0);
   const [energyIndex, setEnergyIndex] = useState(0);
 
-  // ✅ Load data from UserContext
   useEffect(() => {
-    if (userData?.sleepHours)
-      setSleepIndex(pickerData.indexOf(userData.sleepHours));
-    if (userData?.waterIntakeLiters)
-      setWaterIndex(pickerData.indexOf(userData.waterIntakeLiters));
-    if (userData?.energyLevel)
-      setEnergyIndex(userData.energyLevel - 1); // 1-based to 0-based
+    if (userData?.sleepHours) setSleepIndex(pickerData.indexOf(userData.sleepHours));
+    if (userData?.waterIntakeLiters) setWaterIndex(pickerData.indexOf(userData.waterIntakeLiters));
+    if (userData?.energyLevel) setEnergyIndex(userData.energyLevel - 1); // 1-based to 0-based
   }, [userData]);
 
   const renderItem = (item, index, selectedIndex) => (
     <View style={styles.pickerItem}>
-      <Text
-        style={[
-          styles.pickerItemText,
-          index === selectedIndex && styles.selectedPickerItemText,
-        ]}
-      >
-        {item}
-      </Text>
+      <Text style={[styles.pickerItemText, index === selectedIndex && styles.selectedPickerItemText]}>{item}</Text>
     </View>
   );
 
@@ -77,7 +67,6 @@ const HealthQuestionaire = () => {
         energyLevel: energy,
       });
 
-      // ✅ Update context
       setUserData((prev) => ({
         ...prev,
         sleepHours,
@@ -97,67 +86,72 @@ const HealthQuestionaire = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Heading title="Health" />
-
-
-      <Paragraph title="How many hours do you sleep every night?" />
-      <View style={styles.pickerWrapper}>
-        <HorizontalPicker
-          data={pickerData}
-          renderItem={(item, index) => renderItem(item, index, sleepIndex)}
-          itemWidth={80}
-          onChange={(index) => setSleepIndex(index)}
-          initialIndex={sleepIndex}
-          snapToAlignment="center"
-          // snapToInterval={100}
-          decelerationRate="fast"
-          contentContainerStyle={{
-            paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
-          }}
-        />
-        <View style={styles.selectorLineRight} />
-        <View style={styles.selectorLineLeft} />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title="Health" />
       </View>
 
-      <Paragraph title="How much water do you drink per day (L)?" />
-      <View style={styles.pickerWrapper}>
-        <HorizontalPicker
-          data={pickerData}
-          renderItem={(item, index) => renderItem(item, index, waterIndex)}
-          itemWidth={80}
-          onChange={(index) => setWaterIndex(index)}
-          initialIndex={waterIndex}
-          snapToAlignment="center"
-          // snapToInterval={100}
-          decelerationRate="fast"
-          contentContainerStyle={{
-            paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
-          }}
-        />
-        <View style={styles.selectorLineRight} />
-        <View style={styles.selectorLineLeft} />
-      </View>
+      <View style={{ marginTop: RFPercentage(3) }}>
+        <Paragraph title="How many hours do you sleep every night?" />
+        <View style={styles.pickerWrapper}>
+          <HorizontalPicker
+            data={pickerData}
+            renderItem={(item, index) => renderItem(item, index, sleepIndex)}
+            itemWidth={80}
+            onChange={(index) => setSleepIndex(index)}
+            initialIndex={sleepIndex}
+            snapToAlignment="center"
+            // snapToInterval={100}
+            decelerationRate="fast"
+            contentContainerStyle={{
+              paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
+            }}
+          />
+          <View style={styles.selectorLineRight} />
+          <View style={styles.selectorLineLeft} />
+        </View>
 
-      <Paragraph title="How are your energy levels? (1=Low, 5=High)" />
-      <View style={styles.pickerWrapper}>
-        <HorizontalPicker
-          data={[1, 2, 3, 4, 5]}
-          renderItem={(item, index) => renderItem(item, index, energyIndex)}
-          itemWidth={80}
-          onChange={(index) => setEnergyIndex(index)}
-          initialIndex={energyIndex}
-          snapToAlignment="center"
-          // snapToInterval={100}
-          decelerationRate="fast"
-          contentContainerStyle={{
-            paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
-          }}
-        />
-        <View style={styles.selectorLineRight} />
-        <View style={styles.selectorLineLeft} />
-      </View>
+        <Paragraph title="How much water do you drink per day (L)?" />
+        <View style={styles.pickerWrapper}>
+          <HorizontalPicker
+            data={pickerData}
+            renderItem={(item, index) => renderItem(item, index, waterIndex)}
+            itemWidth={80}
+            onChange={(index) => setWaterIndex(index)}
+            initialIndex={waterIndex}
+            snapToAlignment="center"
+            // snapToInterval={100}
+            decelerationRate="fast"
+            contentContainerStyle={{
+              paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
+            }}
+          />
+          <View style={styles.selectorLineRight} />
+          <View style={styles.selectorLineLeft} />
+        </View>
 
-      <View style={{ top: RFPercentage(10) }}>
+        <Paragraph title="How are your energy levels? (1=Low, 5=High)" />
+        <View style={styles.pickerWrapper}>
+          <HorizontalPicker
+            data={[1, 2, 3, 4, 5]}
+            renderItem={(item, index) => renderItem(item, index, energyIndex)}
+            itemWidth={80}
+            onChange={(index) => setEnergyIndex(index)}
+            initialIndex={energyIndex}
+            snapToAlignment="center"
+            // snapToInterval={100}
+            decelerationRate="fast"
+            contentContainerStyle={{
+              paddingHorizontal: (Dimensions.get("window").width - 80) / 2,
+            }}
+          />
+          <View style={styles.selectorLineRight} />
+          <View style={styles.selectorLineLeft} />
+        </View>
+      </View>
+      <View style={{ top: RFPercentage(1) }}>
         <Button title="Continue" onPress={handleContinue} />
       </View>
     </View>
@@ -168,8 +162,8 @@ export default HealthQuestionaire;
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 80,
-    justifyContent: "center",
+    paddingTop: RFPercentage(5),
+    alignItems: "center",
   },
   pickerItem: {
     width: 80,
@@ -194,7 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4E4E4E",
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 30,
+    marginVertical: 50,
     position: "relative",
   },
   selectorLineLeft: {

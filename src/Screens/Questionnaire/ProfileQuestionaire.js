@@ -12,6 +12,8 @@ import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
 import axios from "axios";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { launchImageLibrary } from "react-native-image-picker";
 
 const ProfileQuestionaire = () => {
   const { colors } = useTheme();
@@ -22,6 +24,28 @@ const ProfileQuestionaire = () => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
+
+  const [imageUri, setImageUri] = useState(null);
+
+  const handleSelectImage = () => {
+    launchImageLibrary(
+      {
+        mediaType: "photo",
+        quality: 1,
+        selectionLimit: 1,
+      },
+      (response) => {
+        if (response.didCancel) {
+          console.log("User cancelled image picker");
+        } else if (response.errorCode) {
+          console.log("Error: ", response.errorMessage);
+        } else {
+          const uri = response.assets?.[0]?.uri;
+          setImageUri(uri);
+        }
+      }
+    );
+  };
 
   useEffect(() => {
     if (userData) {
@@ -43,7 +67,7 @@ const ProfileQuestionaire = () => {
       return;
     }
 
-    if (!fullName || !nickname || !email || !mobile) {
+    if (!fullName || !nickname || !mobile) {
       Toast.show({
         type: "info",
         text1: "Missing fields",
@@ -56,7 +80,7 @@ const ProfileQuestionaire = () => {
       const updatedInfo = { fullName, nickname, mobile };
 
       await firestore().collection("Users").doc(user.uid).update(updatedInfo);
-      setUserData({ ...userData, ...updatedInfo }); 
+      setUserData({ ...userData, ...updatedInfo });
 
       Toast.show({
         type: "success",
@@ -74,18 +98,25 @@ const ProfileQuestionaire = () => {
     }
   };
 
-
-
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background, flexGrow: 1 }]} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-        <Heading title="Fill Your Profile" />
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
+            <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+          </TouchableOpacity>
+          <Heading title="Fill Your Profile" />
+        </View>
 
-        <View style={styles.imageContainer}>
-          <Image source={profileImg} style={styles.profileImg} />
-          <View style={styles.editIcon}>
-            <EditIcon width={16} height={16} />
-          </View>
+        <View style={{ marginTop: RFPercentage(3), alignItems: "center", justifyContent: "center" }}>
+          <TouchableOpacity onPress={handleSelectImage} style={styles.profileImg}>
+            <Image source={imageUri ? { uri: imageUri } : profileImg} style={styles.profileImg} />
+            <View style={styles.editIcon}>
+              <TouchableOpacity onPress={handleSelectImage}>
+                <EditIcon width={16} height={16} />
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.formSection}>
@@ -108,7 +139,7 @@ export default ProfileQuestionaire;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingTop: RFPercentage(7),
+    paddingTop: RFPercentage(5),
     paddingBottom: 40, // Add some bottom padding
   },
 
@@ -124,7 +155,7 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     position: "absolute",
-    bottom: 0,
+    bottom: 10,
     right: 5,
     backgroundColor: "white",
     width: 32,

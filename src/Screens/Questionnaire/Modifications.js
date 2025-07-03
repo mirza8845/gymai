@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, View, TouchableOpacity } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
@@ -10,14 +10,15 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
+
 
 const Modifications = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const { userData, setUserData } = useContext(UserContext); // ✅ use context
+  const { userData, setUserData } = useContext(UserContext); 
   const [modificationText, setModificationText] = useState("");
 
-  // ✅ Prefill if available
   useEffect(() => {
     if (userData?.modifications) {
       setModificationText(userData.modifications);
@@ -42,7 +43,6 @@ const Modifications = () => {
         modifications: trimmed,
       });
 
-      // ✅ Update context
       setUserData((prev) => ({
         ...prev,
         modifications: trimmed,
@@ -61,7 +61,12 @@ const Modifications = () => {
   return (
     <View style={[styles.wrapper, { backgroundColor: colors.background }]}>
       <View style={styles.container}>
-        <Heading title="Modifications" />
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title={"Modifications"} />
+      </View>
         <Paragraph title="Do you need modifications for injuries or physical limitations?" />
         <View style={styles.modificationsNote}>
           <TextInput placeholder="If yes, please explain..." value={modificationText} onChangeText={setModificationText} multiline style={styles.input} placeholderTextColor="#999" />
@@ -79,8 +84,8 @@ export default Modifications;
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    paddingVertical: 80,
-    paddingHorizontal: 37,
+    paddingTop: RFPercentage(5),
+    paddingHorizontal: RFPercentage(2),
   },
   container: {
     // flexGrow: 1,
@@ -91,7 +96,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 18,
     minHeight: RFPercentage(25),
-    marginTop: RFPercentage(10),
+    marginTop: RFPercentage(13),
+    marginHorizontal:RFPercentage(2)
   },
   input: {
     fontSize: 16,

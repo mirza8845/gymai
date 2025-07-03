@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, Dimensions } from "react-native";
+import { Pressable, StyleSheet, Text, View, Dimensions, TouchableOpacity } from "react-native";
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
@@ -11,6 +11,7 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const AgeQuestionnaire = () => {
   const { colors } = useTheme();
@@ -24,7 +25,7 @@ const AgeQuestionnaire = () => {
   const [unit, setUnit] = useState("kg");
   const [loading, setLoading] = useState(false);
 
-  console.log(selectedAgeIndex)
+  console.log(selectedAgeIndex);
 
   // Pre-fill values from context
   useEffect(() => {
@@ -103,7 +104,16 @@ const AgeQuestionnaire = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Heading title="Age" />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%", paddingHorizontal: RFPercentage(2) }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title="Age & Weight" />
+      </View>
+
+      <View style={{ marginTop: RFPercentage(5) }}>
+        <Heading title="Age" />
+      </View>
 
       <View style={styles.pickerWrapper}>
         <HorizontalPicker
@@ -181,7 +191,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingTop:RFPercentage(5)
+    paddingTop: RFPercentage(5),
   },
   pickerWrapper: {
     width: "100%",

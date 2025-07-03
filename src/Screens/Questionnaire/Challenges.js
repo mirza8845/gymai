@@ -1,10 +1,4 @@
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Heading from "../../CommonComponent/Heading";
@@ -16,6 +10,7 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const challengesOption = [
   "Not knowing what to do",
@@ -80,28 +75,19 @@ const Challenges = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
-    >
-      <ScrollView
-        contentContainerStyle={[
-          styles.container,
-          { backgroundColor: colors.background },
-        ]}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Heading title="Challenges" />
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined} keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}>
+      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]} keyboardShouldPersistTaps="handled">
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+            <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+          </TouchableOpacity>
+          <Heading title="Challenges" />
+        </View>
+
         <Paragraph title="What challenges do you face when it comes to fitness training?" />
-        <View style={{ gap: 13, paddingTop: RFPercentage(4), paddingBottom: 20 }}>
+        <View style={{ gap: 13, paddingTop: RFPercentage(8), paddingBottom: 20, paddingHorizontal:15 }}>
           {challengesOption.map((opt, index) => (
-            <Option
-              key={index}
-              label={opt}
-              selected={selectedOption === opt}
-              onPress={() => setSelectedOption(opt)}
-            />
+            <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
           ))}
         </View>
         <Button title="Continue" onPress={handleContinue} />
@@ -115,8 +101,8 @@ export default Challenges;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingVertical: 80,
-    paddingHorizontal: 27,
-    justifyContent: "center",
+    paddingTop: RFPercentage(5),
+    paddingHorizontal: RFPercentage(2),
+    alignItems: "center",
   },
 });

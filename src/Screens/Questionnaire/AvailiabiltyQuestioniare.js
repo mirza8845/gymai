@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
@@ -10,6 +10,7 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const availabilityOptions = ["1", "2", "3", "4", "5", "6", "7"];
 
@@ -18,9 +19,8 @@ const AvailiabiltyQuestioniare = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
 
-  const { userData, setUserData } = useContext(UserContext); // ✅ Use context
+  const { userData, setUserData } = useContext(UserContext);
 
-  // ✅ Prefill if available
   useEffect(() => {
     if (userData?.weeklyWorkoutCommitment) {
       setSelectedOption(userData.weeklyWorkoutCommitment);
@@ -48,14 +48,10 @@ const AvailiabiltyQuestioniare = () => {
     }
 
     try {
-      await firestore()
-        .collection("Users")
-        .doc(currentUser.uid)
-        .update({
-          weeklyWorkoutCommitment: selectedOption,
-        });
+      await firestore().collection("Users").doc(currentUser.uid).update({
+        weeklyWorkoutCommitment: selectedOption,
+      });
 
-      // ✅ Update context
       setUserData((prev) => ({
         ...prev,
         weeklyWorkoutCommitment: selectedOption,
@@ -73,19 +69,19 @@ const AvailiabiltyQuestioniare = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Heading title="Availability" />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title={"Availability"} />
+      </View>
       <Paragraph title="How many workouts can you commit to weekly?" />
       <View style={styles.availabilityOptions}>
         {availabilityOptions.map((opt, index) => (
-          <Option
-            key={index}
-            label={opt}
-            selected={selectedOption === opt}
-            onPress={() => setSelectedOption(opt)}
-          />
+          <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
         ))}
       </View>
-      <View style={{ top: RFPercentage(2) }}>
+      <View style={{ top: RFPercentage(5) }}>
         <Button title="Continue" onPress={handleContinue} />
       </View>
     </View>
@@ -96,12 +92,13 @@ export default AvailiabiltyQuestioniare;
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 80,
-    paddingHorizontal: 35,
+    paddingTop: RFPercentage(5),
+    paddingHorizontal: RFPercentage(2),
     justifyContent: "center",
   },
   availabilityOptions: {
     gap: 10,
-    paddingTop: RFPercentage(4),
+    paddingTop: RFPercentage(6),
+    paddingHorizontal:RFPercentage(2)
   },
 });

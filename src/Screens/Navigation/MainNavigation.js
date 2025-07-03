@@ -19,10 +19,24 @@ const Stack = createNativeStackNavigator();
 const isProfileComplete = (user) => {
   if (!user) return false;
   const requiredFields = [
-    "age","height","weight","gender","availableEquipment","currentDiet",
-    "currentPhysique","dietaryPreferences","energyLevel","fitnessChallenge",
-    "foodAllergies","goal","goalPhysique","gymExperience","sleepHours",
-    "waterIntakeLiters","weeklyWorkoutCommitment","fullName",
+    "age",
+    "height",
+    "weight",
+    "gender",
+    "availableEquipment",
+    "currentDiet",
+    "currentPhysique",
+    "dietaryPreferences",
+    "energyLevel",
+    "fitnessChallenge",
+    "foodAllergies",
+    "goal",
+    "goalPhysique",
+    "gymExperience",
+    "sleepHours",
+    "waterIntakeLiters",
+    "weeklyWorkoutCommitment",
+    "fullName",
   ];
   return requiredFields.every((f) => user[f]);
 };
@@ -30,8 +44,8 @@ const isProfileComplete = (user) => {
 const MainNavigator = () => {
   const { userData } = useContext(UserContext);
 
-  const [planReady, setPlanReady]   = useState(false);   
-  const [hasPlan, setHasPlan]       = useState(false);   
+  const [planReady, setPlanReady] = useState(false);
+  const [hasPlan, setHasPlan] = useState(false);
 
   useEffect(() => {
     const checkPlan = async () => {
@@ -39,10 +53,7 @@ const MainNavigator = () => {
       if (!current) return;
 
       try {
-        const snap = await firestore()
-          .collection("workouts")
-          .doc(current.uid)
-          .get();
+        const snap = await firestore().collection("workouts").doc(current.uid).get();
         setHasPlan(snap.exists);
       } catch (err) {
         console.log("plan check error", err.message);
@@ -59,7 +70,7 @@ const MainNavigator = () => {
     }
   }, [userData]);
 
-  const loading = userData === null || !planReady;
+  const loading = !planReady;
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -72,12 +83,12 @@ const MainNavigator = () => {
       )}
 
       {/* Shared routes */}
-      <Stack.Screen name="MyPlan"        component={Myplan} />
-      <Stack.Screen name="PullPushDay"   component={PullPushDay} />
+      <Stack.Screen name="MyPlan" component={Myplan} />
+      <Stack.Screen name="PullPushDay" component={PullPushDay} />
       <Stack.Screen name="WorkoutDetails" component={WorkoutDetails} />
-      <Stack.Screen name="EditProfile"   component={EditProfile} />
-      <Stack.Screen name="AddExercise"   component={AddExercise} />
-      <Stack.Screen name="ExerciseForm"  component={ExerciseForm} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="AddExercise" component={AddExercise} />
+      <Stack.Screen name="ExerciseForm" component={ExerciseForm} />
       <Stack.Screen name="SaveRoutineDate" component={SaveRoutineDate} />
     </Stack.Navigator>
   );

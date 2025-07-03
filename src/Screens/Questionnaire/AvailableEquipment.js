@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Heading from "../../CommonComponent/Heading";
@@ -10,6 +10,7 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const equipmentOptions = [
   "Everything",
@@ -29,10 +30,9 @@ const equipmentOptions = [
 const AvailableEquipment = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const { userData, setUserData } = useContext(UserContext); // ✅ Context usage
+  const { userData, setUserData } = useContext(UserContext);
   const [selectedEquipment, setSelectedEquipment] = useState([]);
 
-  // ✅ Prefill from context
   useEffect(() => {
     if (userData?.availableEquipment) {
       setSelectedEquipment(userData.availableEquipment);
@@ -40,11 +40,7 @@ const AvailableEquipment = () => {
   }, [userData]);
 
   const toggleEquipment = (item) => {
-    setSelectedEquipment((prev) =>
-      prev.includes(item)
-        ? prev.filter((eq) => eq !== item)
-        : [...prev, item]
-    );
+    setSelectedEquipment((prev) => (prev.includes(item) ? prev.filter((eq) => eq !== item) : [...prev, item]));
   };
 
   const handleContinue = async () => {
@@ -68,14 +64,9 @@ const AvailableEquipment = () => {
     }
 
     try {
-      await firestore()
-        .collection("Users")
-        .doc(currentUser.uid)
-        .update({
-          availableEquipment: selectedEquipment,
-        });
-
-      // ✅ Update context
+      await firestore().collection("Users").doc(currentUser.uid).update({
+        availableEquipment: selectedEquipment,
+      });
       setUserData((prev) => ({
         ...prev,
         availableEquipment: selectedEquipment,
@@ -93,24 +84,25 @@ const AvailableEquipment = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Heading title="Available equipment" />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+        </TouchableOpacity>
+        <Heading title="Available equipment" />
+      </View>
+
       <Paragraph title="What equipment do you have access to? You can start with nothing!" />
 
       <View
         style={{
           gap: 2,
-          paddingTop: 50,
-          paddingBottom: 100,
-          left: RFPercentage(2),
+          paddingTop: 60,
+          paddingBottom: 60,
+          left: RFPercentage(4),
         }}
       >
         {equipmentOptions.map((title, index) => (
-          <DoubleButton
-            key={index}
-            title={title}
-            selected={selectedEquipment.includes(title)}
-            onPress={() => toggleEquipment(title)}
-          />
+          <DoubleButton key={index} title={title} selected={selectedEquipment.includes(title)} onPress={() => toggleEquipment(title)} />
         ))}
       </View>
 
@@ -123,8 +115,8 @@ export default AvailableEquipment;
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 80,
-    paddingHorizontal: 25,
+    paddingTop: RFPercentage(5),
+    paddingHorizontal: RFPercentage(2),
     justifyContent: "center",
   },
 });

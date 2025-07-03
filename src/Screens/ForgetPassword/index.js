@@ -12,35 +12,36 @@ import { Formik } from "formik";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Login = () => {
+const ForgetPassword = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
   const validationSchema = yup.object({
     email: yup.string().email("Invalid email").required("Email is required"),
-    password: yup.string().required("Password is required"),
   });
 
-  const handleSignIn = async (values) => {
-    setLoading(true);
-    try {
-      await auth().signInWithEmailAndPassword(values.email, values.password);
-      Toast.show({
-        type: "success",
-        text1: "Sign In",
-        text2: "Logged in successfully!",
-      });
-      navigation.navigate("introQuestionnaire");
-    } catch (error) {
-      console.log("Sign In Error:", error);
-      Toast.show({
-        type: "error",
-        text1: "Sign In Failed",
-        text2: "Invalid credentials",
-      });
-    } finally {
-      setLoading(false);
+  const handleNext = async (values) => {
+    if (values.email) {
+      setLoading(true);
+      try {
+        await auth().sendPasswordResetEmail(values.email);
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Reset password link sent to your email.",
+        });
+        navigation.navigate("login");
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Error in sending link",
+        });
+      } finally {
+        setLoading(false);
+      }
+    } else {
     }
   };
 
@@ -49,46 +50,32 @@ const Login = () => {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <View style={[styles.container, { backgroundColor: colors.background }]}>
           <View style={styles.innerContainer}>
-            <View style={{ marginTop: RFPercentage(15) }}>
-              <Heading title="Welcome To JimAi" />
+            <View style={{ marginTop: RFPercentage(10) }}>
+              <Heading title="Reset Password" />
+              <Text style={{ color: "white", fontFamily: Fonts.Medium, textAlign: "center" }}>Reset Password link is sent to your email!</Text>
             </View>
 
-            <Formik initialValues={{ email: "", password: "" }} validationSchema={validationSchema} onSubmit={handleSignIn}>
+            <Formik initialValues={{ email: "" }} validationSchema={validationSchema} onSubmit={handleNext}>
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <>
                   <View style={styles.inputView}>
                     <CommonInput label="Email" placeholder="Enter email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
                     {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-                    <CommonInput
-                      label="Password"
-                      placeholder="Enter password"
-                      secureTextEntry={true}
-                      value={values.password}
-                      onChangeText={handleChange("password")}
-                      handleBlur={handleBlur("password")}
-                    />
-                    {touched.password && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("ForgetPassword")} style={styles.forgotWrapper}>
-                      <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>Forgot Password?</Text>
-                    </TouchableOpacity>
                     <View style={{ marginTop: RFPercentage(10) }}>
-                      <Button title="Log In" onPress={handleSubmit} loader={loading} disbaled={loading} />
+                      <Button title="Send Link" onPress={handleSubmit} loader={loading} disbaled={loading} />
                     </View>
                   </View>
                 </>
               )}
             </Formik>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate("signup")}>
-            <Text style={[styles.signupBtn, { color: colors.text }]}>Don’t have an account? Sign Up</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
-export default Login;
+export default ForgetPassword;
 
 const styles = StyleSheet.create({
   container: {
