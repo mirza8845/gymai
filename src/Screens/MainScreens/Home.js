@@ -1,25 +1,7 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  FlatList,
-  ActivityIndicator,
-} from "react-native";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator } from "react-native";
 import { useNavigation, useTheme } from "@react-navigation/native";
-import {
-  SafeAreaView,
-  SafeAreaProvider,
-} from "react-native-safe-area-context";
+import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
@@ -33,6 +15,8 @@ import gymImg from "../../assets/images/gym.png";
 import WomenGym from "../../assets/images/womangym.png";
 import MenGym from "../../assets/images/mengym.png";
 import { Fonts } from "../../constants/theme";
+
+import { useFocusEffect } from "@react-navigation/native";
 
 const data = [
   {
@@ -60,17 +44,13 @@ const Home = () => {
   const workoutPlan = useSelector((state) => state.workout.workoutPlan);
   const [loading, setLoading] = useState(true);
 
-
   const fetchWorkoutPlan = useCallback(async () => {
     try {
       setLoading(true);
       const user = auth().currentUser;
       if (!user) return;
 
-      const doc = await firestore()
-        .collection("workouts")
-        .doc(user.uid)
-        .get();
+      const doc = await firestore().collection("workouts").doc(user.uid).get();
 
       if (doc.exists) {
         const planInDb = doc.data().plan;
@@ -85,19 +65,15 @@ const Home = () => {
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!workoutPlan?.weekly_split) {
+  useFocusEffect(
+    useCallback(() => {
       fetchWorkoutPlan();
-    } else {
-      setLoading(false);
-    }
-  }, [fetchWorkoutPlan, workoutPlan]);
+    }, [fetchWorkoutPlan])
+  );
 
   const { workoutDayKey, firstDayExercises, firstWorkoutDay } = useMemo(() => {
-    const firstDay = workoutPlan?.weekly_split?.find(
-      (day) => !day.toLowerCase().includes("rest")
-    );
-    const key = firstDay?.split(":")[0]?.trim(); 
+    const firstDay = workoutPlan?.weekly_split?.find((day) => !day.toLowerCase().includes("rest"));
+    const key = firstDay?.split(":")[0]?.trim();
     return {
       workoutDayKey: key,
       firstWorkoutDay: firstDay,
@@ -107,18 +83,12 @@ const Home = () => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView
-        style={[styles.safeArea, { backgroundColor: colors.background }]}
-      >
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.greetingText}>Hi, {fullName}</Text>
 
           {loading ? (
-            <ActivityIndicator
-              size="large"
-              color="#FFDD03"
-              style={{ marginTop: 30 }}
-            />
+            <ActivityIndicator size="large" color="#FFDD03" style={{ marginTop: 30 }} />
           ) : workoutPlan?.weekly_split ? (
             <>
               <Text style={[styles.descriptionText, { color: colors.text }]}>
@@ -127,10 +97,7 @@ const Home = () => {
                 )}. Discover your exercises, warm‑up tips, and cool‑down steps to train smarter!`}
               </Text>
 
-              <TouchableOpacity
-                style={styles.planButton}
-                onPress={() => navigation.navigate("MyPlan")}
-              >
+              <TouchableOpacity style={styles.planButton} onPress={() => navigation.navigate("MyPlan")}>
                 <Text style={styles.planButtonText}>My Plan</Text>
               </TouchableOpacity>
 
@@ -154,17 +121,12 @@ const Home = () => {
                   }
                 />
               ) : (
-                <Text style={{ color: colors.text }}>
-                  Rest day or workout not available.
-                </Text>
+                <Text style={{ color: colors.text }}>Rest day or workout not available.</Text>
               )}
             </>
           ) : (
             <>
-              <Text style={[styles.descriptionText, { color: colors.text }]}>
-                You have no saved workout plan. Finish your profile and generate
-                a plan first.
-              </Text>
+              <Text style={[styles.descriptionText, { color: colors.text }]}>You have no saved workout plan. Finish your profile and generate a plan first.</Text>
             </>
           )}
 
@@ -174,9 +136,7 @@ const Home = () => {
           <View style={styles.imageCardContainer}>
             <View style={styles.textBlock}>
               <Text style={styles.cardTitle}>Myth Busters</Text>
-              <Text style={{ color: "black", fontFamily: Fonts.Regular }}>
-                Popular fitness myths debunked!
-              </Text>
+              <Text style={{ color: "black", fontFamily: Fonts.Regular }}>Popular fitness myths debunked!</Text>
             </View>
             <Image source={gymImg} style={styles.cardImage} resizeMode="contain" />
           </View>
@@ -184,9 +144,7 @@ const Home = () => {
           <FlatList
             data={data}
             keyExtractor={(_, index) => index.toString()}
-            renderItem={({ item }) => (
-              <DoubleCard leftItem={item.leftItem} rightItem={item.rightItem} />
-            )}
+            renderItem={({ item }) => <DoubleCard leftItem={item.leftItem} rightItem={item.rightItem} />}
             contentContainerStyle={{ paddingBottom: 40 }}
           />
 

@@ -48,10 +48,13 @@ const Myplan = () => {
           buttons={[
             {
               title: "Edit Routine",
-              onPress: () => console.log("Edit"),
+              onPress: () =>
+                navigation.navigate("EditRoutineScreen", {
+                  dayKey,
+                  dayLabel,
+                  exercises,
+                }),
               backgroundColor: "#D9D9D9",
-              padding: 3,
-              accessibilityLabel: `Edit routine for ${dayLabel}`,
             },
             {
               title: "Save Routine",

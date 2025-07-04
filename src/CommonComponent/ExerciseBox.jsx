@@ -1,48 +1,25 @@
-import React from 'react'
-import { View, Text, Pressable, Image, StyleSheet } from 'react-native'
-import { Table, Row, Rows, Col, TableWrapper } from 'react-native-table-component'
-import { Fonts } from '../constants/theme'
+import React from "react";
+import { View, Text, Pressable, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Table, Row, Rows, Col, TableWrapper } from "react-native-table-component";
+import { Fonts } from "../constants/theme";
 
-const ExerciseBox = ({
-  title,
-  tableHead,
-  tableTitle,
-  tableData,
-  image,
-  onRemove,
-  onAddSet,
-  onPress
-}) => {
+const ExerciseBox = ({ title, tableHead, tableTitle, tableData, image, onRemove, onAddSet, onPress }) => {
   return (
-    <Pressable style={styles.card} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={onPress}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        <Pressable onPress={onRemove}>
+        <TouchableOpacity activeOpacity={0.8} onPress={onRemove}>
           <Text style={styles.removeText}>Remove</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.content}>
         <View style={styles.tableContainer}>
           <Table>
-            <Row
-              data={tableHead}
-              flexArr={[1, 2, 1, 1]}
-              style={styles.tableHead}
-              textStyle={styles.tableText}
-            />
+            <Row data={tableHead} flexArr={[1, 2, 1, 1]} style={styles.tableHead} textStyle={styles.tableText} />
             <TableWrapper style={styles.tableWrapper}>
-              <Col
-                data={tableTitle}
-                style={styles.tableTitleCol}
-                heightArr={[28, 28]}
-                textStyle={styles.tableText}
-              />
-              <Rows
-                data={tableData}
-                flexArr={[2, 1, 1]}
-                style={styles.tableRow}
-              />
+              <Col data={tableTitle} style={styles.tableTitleCol} heightArr={[28, 28]} textStyle={styles.tableText} />
+              <Rows data={tableData} flexArr={[2, 1, 1]} style={styles.tableRow} />
             </TableWrapper>
           </Table>
 
@@ -52,19 +29,19 @@ const ExerciseBox = ({
         </View>
 
         <View style={styles.imageContainer}>
-          <Image source={image} style={styles.exerciseImage} resizeMode='cover'/>
+          <Image source={image} style={styles.exerciseImage} resizeMode="cover" />
           <Text style={styles.howToText}>How to perform</Text>
         </View>
       </View>
-    </Pressable>
-  )
-}
+    </TouchableOpacity>
+  );
+};
 
-export default ExerciseBox
+export default ExerciseBox;
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     width: 370,
     height: 200,
     borderRadius: 20,
@@ -72,20 +49,20 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   title: {
     fontSize: 18,
     // fontWeight: 'bold',
-    fontFamily:Fonts.SemiBold
+    fontFamily: Fonts.SemiBold,
   },
   removeText: {
-    color: '#FF0000',
-    fontFamily:Fonts.Medium
+    color: "#FF0000",
+    fontFamily: Fonts.Medium,
   },
   content: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingTop: 10,
   },
   tableContainer: {
@@ -95,7 +72,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   tableWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   tableTitleCol: {
     flex: 1,
@@ -105,20 +82,20 @@ const styles = StyleSheet.create({
   },
   tableText: {
     // fontWeight: 'bold',
-    fontFamily:Fonts.SemiBold
+    fontFamily: Fonts.SemiBold,
   },
   addSetButton: {
     paddingTop: 10,
   },
   addSetText: {
     fontSize: 14,
-    fontFamily:Fonts.SemiBold,
-    color :'#676767'
+    fontFamily: Fonts.SemiBold,
+    color: "#676767",
   },
   imageContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   exerciseImage: {
     width: 110,
@@ -129,14 +106,14 @@ const styles = StyleSheet.create({
   howToText: {
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    borderColor: 'black',
+    borderColor: "black",
     padding: 3,
     borderBottomWidth: 2,
     borderLeftWidth: 2,
     borderRightWidth: 2,
-    fontSize:10,
-    fontFamily:Fonts.Medium,
-    width:110,
-    textAlign:'center'
+    fontSize: 10,
+    fontFamily: Fonts.Medium,
+    width: 110,
+    textAlign: "center",
   },
-})
+});

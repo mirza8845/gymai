@@ -13,6 +13,9 @@ import { UserContext } from "../../utils/userContext";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Splash from "../Splash";
+import EditRoutineScreen from "../MainScreens/EditRoutine";
+import StartWorkoutScreen from "../MainScreens/StartNewWorkout";
+import AddRoutineScreen from "../MainScreens/AddRoutine";
 
 const Stack = createNativeStackNavigator();
 
@@ -84,8 +87,11 @@ const MainNavigator = () => {
 
       {/* Shared routes */}
       <Stack.Screen name="MyPlan" component={Myplan} />
+      <Stack.Screen name="EditRoutineScreen" component={EditRoutineScreen} />
       <Stack.Screen name="PullPushDay" component={PullPushDay} />
       <Stack.Screen name="WorkoutDetails" component={WorkoutDetails} />
+      <Stack.Screen name="StartWorkoutScreen" component={StartWorkoutScreen} />
+      <Stack.Screen name="AddRoutineScreen" component={AddRoutineScreen} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="AddExercise" component={AddExercise} />
       <Stack.Screen name="ExerciseForm" component={ExerciseForm} />

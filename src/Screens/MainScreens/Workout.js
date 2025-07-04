@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, Pressable, ScrollView, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme, useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
@@ -75,22 +68,16 @@ const Workout = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
       <ScrollView>
         <View style={styles.container}>
-          <Text style={[styles.header, { backgroundColor: colors.card, color: 'black' }]}>
-            Track My Progress
-          </Text>
+          <Text style={[styles.header, { backgroundColor: colors.card, color: "black" }]}>Track My Progress</Text>
 
-          <Pressable>
-            <Text style={[styles.startWorkoutButton, { color: colors.text }]}>
-              + Start New Workout
-            </Text>
+          <Pressable onPress={() => navigation.navigate("StartWorkoutScreen")}>
+            <Text style={[styles.startWorkoutButton, { color: colors.text }]}>+ Start New Workout</Text>
           </Pressable>
 
           <View style={styles.routineHeader}>
             <Text style={[styles.routineTitle, { color: colors.text }]}>My Routines</Text>
-            <Pressable>
-              <Text style={[styles.addRoutine, { color: colors.text }]}>
-                + Add new routine
-              </Text>
+            <Pressable onPress={() => navigation.navigate("AddRoutineScreen")}>
+              <Text style={[styles.addRoutine, { color: colors.text }]}>+ Add new routine</Text>
             </Pressable>
           </View>
 
