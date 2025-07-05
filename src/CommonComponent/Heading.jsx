@@ -17,10 +17,10 @@ export default Heading;
 
 const styles = StyleSheet.create({
   heading: {
-    fontSize: RFPercentage(3),
+    fontSize: RFPercentage(2.4),
     // fontWeight: '700',
     // marginBottom: 10,
     textAlign: "center",
-    fontFamily: Fonts.SemiBold,
+    fontFamily: Fonts.Montserrat_Bold,
   },
 });

@@ -1,16 +1,25 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Fonts } from "../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
-const CommonInput = ({ label, placeholder, value, onChangeText, secureTextEntry = false , handleBlur, editable=true}) => {
+const CommonInput = ({ icon, placeholder, value, onChangeText, secureTextEntry = false, handleBlur, editable = true }) => {
   const { colors } = useTheme();
 
   return (
     <View style={styles.inputContainer}>
-      <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
-      <TextInput style={styles.input} placeholder={placeholder} placeholderTextColor="gray" value={value} onChangeText={onChangeText} secureTextEntry={secureTextEntry}  onBlur={handleBlur} editable={editable} />
+      <Image source={icon} resizeMode="contain" style={{ width: RFPercentage(2.5), height: RFPercentage(2.5) }} />
+      <TextInput
+        style={styles.input}
+        placeholder={placeholder}
+        placeholderTextColor="#555555"
+        value={value}
+        onChangeText={onChangeText}
+        secureTextEntry={secureTextEntry}
+        onBlur={handleBlur}
+        editable={editable}
+      />
     </View>
   );
 };
@@ -19,8 +28,15 @@ export default CommonInput;
 
 const styles = StyleSheet.create({
   inputContainer: {
-    // marginBottom: 12,
-    marginTop:RFPercentage(1.8)
+    marginTop: RFPercentage(1.8),
+    borderRadius: RFPercentage(100),
+    backgroundColor: "#080808",
+    paddingHorizontal: RFPercentage(3),
+    width: "95%",
+    height: RFPercentage(6.8),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   label: {
     fontSize: 14,
@@ -28,13 +44,11 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Medium,
   },
   input: {
-    borderWidth: 1,
-    borderRadius: 14,
-    padding: 10,
-    backgroundColor: "white",
-    color: "black",
-    fontFamily: Fonts.Regular,
+    color: "white",
+    fontFamily: Fonts.Montserrat_Regular,
     fontSize: RFPercentage(1.8),
-    paddingHorizontal:RFPercentage(2)
+    width: "90%",
+    height: RFPercentage(6.8),
+    paddingLeft:RFPercentage(2)
   },
 });

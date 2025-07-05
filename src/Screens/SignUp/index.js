@@ -1,15 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Alert, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard, Image } from "react-native";
 import React, { useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
@@ -17,12 +6,13 @@ import Heading from "../../CommonComponent/Heading";
 import CommonInput from "../../CommonComponent/CommonInput";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import * as yup from "yup";
 import { Formik } from "formik";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Col } from "react-native-table-component";
 
 const SignUp = () => {
   const { colors } = useTheme();
@@ -32,18 +22,11 @@ const SignUp = () => {
   let validationSchema = yup.object({
     name: yup.string().required("Username is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
-    password: yup
-      .string()
-      .min(6, "Password must be at least 6 characters long")
-      .required("Password is required"),
-    confirmPassword: yup
-      .string()
-      .oneOf([yup.ref("password")], "Passwords must match")
-      .required("Passwords must match"),
+    password: yup.string().min(6, "Password must be at least 6 characters long").required("Password is required"),
   });
 
   const handleSignUp = async (values) => {
-    if (values.name && values.email && values.password && values.confirmPassword) {
+    if (values.name && values.email && values.password) {
       setLoading(true);
       try {
         const userCredential = await auth().createUserWithEmailAndPassword(values.email, values.password);
@@ -86,19 +69,27 @@ const SignUp = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView
-          contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
-          keyboardShouldPersistTaps="handled"
-        >
+        <ScrollView contentContainerStyle={[styles.container, { backgroundColor: Colors.background }]} keyboardShouldPersistTaps="handled">
+          <Image
+            source={require("../../assets/images/gym2.png")}
+            resizeMode="contain"
+            style={{ width: RFPercentage(10), height: RFPercentage(10), position: "absolute", left: RFPercentage(-2), top: RFPercentage(20) }}
+          />
+          <Image
+            source={require("../../assets/images/gym1.png")}
+            resizeMode="contain"
+            style={{ width: RFPercentage(10), height: RFPercentage(10), position: "absolute", right: RFPercentage(-2), top: RFPercentage(32) }}
+          />
+
           <View style={styles.innerContainer}>
-            <View style={{ marginTop: RFPercentage(5) }}>
-              <Heading title="Create Account" />
+            <Image source={require("../../assets/images/gymLogo.png")} resizeMode="contain" style={{ width: RFPercentage(14), height: RFPercentage(14) }} />
+            <View style={{}}>
+              <Text style={{ fontFamily: Fonts.Lora_Bold, color: "white", fontSize: 28, textAlign: "center" }}>
+                Gym<Text style={{ color: "#F34E3A" }}>AI</Text>
+              </Text>
+              <Text style={{ color: "#656565", fontFamily: Fonts.Montserrat_Italic, fontSize: 16, textAlign: "center" }}>Be an Inspiration</Text>
             </View>
 
             <Formik
@@ -106,7 +97,6 @@ const SignUp = () => {
                 name: "",
                 email: "",
                 password: "",
-                confirmPassword: "",
               }}
               validationSchema={validationSchema}
               onSubmit={(values) => handleSignUp(values)}
@@ -114,68 +104,35 @@ const SignUp = () => {
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <>
                   <View style={styles.inputView}>
-                    <CommonInput
-                      label="Full name"
-                      placeholder="Enter Your Full Name"
-                      value={values.name}
-                      onChangeText={handleChange("name")}
-                      handleBlur={handleBlur("name")}
-                    />
+                    <CommonInput icon={require("../../assets/images/user.png")} placeholder="Username" value={values.name} onChangeText={handleChange("name")} handleBlur={handleBlur("name")} />
                     {touched.name && errors.name && (
-                      <View style={{}}>
-                        <Text style={{ color: "red", fontFamily: Fonts.Regular, fontSize:RFPercentage(1.6) }}>{errors.name}</Text>
+                      <View style={{ width: "90%" }}>
+                        <Text style={{ color: Colors.primary, fontFamily: Fonts.Montserrat_Regular, fontSize: RFPercentage(1.6), top: 2 }}>{errors.name}</Text>
                       </View>
                     )}
 
-                    <CommonInput
-                      label="Email"
-                      placeholder="example@email.com"
-                      value={values.email}
-                      onChangeText={handleChange("email")}
-                      handleBlur={handleBlur("email")}
-                    />
+                    <CommonInput icon={require("../../assets/images/mail.png")} placeholder="Email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
                     {touched.email && errors.email && (
-                      <View style={{ }}>
-                        <Text style={{ color: "red", fontFamily: Fonts.Regular, fontSize:RFPercentage(1.6) }}>{errors.email}</Text>
+                      <View style={{ width: "90%" }}>
+                        <Text style={{ color: Colors.primary, fontFamily: Fonts.Montserrat_Regular, fontSize: RFPercentage(1.6), top: 2 }}>{errors.email}</Text>
                       </View>
                     )}
 
                     <CommonInput
-                      label="Password"
-                      placeholder="Enter Password"
+                      icon={require("../../assets/images/lock.png")}
+                      placeholder="Password"
                       secureTextEntry={true}
                       value={values.password}
                       onChangeText={handleChange("password")}
                       handleBlur={handleBlur("password")}
                     />
                     {touched.password && errors.password && (
-                      <View style={{  }}>
-                        <Text style={{ color: "red", fontFamily: Fonts.Regular , fontSize:RFPercentage(1.6)}}>{errors.password}</Text>
+                      <View style={{ width: "90%" }}>
+                        <Text style={{ color: Colors.primary, fontFamily: Fonts.Montserrat_Regular, fontSize: RFPercentage(1.6), top: 2 }}>{errors.password}</Text>
                       </View>
                     )}
 
-                    <CommonInput
-                      label="Confirm Password"
-                      placeholder="Repeat Password"
-                      secureTextEntry={true}
-                      value={values.confirmPassword}
-                      onChangeText={handleChange("confirmPassword")}
-                      handleBlur={handleBlur("confirmPassword")}
-                    />
-                    {touched.confirmPassword && errors.confirmPassword && (
-                      <View style={{ }}>
-                        <Text style={{ color: "red", fontFamily: Fonts.Regular,fontSize:RFPercentage(1.6) }}>{errors.confirmPassword}</Text>
-                      </View>
-                    )}
-
-                    <View style={styles.forgotWrapper}>
-                      <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>
-                        By continuing, you agree to{"\n"}
-                        <Text style={{ fontFamily: Fonts.Medium }}>Terms of Use and Privacy Policy.</Text>
-                      </Text>
-                    </View>
-
-                    <View style={{ marginTop: RFPercentage(1.5) }}>
+                    <View style={{ marginTop: RFPercentage(8) }}>
                       <Button title="Sign Up" onPress={handleSubmit} loader={loading} disbaled={loading} />
                     </View>
                   </View>
@@ -185,7 +142,9 @@ const SignUp = () => {
           </View>
 
           <TouchableOpacity onPress={() => navigation.navigate("login")}>
-            <Text style={[styles.signupBtn, { color: colors.text }]}>Already have an account? Log in</Text>
+            <Text style={[styles.signupBtn, { color: colors.text }]}>
+              Already have an account?<Text style={{ color: Colors.primary, fontFamily: Fonts.Montserrat_SemiBold }}> Log in</Text>
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </TouchableWithoutFeedback>
@@ -198,16 +157,18 @@ export default SignUp;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingVertical: 20,
   },
   innerContainer: {
-    flex: 1,
     alignItems: "center",
-    paddingHorizontal: 20,
+    marginTop: RFPercentage(12),
+    justifyContent: "center",
   },
   inputView: {
     width: "90%",
-    marginTop: RFPercentage(3),
+    marginTop: RFPercentage(7),
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   forgotWrapper: {
     justifyContent: "center",
@@ -222,8 +183,8 @@ const styles = StyleSheet.create({
   },
   signupBtn: {
     textAlign: "center",
-    fontSize: RFPercentage(1.6),
-    fontFamily: Fonts.Regular,
-    marginTop: RFPercentage(3),
+    fontSize: RFPercentage(1.8),
+    fontFamily: Fonts.Montserrat_Regular,
+    marginTop: RFPercentage(2.5),
   },
 });

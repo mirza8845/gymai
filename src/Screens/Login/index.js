@@ -1,11 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, Platform, ScrollView, Image, StatusBar } from "react-native";
 import React, { useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
 import Heading from "../../CommonComponent/Heading";
 import CommonInput from "../../CommonComponent/CommonInput";
 import auth from "@react-native-firebase/auth";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -45,31 +45,56 @@ const Login = () => {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }} keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 50}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-        <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#141516" }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: "#141516" }} keyboardShouldPersistTaps="handled">
+        <StatusBar translucent={true} backgroundColor={"transparent"} barStyle={"light-content"} />
+        <View style={[styles.container, { backgroundColor: "#141516" }]}>
+          <Image
+            source={require("../../assets/images/gym2.png")}
+            resizeMode="contain"
+            style={{ width: RFPercentage(10), height: RFPercentage(10), position: "absolute", left: RFPercentage(-2), top: RFPercentage(20) }}
+          />
+          <Image
+            source={require("../../assets/images/gym1.png")}
+            resizeMode="contain"
+            style={{ width: RFPercentage(10), height: RFPercentage(10), position: "absolute", right: RFPercentage(-2), top: RFPercentage(32) }}
+          />
+
           <View style={styles.innerContainer}>
-            <View style={{ marginTop: RFPercentage(15) }}>
-              <Heading title="Welcome To JimAi" />
+            <Image source={require("../../assets/images/gymLogo.png")} resizeMode="contain" style={{ width: RFPercentage(14), height: RFPercentage(14) }} />
+            <View style={{}}>
+              <Text style={{ fontFamily: Fonts.Lora_Bold, color: "white", fontSize: 28, textAlign: "center" }}>
+                Gym<Text style={{ color: "#F34E3A" }}>AI</Text>
+              </Text>
+              <Text style={{ color: "#656565", fontFamily: Fonts.Montserrat_Italic, fontSize: 16, textAlign: "center" }}>Be an Inspiration</Text>
             </View>
 
             <Formik initialValues={{ email: "", password: "" }} validationSchema={validationSchema} onSubmit={handleSignIn}>
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <>
                   <View style={styles.inputView}>
-                    <CommonInput label="Email" placeholder="Enter email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
-                    {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+                    <CommonInput icon={require("../../assets/images/mail.png")} placeholder="Email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
+
+                    {touched.email && errors.email && (
+                      <View style={{ width: "90%" }}>
+                        <Text style={styles.errorText}>{errors.email}</Text>
+                      </View>
+                    )}
                     <CommonInput
-                      label="Password"
-                      placeholder="Enter password"
+                      icon={require("../../assets/images/lock.png")}
+                      placeholder="Password"
                       secureTextEntry={true}
                       value={values.password}
                       onChangeText={handleChange("password")}
                       handleBlur={handleBlur("password")}
                     />
-                    {touched.password && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+                    {touched.password && errors.password && (
+                      <View style={{ width: "90%" }}>
+                        <Text style={styles.errorText}>{errors.password}</Text>
+                      </View>
+                    )}
                     <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("ForgetPassword")} style={styles.forgotWrapper}>
-                      <Text style={[styles.forgotAndSignUpText, { color: colors.text }]}>Forgot Password?</Text>
+                      <Text style={[styles.forgotAndSignUpText]}>Forgot Password?</Text>
                     </TouchableOpacity>
                     <View style={{ marginTop: RFPercentage(10) }}>
                       <Button title="Log In" onPress={handleSubmit} loader={loading} disbaled={loading} />
@@ -80,7 +105,9 @@ const Login = () => {
             </Formik>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate("signup")}>
-            <Text style={[styles.signupBtn, { color: colors.text }]}>Don’t have an account? Sign Up</Text>
+            <Text style={[styles.signupBtn, { color: colors.text }]}>
+              Don’t have an account?<Text style={{ color: Colors.primary, fontFamily: Fonts.Montserrat_SemiBold }}> Sign Up</Text>
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -93,20 +120,18 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "space-between",
-    paddingVertical: 20,
   },
   innerContainer: {
-    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 20,
-    // backgroundColor:'red'
+    marginTop: RFPercentage(12),
   },
   inputView: {
     width: "90%",
-    marginTop: RFPercentage(3),
+    marginTop: RFPercentage(7),
     alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   inputTitle: {
     fontSize: 14,
@@ -122,41 +147,27 @@ const styles = StyleSheet.create({
     color: "black",
   },
   forgotWrapper: {
-    alignItems: "flex-end",
     marginTop: 6,
-    // marginBottom: 20,
+    width: "90%",
   },
   forgotAndSignUpText: {
     fontSize: RFPercentage(1.7),
-    fontFamily: Fonts.Medium,
+    fontFamily: Fonts.Montserrat_SemiBold,
+    textAlign: "right",
+    color: Colors.white,
   },
-  loginBtn: {
-    width: "60%",
-    borderRadius: 20,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#383838",
-    borderColor: "white",
-    borderWidth: 1,
-    alignSelf: "center",
-    marginTop: RFPercentage(3),
-  },
-  loginText: {
-    fontSize: 16,
-    fontWeight: "600",
-    fontFamily: Fonts.Medium,
-  },
+
   signupBtn: {
     textAlign: "center",
-    fontSize: RFPercentage(1.6),
-    fontFamily: Fonts.Regular,
-    marginTop: RFPercentage(2),
+    fontSize: RFPercentage(1.8),
+    fontFamily: Fonts.Montserrat_Regular,
+    marginTop: RFPercentage(2.5),
   },
   errorText: {
     fontSize: 13,
     top: 3,
-    fontFamily: Fonts.Regular,
-    color: "red",
+    fontFamily: Fonts.Montserrat_Regular,
+    color: Colors.primary,
+    textAlign: "left",
   },
 });

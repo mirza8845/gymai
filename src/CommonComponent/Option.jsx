@@ -1,7 +1,7 @@
 import { useTheme } from "@react-navigation/native";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Fonts } from "../constants/theme";
+import { Colors, Fonts } from "../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 const Option = ({ label, selected, onPress }) => {
@@ -9,7 +9,7 @@ const Option = ({ label, selected, onPress }) => {
 
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={onPress}>
-      <Text style={styles.text}>{label.length > 30 ? label.substring(0, 30) + "..." : label}</Text>
+      <Text style={[styles.text, { color: selected ? "white" : "#555555" }]}>{label.length > 30 ? label.substring(0, 30) + "..." : label}</Text>
       <View style={[styles.radioOuter, selected && styles.radioOuterSelected]}>{selected && <View style={styles.radioInner} />}</View>
     </TouchableOpacity>
   );
@@ -17,9 +17,9 @@ const Option = ({ label, selected, onPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#fff",
+    width: "90%",
+    height: 46,
+    backgroundColor: "#080808",
     borderRadius: 30,
     paddingHorizontal: 10,
     marginBottom: 10,
@@ -29,29 +29,29 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: RFPercentage(2),
-    // fontWeight: '500',
-    color: "black",
+    color: "#555555",
     width: "70%",
     paddingLeft: 20,
-    fontFamily: Fonts.Medium,
+    fontFamily: Fonts.Montserrat_Medium,
   },
   radioOuter: {
-    width: 30,
-    height: 30,
+    width: 26,
+    height: 26,
     borderRadius: 20,
-    borderWidth: 4,
-    borderColor: "black",
+    borderWidth: 3,
+    borderColor: "#555555",
     alignItems: "center",
     justifyContent: "center",
+    right: 5,
   },
   radioOuterSelected: {
-    borderColor: "black",
+    borderColor: Colors.primary,
   },
   radioInner: {
-    width: 18,
-    height: 18,
+    width: 15,
+    height: 15,
     borderRadius: 18,
-    backgroundColor: "black",
+    backgroundColor: Colors.primary,
   },
 });
 

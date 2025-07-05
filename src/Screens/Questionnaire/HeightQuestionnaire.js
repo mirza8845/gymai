@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-nati
 import { RulerPicker } from "react-native-ruler-view";
 import Button from "../../CommonComponent/Button";
 import Heading from "../../CommonComponent/Heading";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
@@ -79,17 +79,17 @@ export default function HeightQuestionnaire() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center", paddingTop: RFPercentage(5) }}>
+    <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center", paddingTop: RFPercentage(10) }}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.4)} />
         </TouchableOpacity>
         <Heading title="Height Selection" />
       </View>
 
       <Text style={{ marginTop: RFPercentage(6) }}>
         <Text style={[styles.selectedText, { color: colors.text }]}>{selectedHeight}</Text>
-        <Text style={{ color: colors.text, fontFamily: Fonts.Regular }}>cm</Text>
+        <Text style={{ color: colors.text, fontFamily: Fonts.Montserrat_Regular }}>cm</Text>
       </Text>
 
       <View
@@ -132,7 +132,7 @@ export default function HeightQuestionnaire() {
             shortStepColor: "white",
             longStepColor: "white",
             textColor: "white",
-            backgroundColor: "black",
+            backgroundColor: "transparent",
             fontWeight: "700",
             fontSize: 10,
           }}
@@ -162,6 +162,7 @@ export default function HeightQuestionnaire() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:Colors.background
   },
   selectedText: {
     fontSize: 48,

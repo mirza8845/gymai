@@ -16,6 +16,7 @@ import Splash from "../Splash";
 import EditRoutineScreen from "../MainScreens/EditRoutine";
 import StartWorkoutScreen from "../MainScreens/StartNewWorkout";
 import AddRoutineScreen from "../MainScreens/AddRoutine";
+import { StatusBar } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -76,27 +77,30 @@ const MainNavigator = () => {
   const loading = !planReady;
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {loading ? (
-        <Stack.Screen name="Splash" component={Splash} />
-      ) : isProfileComplete(userData) && hasPlan ? (
-        <Stack.Screen name="Tabs" component={Homestack} />
-      ) : (
-        <Stack.Screen name="AuthStack" component={AuthStack} />
-      )}
+    <>
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true} />
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {loading ? (
+          <Stack.Screen name="Splash" component={Splash} />
+        ) : isProfileComplete(userData) && hasPlan ? (
+          <Stack.Screen name="Tabs" component={Homestack} />
+        ) : (
+          <Stack.Screen name="AuthStack" component={AuthStack} />
+        )}
 
-      {/* Shared routes */}
-      <Stack.Screen name="MyPlan" component={Myplan} />
-      <Stack.Screen name="EditRoutineScreen" component={EditRoutineScreen} />
-      <Stack.Screen name="PullPushDay" component={PullPushDay} />
-      <Stack.Screen name="WorkoutDetails" component={WorkoutDetails} />
-      <Stack.Screen name="StartWorkoutScreen" component={StartWorkoutScreen} />
-      <Stack.Screen name="AddRoutineScreen" component={AddRoutineScreen} />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
-      <Stack.Screen name="AddExercise" component={AddExercise} />
-      <Stack.Screen name="ExerciseForm" component={ExerciseForm} />
-      <Stack.Screen name="SaveRoutineDate" component={SaveRoutineDate} />
-    </Stack.Navigator>
+        {/* Shared routes */}
+        <Stack.Screen name="MyPlan" component={Myplan} />
+        <Stack.Screen name="EditRoutineScreen" component={EditRoutineScreen} />
+        <Stack.Screen name="PullPushDay" component={PullPushDay} />
+        <Stack.Screen name="WorkoutDetails" component={WorkoutDetails} />
+        <Stack.Screen name="StartWorkoutScreen" component={StartWorkoutScreen} />
+        <Stack.Screen name="AddRoutineScreen" component={AddRoutineScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="AddExercise" component={AddExercise} />
+        <Stack.Screen name="ExerciseForm" component={ExerciseForm} />
+        <Stack.Screen name="SaveRoutineDate" component={SaveRoutineDate} />
+      </Stack.Navigator>
+    </>
   );
 };
 

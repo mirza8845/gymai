@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TextInput, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
 import Option from "../../CommonComponent/Option";
 import Heading from "../../CommonComponent/Heading";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import Toast from "react-native-toast-message";
 import auth from "@react-native-firebase/auth";
@@ -12,7 +12,16 @@ import firestore from "@react-native-firebase/firestore";
 import { UserContext } from "../../utils/userContext";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-const goals = ["Aesthetics", "Strength training", "Powerlifting", "Health"];
+const goals = [
+  "Strength Training",
+  "Powerlifting",
+  "Health",
+  "Weight Loss",
+  "Muscle Gain",
+  "Body Recomposition",
+  "General Fitness",
+  "Athletic Performance",
+];
 
 const GoalsQuestionnaire = () => {
   const { colors } = useTheme();
@@ -75,10 +84,10 @@ const GoalsQuestionnaire = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <ScrollView style={[styles.container, { backgroundColor: Colors.background }]} contentContainerStyle={{paddingBottom:50}}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.4)} />
         </TouchableOpacity>
         <Heading title="Your Goals" />
       </View>
@@ -88,16 +97,12 @@ const GoalsQuestionnaire = () => {
         {goals.map((opt, index) => (
           <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
         ))}
-
-        <View style={styles.goalNote}>
-          <TextInput placeholder="Tell us more about your goals..." placeholderTextColor="#999" style={styles.goalNoteInput} multiline numberOfLines={4} value={goalNote} onChangeText={setGoalNote} />
-        </View>
       </View>
 
       <View style={{ top: RFPercentage(4) }}>
         <Button title="Continue" onPress={handleContinue} disabled={loading} loader={loading} />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -107,7 +112,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: RFPercentage(2),
-    paddingTop:RFPercentage(5)
+    paddingTop: RFPercentage(10),
   },
   goalNote: {
     backgroundColor: "#fff",
@@ -126,11 +131,12 @@ const styles = StyleSheet.create({
     fontSize: RFPercentage(2),
     marginBottom: 30,
     textAlign: "center",
-    fontFamily: Fonts.Regular,
+    fontFamily: Fonts.Montserrat_Regular,
     color: "rgba(255, 255, 255, 0.8)",
   },
   goalsContainer: {
     gap: 12,
-    marginTop:RFPercentage(4)
+    marginTop: RFPercentage(4),
+    alignItems: "center",
   },
 });

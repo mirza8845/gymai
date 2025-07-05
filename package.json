@@ -28,6 +28,7 @@
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-element-dropdown": "^2.12.4",
     "react-native-image-picker": "^8.2.1",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-picker-horizontal": "^0.1.2",
     "react-native-picker-select": "^9.3.1",
     "react-native-radio-buttons-group": "^3.1.0",

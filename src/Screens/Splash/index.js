@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect } from "react";
 import splash from "../../assets/images/splash.png";
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +15,7 @@ const Splash = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar translucent={true} backgroundColor={"transparent"} barStyle={"light-content"} />
       <Image source={splash} style={styles.image} resizeMode="cover" />
     </View>
   );

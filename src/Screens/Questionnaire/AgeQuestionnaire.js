@@ -5,7 +5,7 @@ import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
 import { RulerPicker } from "react-native-ruler-view";
 import Button from "../../CommonComponent/Button";
 import Heading from "../../CommonComponent/Heading";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
@@ -103,10 +103,10 @@ const AgeQuestionnaire = () => {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: Colors.background }]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%", paddingHorizontal: RFPercentage(2) }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.4)} />
         </TouchableOpacity>
         <Heading title="Age & Weight" />
       </View>
@@ -167,7 +167,7 @@ const AgeQuestionnaire = () => {
           shortStepColor: "white",
           longStepColor: "white",
           textColor: "white",
-          backgroundColor: "black",
+          backgroundColor: "transparent",
           fontSize: 10,
           fontFamily: Fonts.SemiBold,
         }}
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingTop: RFPercentage(5),
+    paddingTop: RFPercentage(10),
   },
   pickerWrapper: {
     width: "100%",
@@ -220,10 +220,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   heading: {
-    fontSize: RFPercentage(3),
+    fontSize: RFPercentage(2.3),
     marginBottom: 10,
     textAlign: "center",
-    fontFamily: Fonts.SemiBold,
+    fontFamily: Fonts.Montserrat_SemiBold,
     paddingTop: 30,
   },
   weightToggle: {

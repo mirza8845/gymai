@@ -1,32 +1,33 @@
 import React, { useRef, useState } from "react";
-import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Easing, Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import workout from "../../assets/images/WorkOut.png";
 import appleicon from "../../assets/images/Nutrition.png";
 import personsicon from "../../assets/images/Community.png";
 import stepActive from "../../assets/images/stepperactive.png";
 import stepInactive from "../../assets/images/stepperinactive.png";
-import img2 from "../../assets/images/3rd.png";
-import img3 from "../../assets/images/4th.png";
-import img1 from "../../assets/images/2nd.png";
+import img2 from "../../assets/images/img2.png";
+import img3 from "../../assets/images/img3.png";
+import img1 from "../../assets/images/img1.png";
 import { useNavigation } from "@react-navigation/native";
 import { Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import LinearGradient from "react-native-linear-gradient";
 
 const steps = [
   {
     icon: workout,
     image: img1,
-    text: "Personalised workouts designed around your goals and lifestyle.",
+    text: `Get Stronger for\nPreparation`,
   },
   {
     icon: appleicon,
     image: img2,
-    text: "Health & Nutrition advice to support your recovery",
+    text: `Build Your Mind\nand Body`,
   },
   {
     icon: personsicon,
     image: img3,
-    text: "Join Our Community, Reach Your Potential",
+    text: "Running to Your\nDream",
   },
 ];
 
@@ -59,25 +60,24 @@ const Onboarding = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar translucent={true} backgroundColor={"transparent"} barStyle={"light-content"} />
       <Animated.Image source={steps[stepIndex].image} style={styles.backgroundImage} resizeMode="cover" />
+      <LinearGradient colors={["rgba(0, 0, 0, 0.4)", "rgba(0, 0, 0, 1)"]} style={styles.gradient}>
+        <Animated.View style={[styles.content]}>
+          <Text style={styles.description}>{steps[stepIndex].text}</Text>
+          <Text style={{ color: "#656565", fontFamily: Fonts.Montserrat_Italic, fontSize: 16,  }}>Be an Inspiration</Text>
 
-      {/* Black Overlay */}
-      <View style={styles.overlay} />
+          <View style={styles.stepperline}>
+            {steps.map((_, index) => (
+              <View key={index} style={[styles.dot, index === stepIndex ? styles.activeDot : styles.inactiveDot]} />
+            ))}
+          </View>
 
-      <Animated.View style={[styles.content]}>
-        <Image source={steps[stepIndex].icon} style={styles.logo} resizeMode="contain" />
-        <Text style={styles.description}>{steps[stepIndex].text}</Text>
-
-        <View style={styles.stepperline}>
-          {steps.map((_, index) => (
-            <Image key={index} source={index === stepIndex ? stepActive : stepInactive} style={styles.stepIcon} />
-          ))}
-        </View>
-
-        <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>{stepIndex === steps.length - 1 ? "Get Started" : "Next"}</Text>
-        </TouchableOpacity>
-      </Animated.View>
+          <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={handleNext}>
+            <Text style={styles.buttonText}>{stepIndex === steps.length - 1 ? "Get Started" : "Next"}</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </LinearGradient>
     </View>
   );
 };
@@ -103,45 +103,47 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+  gradient: {
+    width: "100%",
+    height: RFPercentage(40),
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 0,
+  },
   description: {
     color: "white",
-    fontSize: 20,
+    fontSize: 26,
     textAlign: "center",
-    width: "80%",
-    fontFamily: Fonts.Bold,
-    marginTop:10
+    fontFamily: Fonts.Lora_Bold,
+    bottom:16
   },
   stepperline: {
     flexDirection: "row",
     gap: 3,
-    marginTop:10
+    marginTop: 15,
   },
   stepIcon: {
     width: 18,
     height: 5,
-    borderRadius:20
+    borderRadius: 20,
   },
   button: {
-    backgroundColor: "rgba(214, 211, 211, 0.15)",
+    backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 30,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.85)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 20,
+    borderColor: "#F34E3A",
     width: RFPercentage(22),
     height: RFPercentage(6),
-    marginTop:40
+    marginTop: 45,
   },
   buttonText: {
-    color: "#fff",
+    color: "#F34E3A",
     fontSize: RFPercentage(2),
     textAlign: "center",
-    fontFamily: Fonts.SemiBold,
+    fontFamily: Fonts.Montserrat_SemiBold,
   },
   overlay: {
     position: "absolute",
@@ -149,6 +151,18 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.6)", // Adjust opacity as needed
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+  },
+  dot: {
+    width: 20,
+    height: 7,
+    borderRadius: 5,
+    marginHorizontal: 2,
+  },
+  activeDot: {
+    backgroundColor: "#fff",
+  },
+  inactiveDot: {
+    backgroundColor: "rgba(255, 255, 255, 0.4)",
   },
 });

@@ -4,7 +4,7 @@ import gymImg from "../../assets/images/womantrainingworkoutgym.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import img3 from "../../assets/images/img3.jpg";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
@@ -13,9 +13,8 @@ const IntroQuestionnaire = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={[styles.screenContainer, { backgroundColor: colors.background }]}>
+    <View style={[styles.screenContainer, { backgroundColor: Colors.background }]}>
       <Image source={img3} style={styles.headerImage} />
-
       <View style={styles.contentWrapper}>
         <View style={styles.metaInfoRow}>
           <Text style={[styles.metaText, { color: colors.text }]}>12 Questions</Text>
@@ -26,7 +25,7 @@ const IntroQuestionnaire = () => {
 
         <Text style={[styles.primaryMessage, { color: colors.text }]}>You can skip any questions along the way.</Text>
         <Text style={[styles.secondaryMessage, { color: colors.text }]}>The more you answer, the more personalised your results will be!</Text>
-        <View style={{marginTop:RFPercentage(5)}}>
+        <View style={{ marginTop: RFPercentage(5) }}>
           <Button title="Next" onPress={() => navigation.navigate("genderQuestionnaire")} />
         </View>
       </View>
@@ -52,24 +51,25 @@ const styles = StyleSheet.create({
   metaInfoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: 10,
   },
   metaText: {
     fontSize: 16,
     // fontWeight:500,
     letterSpacing: 0.5,
-    fontFamily: Fonts.Medium,
+    fontFamily: Fonts.Montserrat_Medium,
   },
   primaryMessage: {
     fontSize: RFPercentage(2.1),
     // fontWeight: 500,
     // paddingVertical: 30,
-    fontFamily: Fonts.Medium,
-    marginTop:RFPercentage(5)
+    fontFamily: Fonts.Montserrat_Medium,
+    marginTop: RFPercentage(5),
   },
   secondaryMessage: {
     fontSize: RFPercentage(2.1),
     // fontWeight:500,
-    fontFamily: Fonts.Medium,
-     marginTop:RFPercentage(5)
+    fontFamily: Fonts.Montserrat_Medium,
+    marginTop: RFPercentage(5),
   },
 });

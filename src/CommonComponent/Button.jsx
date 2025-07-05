@@ -2,7 +2,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "rea
 import React from "react";
 import { useTheme } from "@react-navigation/native";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { Fonts } from "../constants/theme";
+import { Colors, Fonts } from "../constants/theme";
 
 const Button = ({ title, onPress, disbaled, loader }) => {
   const { colors } = useTheme();
@@ -29,9 +29,7 @@ const styles = StyleSheet.create({
     width: RFPercentage(22),
     height: RFPercentage(6),
     borderRadius: RFPercentage(6),
-    backgroundColor: "rgba(255, 255, 255, 0.09)",
-    borderColor: "rgba(255, 255, 255, 1)",
-    borderWidth: 0.5,
+    backgroundColor: Colors.primary,
     alignItems: "center",
     justifyContent: "center",
     // marginTop: 20,
