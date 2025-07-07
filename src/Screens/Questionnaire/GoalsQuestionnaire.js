@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   goalsContainer: {
     gap: 12,
-    marginTop: RFPercentage(4),
+    marginTop: RFPercentage(3),
     alignItems: "center",
   },
 });

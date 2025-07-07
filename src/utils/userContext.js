@@ -12,6 +12,7 @@ export const UserProvider = ({ children }) => {
     const fetchUserByEmail = async () => {
       try {
         const storedEmail = await AsyncStorage.getItem("email");
+        console.log(storedEmail)
         if (storedEmail) {
           const querySnapshot = await firestore()
             .collection("Users")

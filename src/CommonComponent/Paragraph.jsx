@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         paddingHorizontal:20,
         fontSize: RFPercentage(2),
         textAlign: 'center',
-        fontFamily:Fonts.Regular,
+        fontFamily:Fonts.Montserrat_Regular,
         top:RFPercentage(2)
     },
 })

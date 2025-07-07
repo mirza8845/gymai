@@ -2,10 +2,10 @@ import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView, KeyboardAv
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Heading from "../../CommonComponent/Heading";
-import profileImg from "../../assets/images/womanpic.png";
+import profileImg from "../../assets/images/noDp.png";
 import EditIcon from "../../assets/svg/edit.svg";
 import CommonInput from "../../CommonComponent/CommonInput";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
@@ -99,8 +99,8 @@ const ProfileQuestionaire = () => {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background, flexGrow: 1 }]} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+    <KeyboardAvoidingView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: Colors.background, flexGrow: 1 }]} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
             <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
@@ -109,7 +109,12 @@ const ProfileQuestionaire = () => {
         </View>
 
         <View style={{ marginTop: RFPercentage(3), alignItems: "center", justifyContent: "center" }}>
-          <TouchableOpacity onPress={handleSelectImage} style={styles.profileImg}>
+          <TouchableOpacity
+            onPress={handleSelectImage}
+            style={[
+              { borderWidth: 1.5, borderColor: Colors.primary, width: RFPercentage(19), height: RFPercentage(19), borderRadius: RFPercentage(100), alignItems: "center", justifyContent: "center" },
+            ]}
+          >
             <Image source={imageUri ? { uri: imageUri } : profileImg} style={styles.profileImg} />
             <View style={styles.editIcon}>
               <TouchableOpacity onPress={handleSelectImage}>
@@ -120,10 +125,10 @@ const ProfileQuestionaire = () => {
         </View>
 
         <View style={styles.formSection}>
-          <CommonInput label="Full name" placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
-          <CommonInput label="Nickname" placeholder="Enter your Nick name" value={nickname} onChangeText={setNickname} />
-          <CommonInput label="Email" placeholder="Enter your Email" value={email} editable={false} textInputStyle={{ color: "#888" }} />
-          <CommonInput label="Mobile Number" placeholder="Enter your Mobile Number" value={mobile} onChangeText={setMobile} />
+          <CommonInput icon={require("../../assets/images/user.png")} placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
+          <CommonInput icon={require("../../assets/images/user.png")} placeholder="Enter your Nick name" value={nickname} onChangeText={setNickname} />
+          <CommonInput icon={require("../../assets/images/mail.png")} placeholder="Enter your Email" value={email} editable={false} textInputStyle={{ color: "#888" }} />
+          <CommonInput icon={require("../../assets/images/mail.png")} placeholder="Enter your Mobile Number" value={mobile} onChangeText={setMobile} />
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleStart}>
@@ -139,7 +144,7 @@ export default ProfileQuestionaire;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingTop: RFPercentage(5),
+    paddingTop: RFPercentage(10),
     paddingBottom: 40, // Add some bottom padding
   },
 
@@ -149,9 +154,9 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   profileImg: {
-    width: 150,
-    height: 150,
-    borderRadius: 100,
+    width: RFPercentage(18),
+    height: RFPercentage(18),
+    borderRadius: RFPercentage(100),
   },
   editIcon: {
     position: "absolute",
@@ -169,22 +174,22 @@ const styles = StyleSheet.create({
     width: "85%",
     alignSelf: "center",
     marginTop: 40,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
   },
   button: {
     width: "40%",
     height: 50,
     borderRadius: 40,
-    backgroundColor: "#FFDD03",
+    backgroundColor: Colors.primary,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: 50,
     alignSelf: "center",
   },
   btntext: {
-    fontSize: RFPercentage(2.6),
-    color: "black",
-    fontFamily: Fonts.SemiBold,
+    fontSize: RFPercentage(2.1),
+    color: "white",
+    fontFamily: Fonts.Montserrat_SemiBold,
   },
 });

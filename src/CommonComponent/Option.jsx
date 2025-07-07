@@ -9,7 +9,7 @@ const Option = ({ label, selected, onPress }) => {
 
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={onPress}>
-      <Text style={[styles.text, { color: selected ? "white" : "#555555" }]}>{label.length > 30 ? label.substring(0, 30) + "..." : label}</Text>
+      <Text style={[styles.text, { color: selected ? "white" : "#555555" }]}>{label.length > 20 ? label.substring(0, 20) + "..." : label}</Text>
       <View style={[styles.radioOuter, selected && styles.radioOuterSelected]}>{selected && <View style={styles.radioInner} />}</View>
     </TouchableOpacity>
   );

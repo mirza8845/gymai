@@ -5,7 +5,7 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import Paragraph from "../../CommonComponent/Paragraph";
 import Button from "../../CommonComponent/Button";
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
@@ -85,7 +85,7 @@ const HealthQuestionaire = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: Colors.background }]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
           <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
@@ -162,8 +162,9 @@ export default HealthQuestionaire;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: RFPercentage(5),
+    paddingTop: RFPercentage(10),
     alignItems: "center",
+    flex:1
   },
   pickerItem: {
     width: 80,

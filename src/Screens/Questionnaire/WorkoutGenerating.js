@@ -6,6 +6,7 @@ import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { generateWorkoutPlan } from "../../services/generateWorkoutPlan";
 import { UserContext } from "../../utils/userContext";
+import { Colors, Fonts } from "../../constants/theme";
 
 const WorkoutGenerating = () => {
   const navigation = useNavigation();
@@ -53,7 +54,7 @@ const WorkoutGenerating = () => {
     <View style={styles.container}>
       {/* <Image source={loadingGif} style={styles.image} resizeMode="contain" /> */}
       <Text style={styles.text}>Creating your personalized workout plan...</Text>
-      <ActivityIndicator size="large" color="#FFDD03" />
+      <ActivityIndicator size="large" color={Colors.primary} />
     </View>
   );
 };
@@ -66,14 +67,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 30,
-    backgroundColor: "black",
+    backgroundColor: Colors.background,
   },
   text: {
     fontSize: 18,
-    fontWeight: "600",
     textAlign: "center",
     marginVertical: 20,
     color: "white",
+    fontFamily: Fonts.Montserrat_SemiBold,
   },
   image: {
     width: 200,

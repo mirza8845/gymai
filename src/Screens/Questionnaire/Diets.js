@@ -11,6 +11,7 @@ import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { Colors } from "../../constants/theme";
 
 const dietsOption = ["High in Protein", "High in Carbohydrates", "High in Fats", "High in fiber", "Balanced with a range of foods providing macro", "High in Ultra-processed foods", "Other"];
 
@@ -65,8 +66,8 @@ const Diets = () => {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]} keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: Colors.background }]} keyboardShouldPersistTaps="handled">
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
             <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
@@ -74,7 +75,7 @@ const Diets = () => {
           <Heading title="Your Diet" />
         </View>
         <Paragraph title="How would you describe your current diet?" />
-        <View style={{ paddingTop: RFPercentage(6), paddingBottom: 30, gap: 15, paddingHorizontal:RFPercentage(2) }}>
+        <View style={{ paddingTop: RFPercentage(6), paddingBottom: 30, gap: 15, }}>
           {dietsOption.map((opt, index) => (
             <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
           ))}
@@ -90,7 +91,7 @@ export default Diets;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingTop: RFPercentage(5),
+    paddingTop: RFPercentage(10),
     paddingHorizontal: RFPercentage(2),
     alignItems: "center",
   },

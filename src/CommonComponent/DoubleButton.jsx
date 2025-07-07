@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: 16,
-    fontFamily: Fonts.Medium,
+    fontFamily: Fonts.Montserrat_Regular,
   },
   titleSelected: {
-    // fontWeight: 'bold',
+    // fontFamily: Fonts.Montserrat_Bold,
   },
 });

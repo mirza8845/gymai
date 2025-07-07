@@ -5,7 +5,7 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import Paragraph from "../../CommonComponent/Paragraph";
 import DoubleButton from "../../CommonComponent/DoubleButton";
 import Button from "../../CommonComponent/Button";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
@@ -80,7 +80,7 @@ const DietaryPreferences = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: Colors.background }]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
           <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
@@ -105,7 +105,7 @@ const DietaryPreferences = () => {
       </View>
 
       <View style={{}}>
-        <Text style={{ fontSize: 25, marginBottom: 10, color: "white", fontFamily: Fonts.Medium }}>Allergies</Text>
+        <Text style={{ fontSize: 20, marginBottom: 10, color: "white", fontFamily: Fonts.Montserrat_Bold }}>Allergies</Text>
         <Text style={[styles.paragraph, { color: colors.text }]}>Do you have any food allergies we should know about?</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 80 }}>
           <View>
@@ -130,12 +130,13 @@ export default DietaryPreferences;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: RFPercentage(5),
-    paddingHorizontal: RFPercentage(2),
+    paddingTop: RFPercentage(10),
+    paddingHorizontal: RFPercentage(3),
+    flex:1
   },
   paragraph: {
     fontSize: 16,
-    fontFamily: Fonts.Regular,
+    fontFamily: Fonts.Montserrat_Regular,
     paddingVertical: 8,
   },
 });

@@ -14,7 +14,7 @@ import DoubleCard from "../../CommonComponent/DoubleCard";
 import gymImg from "../../assets/images/gym.png";
 import WomenGym from "../../assets/images/womangym.png";
 import MenGym from "../../assets/images/mengym.png";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -84,22 +84,24 @@ const Home = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.greetingText}>Hi, {fullName}</Text>
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+          <View style={styles.header}>
+            <Text style={styles.greetingText}>Hi, {fullName}</Text>
+            <Text style={styles.subGreeting}>Welcome back! Let's hit your goals 💥</Text>
+          </View>
 
           {loading ? (
-            <ActivityIndicator size="large" color="#FFDD03" style={{ marginTop: 30 }} />
+            <ActivityIndicator size="large" color={Colors.primary} style={{ marginTop: 30 }} />
           ) : workoutPlan?.weekly_split ? (
             <>
-              <Text style={[styles.descriptionText, { color: colors.text }]}>
-                {`Your Personalized ${weeklyWorkoutCommitment}-Day Workout Plan is Ready! You'll follow a weekly routine including: ${workoutPlan?.weekly_split?.join(
-                  ", "
-                )}. Discover your exercises, warm‑up tips, and cool‑down steps to train smarter!`}
-              </Text>
+              <View style={styles.planCard}>
+                <Text style={styles.planTitle}>Your {weeklyWorkoutCommitment}-Day Plan</Text>
+                <Text style={styles.planSubtitle}>{workoutPlan.weekly_split.join(" • ")}</Text>
 
-              <TouchableOpacity style={styles.planButton} onPress={() => navigation.navigate("MyPlan")}>
-                <Text style={styles.planButtonText}>My Plan</Text>
-              </TouchableOpacity>
+                <TouchableOpacity style={styles.planButton} onPress={() => navigation.navigate("MyPlan")}>
+                  <Text style={styles.planButtonText}>View Plan</Text>
+                </TouchableOpacity>
+              </View>
 
               <Text style={styles.sectionTitle}>Next Workout</Text>
 
@@ -121,36 +123,15 @@ const Home = () => {
                   }
                 />
               ) : (
-                <Text style={{ color: colors.text }}>Rest day or workout not available.</Text>
+                <Text style={styles.restText}>Rest day or workout not available.</Text>
               )}
+
+              <Text style={styles.sectionTitle}>Quick Reads</Text>
+              <FlatList data={data} keyExtractor={(item, index) => index.toString()} horizontal renderItem={({ item }) => <DoubleCard {...item} />} showsHorizontalScrollIndicator={false} />
             </>
           ) : (
-            <>
-              <Text style={[styles.descriptionText, { color: colors.text }]}>You have no saved workout plan. Finish your profile and generate a plan first.</Text>
-            </>
+            <Text style={styles.descriptionText}>You have no saved workout plan. Finish your profile and generate a plan first.</Text>
           )}
-
-          {/* Discover Section */}
-          <Text style={styles.sectionTitle}>Discover</Text>
-
-          <View style={styles.imageCardContainer}>
-            <View style={styles.textBlock}>
-              <Text style={styles.cardTitle}>Myth Busters</Text>
-              <Text style={{ color: "black", fontFamily: Fonts.Regular }}>Popular fitness myths debunked!</Text>
-            </View>
-            <Image source={gymImg} style={styles.cardImage} resizeMode="contain" />
-          </View>
-
-          <FlatList
-            data={data}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={({ item }) => <DoubleCard leftItem={item.leftItem} rightItem={item.rightItem} />}
-            contentContainerStyle={{ paddingBottom: 40 }}
-          />
-
-          <TouchableOpacity style={styles.seeMoreBtn}>
-            <Text style={styles.seeMoreBtnText}>See More</Text>
-          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -164,70 +145,71 @@ const styles = StyleSheet.create({
   scrollContainer: {
     width: "90%",
     alignSelf: "center",
-    paddingVertical: 40,
+    paddingVertical: 30,
     paddingBottom: 80,
   },
-  greetingText: {
-    color: "#FFDD03",
-    fontSize: 24,
+  header: {
     marginBottom: 20,
-    fontFamily: Fonts.SemiBold,
   },
-  descriptionText: {
-    fontSize: 17,
-    lineHeight: 23,
-    letterSpacing: 1,
-    fontFamily: Fonts.Regular,
+  greetingText: {
+    color: Colors.primary,
+    fontSize: 24,
+    fontFamily: Fonts.Montserrat_SemiBold,
+  },
+  subGreeting: {
+    color: "#777",
+    fontSize: 14,
+    fontFamily: Fonts.Montserrat_Regular,
+    marginTop: 4,
+  },
+  planCard: {
+    backgroundColor: "#1F1F3C",
+    padding: 20,
+    borderRadius: 16,
+    marginVertical: 20,
+    elevation: 3,
+  },
+  planTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontFamily: Fonts.Montserrat_SemiBold,
+  },
+  planSubtitle: {
+    color: "#ccc",
+    fontSize: 14,
+    marginVertical: 10,
+    fontFamily: Fonts.Montserrat_Regular,
   },
   planButton: {
-    width: "40%",
-    height: 45,
+    backgroundColor: Colors.primary,
+    paddingVertical: 10,
     borderRadius: 25,
-    backgroundColor: "#FFDD03",
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 30,
-    alignSelf: "center",
+    marginTop: 10,
   },
   planButtonText: {
-    fontSize: 18,
-    color: "black",
-    fontFamily: Fonts.SemiBold,
-    top: 2,
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: Fonts.Montserrat_SemiBold,
   },
   sectionTitle: {
     fontSize: 20,
-    color: "#ffffff",
+    color: Colors.primary,
     marginTop: 30,
     marginBottom: 10,
-    fontFamily: Fonts.SemiBold,
+    fontFamily: Fonts.Montserrat_SemiBold,
   },
-  imageCardContainer: {
-    height: 130,
-    backgroundColor: "#ffffff",
-    borderRadius: 15,
+  descriptionText: {
+    fontSize: 16,
+    color: "#666",
+    fontFamily: Fonts.Montserrat_Regular,
     marginTop: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    alignSelf: "center",
-    paddingHorizontal: 15,
   },
-  textBlock: { width: "50%" },
-  cardTitle: { fontSize: 18, color: "#000", fontFamily: Fonts.SemiBold },
-  cardImage: { width: 180, height: 180 },
-  seeMoreBtn: {
-    width: "35%",
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#ffff",
-    borderWidth: 1,
-    textAlign: "center",
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "flex-end",
-    marginTop: 20,
+  restText: {
+    fontSize: 16,
+    color: "#999",
+    fontFamily: Fonts.Montserrat_Regular,
+    marginTop: 10,
   },
-  seeMoreBtnText: { fontSize: 18, color: "black", fontFamily: Fonts.SemiBold },
 });

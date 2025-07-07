@@ -11,6 +11,7 @@ import firestore from "@react-native-firebase/firestore";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { Colors } from "../../constants/theme";
 
 const equipmentOptions = [
   "Everything",
@@ -83,7 +84,7 @@ const AvailableEquipment = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: Colors.background }]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
           <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
@@ -115,8 +116,9 @@ export default AvailableEquipment;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: RFPercentage(5),
+    paddingTop: RFPercentage(10),
     paddingHorizontal: RFPercentage(2),
-    justifyContent: "center",
+    // alignItems: "center",
+    flex:1
   },
 });

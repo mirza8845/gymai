@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import Option from "../../CommonComponent/Option";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
@@ -78,7 +78,7 @@ const GymExperience = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: Colors.background }]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
           <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
@@ -108,14 +108,14 @@ export default GymExperience;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: RFPercentage(5),
+    paddingTop: RFPercentage(10),
     paddingHorizontal: RFPercentage(2),
   },
   optionsContainer: {
     gap: 15,
     alignItems: "center",
     marginTop:RFPercentage(12),
-    paddingHorizontal:RFPercentage(2),
+    // paddingHorizontal:RFPercentage(2),
     marginBottom:RFPercentage(5)
   },
 });

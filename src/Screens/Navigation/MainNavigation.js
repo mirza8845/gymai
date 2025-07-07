@@ -52,29 +52,41 @@ const MainNavigator = () => {
   const [hasPlan, setHasPlan] = useState(false);
 
   useEffect(() => {
+    if (!userData || Object.keys(userData).length === 0) {
+      return;
+    }
+    console.log("✅ userData loaded:", userData);
+
     const checkPlan = async () => {
       const current = auth().currentUser;
+      console.log("current user:", current);
+
       if (!current) return;
 
       try {
         const snap = await firestore().collection("workouts").doc(current.uid).get();
+        console.log("workout plan document:", snap);
         setHasPlan(snap.exists);
       } catch (err) {
-        console.log("plan check error", err.message);
+        console.log("🔥 Plan check error:", err.message);
       } finally {
         setPlanReady(true);
       }
     };
 
     if (isProfileComplete(userData)) {
+      console.log("✅ Profile is complete. Proceeding to check plan.");
       checkPlan();
     } else {
+      console.log("❌ Profile incomplete.");
       setPlanReady(true);
       setHasPlan(false);
     }
   }, [userData]);
 
   const loading = !planReady;
+
+  console.log("hasPlan..........", hasPlan);
 
   return (
     <>

@@ -4,7 +4,7 @@ import Heading from "../../CommonComponent/Heading";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Paragraph from "../../CommonComponent/Paragraph";
 import Button from "../../CommonComponent/Button";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
@@ -12,11 +12,10 @@ import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-
 const Modifications = () => {
   const { colors } = useTheme();
   const navigation = useNavigation();
-  const { userData, setUserData } = useContext(UserContext); 
+  const { userData, setUserData } = useContext(UserContext);
   const [modificationText, setModificationText] = useState("");
 
   useEffect(() => {
@@ -59,20 +58,20 @@ const Modifications = () => {
   };
 
   return (
-    <View style={[styles.wrapper, { backgroundColor: colors.background }]}>
+    <View style={[styles.wrapper, { backgroundColor: Colors.background }]}>
       <View style={styles.container}>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
-        </TouchableOpacity>
-        <Heading title={"Modifications"} />
-      </View>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
+            <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+          </TouchableOpacity>
+          <Heading title={"Modifications"} />
+        </View>
         <Paragraph title="Do you need modifications for injuries or physical limitations?" />
         <View style={styles.modificationsNote}>
           <TextInput placeholder="If yes, please explain..." value={modificationText} onChangeText={setModificationText} multiline style={styles.input} placeholderTextColor="#999" />
         </View>
       </View>
-      <View style={{top:50}}>
+      <View style={{ top: 50 }}>
         <Button title="Continue" onPress={handleContinue} />
       </View>
     </View>
@@ -84,7 +83,7 @@ export default Modifications;
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    paddingTop: RFPercentage(5),
+    paddingTop: RFPercentage(10),
     paddingHorizontal: RFPercentage(2),
   },
   container: {
@@ -92,17 +91,17 @@ const styles = StyleSheet.create({
     // backgroundColor:'red'
   },
   modificationsNote: {
-    backgroundColor: "#fff",
-    borderRadius: 20,
+    backgroundColor: "#080808",
+    borderRadius: RFPercentage(2),
     padding: 18,
     minHeight: RFPercentage(25),
     marginTop: RFPercentage(13),
-    marginHorizontal:RFPercentage(2)
+    marginHorizontal: RFPercentage(2),
   },
   input: {
     fontSize: 16,
-    color: "black",
-    fontFamily: Fonts.Regular,
+    color: "white",
+    fontFamily: Fonts.Montserrat_Regular,
     textAlignVertical: "top",
     flex: 1,
   },

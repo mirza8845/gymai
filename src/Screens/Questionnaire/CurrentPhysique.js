@@ -5,7 +5,7 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import Paragraph from "../../CommonComponent/Paragraph";
 import Button from "../../CommonComponent/Button";
 import Img from "../../assets/images/currentphysique.png";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
@@ -93,7 +93,7 @@ const CurrentPhysique = () => {
   };
 
   return (
-    <View style={[styles.screen, { backgroundColor: colors.background }]}>
+    <View style={[styles.screen, { backgroundColor: Colors.background }]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
           <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: "center",
-    paddingTop: RFPercentage(5),
+    paddingTop: RFPercentage(10),
     paddingHorizontal: RFPercentage(2),
   },
   previewPlaceholder: {
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: RFPercentage(2.4),
-    fontFamily: Fonts.SemiBold,
+    fontFamily: Fonts.Montserrat_Bold,
     color: "black",
     textAlign: "center",
   },

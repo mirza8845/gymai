@@ -95,7 +95,7 @@ const GenderQuestionnaire = () => {
       </View>
 
       <View style={{ marginTop: RFPercentage(3) }}>
-        <Text style={[styles.other, { color: colors.text, fontFamily:Fonts.Medium, fontSize:18 }]}>Selected Gender: {gender ? gender : "None"}</Text>
+        <Text style={[styles.other, { color: colors.text, fontFamily:Fonts.Montserrat_Regular, fontSize:18 }]}>Selected Gender: <Text style={{fontFamily:Fonts.Montserrat_Bold}}>{gender ? gender : "None"}</Text></Text>
       </View>
 
       <View style={{ marginTop: RFPercentage(7) }}>
@@ -137,10 +137,10 @@ const styles = StyleSheet.create({
   genderLabel: {
     fontSize: RFPercentage(2.3),
     marginTop: 8,
-    fontFamily: Fonts.Medium,
+    fontFamily: Fonts.Montserrat_Regular,
   },
   other: {
     marginTop: RFPercentage(5),
-    fontFamily: Fonts.Regular,
+    fontFamily: Fonts.Montserrat_Regular,
   },
 });

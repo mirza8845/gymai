@@ -11,6 +11,7 @@ import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { Colors } from "../../constants/theme";
 
 const challengesOption = [
   "Not knowing what to do",
@@ -75,8 +76,8 @@ const Challenges = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined} keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]} keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: Colors.background }]} keyboardShouldPersistTaps="handled">
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
             <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
@@ -85,7 +86,7 @@ const Challenges = () => {
         </View>
 
         <Paragraph title="What challenges do you face when it comes to fitness training?" />
-        <View style={{ gap: 13, paddingTop: RFPercentage(8), paddingBottom: 20, paddingHorizontal:15 }}>
+        <View style={{ gap: 13, paddingTop: RFPercentage(8),paddingBottom:RFPercentage(3) }}>
           {challengesOption.map((opt, index) => (
             <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
           ))}
@@ -101,7 +102,7 @@ export default Challenges;
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingTop: RFPercentage(5),
+    paddingTop: RFPercentage(10),
     paddingHorizontal: RFPercentage(2),
     alignItems: "center",
   },

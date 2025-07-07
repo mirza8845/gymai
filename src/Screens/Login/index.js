@@ -26,12 +26,14 @@ const Login = () => {
     setLoading(true);
     try {
       await auth().signInWithEmailAndPassword(values.email, values.password);
+      await AsyncStorage.setItem("email", values.email);
+      await AsyncStorage.setItem("password", values.password);
       Toast.show({
         type: "success",
         text1: "Sign In",
         text2: "Logged in successfully!",
       });
-      navigation.navigate("introQuestionnaire");
+      // navigation.navigate("introQuestionnaire");
     } catch (error) {
       console.log("Sign In Error:", error);
       Toast.show({
