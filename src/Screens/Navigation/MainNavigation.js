@@ -51,21 +51,19 @@ const MainNavigator = () => {
   const [planReady, setPlanReady] = useState(false);
   const [hasPlan, setHasPlan] = useState(false);
 
-  useEffect(() => {
-    if (!userData || Object.keys(userData).length === 0) {
-      return;
-    }
-    console.log("✅ userData loaded:", userData);
+  const loadingUser = userData === null; 
+  const loadingPlan = !planReady;
 
+  useEffect(() => {
     const checkPlan = async () => {
       const current = auth().currentUser;
-      console.log("current user:", current);
-
-      if (!current) return;
+      if (!current) {
+        setPlanReady(true);
+        return;
+      }
 
       try {
         const snap = await firestore().collection("workouts").doc(current.uid).get();
-        console.log("workout plan document:", snap);
         setHasPlan(snap.exists);
       } catch (err) {
         console.log("🔥 Plan check error:", err.message);
@@ -74,25 +72,18 @@ const MainNavigator = () => {
       }
     };
 
-    if (isProfileComplete(userData)) {
-      console.log("✅ Profile is complete. Proceeding to check plan.");
+    if (userData && isProfileComplete(userData)) {
       checkPlan();
-    } else {
-      console.log("❌ Profile incomplete.");
-      setPlanReady(true);
-      setHasPlan(false);
+    } else if (userData) {
+      setPlanReady(true); // If user exists but profile is incomplete
     }
   }, [userData]);
-
-  const loading = !planReady;
-
-  console.log("hasPlan..........", hasPlan);
 
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true} />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {loading ? (
+        {loadingUser || loadingPlan ? (
           <Stack.Screen name="Splash" component={Splash} />
         ) : isProfileComplete(userData) && hasPlan ? (
           <Stack.Screen name="Tabs" component={Homestack} />
@@ -100,7 +91,7 @@ const MainNavigator = () => {
           <Stack.Screen name="AuthStack" component={AuthStack} />
         )}
 
-        {/* Shared routes */}
+        {/* Additional Screens */}
         <Stack.Screen name="MyPlan" component={Myplan} />
         <Stack.Screen name="EditRoutineScreen" component={EditRoutineScreen} />
         <Stack.Screen name="PullPushDay" component={PullPushDay} />

@@ -11,14 +11,10 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchUserByEmail = async () => {
       try {
-        const storedEmail = await AsyncStorage.getItem("email");
-        console.log(storedEmail)
+        const storedEmail = (await AsyncStorage.getItem("email"))?.toLowerCase();
+        console.log(storedEmail);
         if (storedEmail) {
-          const querySnapshot = await firestore()
-            .collection("Users")
-            .where("email", "==", storedEmail)
-            .limit(1)
-            .get();
+          const querySnapshot = await firestore().collection("Users").where("email", "==", storedEmail).limit(1).get();
 
           if (!querySnapshot.empty) {
             const doc = querySnapshot.docs[0];
@@ -37,9 +33,5 @@ export const UserProvider = ({ children }) => {
     fetchUserByEmail();
   }, []);
 
-  return (
-    <UserContext.Provider value={{ userData, setUserData }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ userData, setUserData }}>{children}</UserContext.Provider>;
 };

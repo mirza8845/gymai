@@ -17,6 +17,7 @@ import MenGym from "../../assets/images/mengym.png";
 import { Colors, Fonts } from "../../constants/theme";
 
 import { useFocusEffect } from "@react-navigation/native";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const data = [
   {
@@ -83,11 +84,18 @@ const Home = () => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: Colors.background }]}>
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
-            <Text style={styles.greetingText}>Hi, {fullName}</Text>
-            <Text style={styles.subGreeting}>Welcome back! Let's hit your goals 💥</Text>
+            <View>
+              <Text style={styles.greetingText}>Hi, {fullName}</Text>
+              <Text style={styles.subGreeting}>Welcome back! Let's hit your goals 💥</Text>
+            </View>
+            <Image
+              source={require("../../assets/images/noDp.png")}
+              resizeMode="contain"
+              style={{ width: RFPercentage(7), height: RFPercentage(7), borderWidth: 1.5, borderColor: Colors.primary, borderRadius: 100 }}
+            />
           </View>
 
           {loading ? (
@@ -102,8 +110,9 @@ const Home = () => {
                   <Text style={styles.planButtonText}>View Plan</Text>
                 </TouchableOpacity>
               </View>
-
-              <Text style={styles.sectionTitle}>Next Workout</Text>
+              <View style={{ width: "100%" }}>
+                <Text style={styles.sectionTitle}>Today's Workout</Text>
+              </View>
 
               {firstDayExercises ? (
                 <WorkoutCard
@@ -126,8 +135,10 @@ const Home = () => {
                 <Text style={styles.restText}>Rest day or workout not available.</Text>
               )}
 
-              <Text style={styles.sectionTitle}>Quick Reads</Text>
-              <FlatList data={data} keyExtractor={(item, index) => index.toString()} horizontal renderItem={({ item }) => <DoubleCard {...item} />} showsHorizontalScrollIndicator={false} />
+              <View style={{ width: "100%" }}>
+                <Text style={styles.sectionTitle}>Quick Reads</Text>
+                <FlatList data={data} keyExtractor={(item, index) => index.toString()} horizontal renderItem={({ item }) => <DoubleCard {...item} />} showsHorizontalScrollIndicator={false} />
+              </View>
             </>
           ) : (
             <Text style={styles.descriptionText}>You have no saved workout plan. Finish your profile and generate a plan first.</Text>
@@ -145,11 +156,15 @@ const styles = StyleSheet.create({
   scrollContainer: {
     width: "90%",
     alignSelf: "center",
-    paddingVertical: 30,
-    paddingBottom: 80,
+    paddingVertical: 50,
+    alignItems: "center",
   },
   header: {
     marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
   },
   greetingText: {
     color: Colors.primary,
@@ -163,10 +178,10 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   planCard: {
-    backgroundColor: "#1F1F3C",
+    backgroundColor: "#080808",
     padding: 20,
     borderRadius: 16,
-    marginVertical: 20,
+    marginVertical: 10,
     elevation: 3,
   },
   planTitle: {
@@ -179,25 +194,27 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginVertical: 10,
     fontFamily: Fonts.Montserrat_Regular,
+    lineHeight: 20,
   },
   planButton: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 10,
+    backgroundColor: "transparent",
+    paddingVertical: 8,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
+    width: RFPercentage(18),
+    alignSelf: "center",
   },
   planButtonText: {
-    color: "#fff",
+    color: Colors.primary,
     fontSize: 16,
     fontFamily: Fonts.Montserrat_SemiBold,
   },
   sectionTitle: {
     fontSize: 20,
-    color: Colors.primary,
-    marginTop: 30,
-    marginBottom: 10,
+    color: Colors.white,
+    marginTop: 20,
     fontFamily: Fonts.Montserrat_SemiBold,
   },
   descriptionText: {

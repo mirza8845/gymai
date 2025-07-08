@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { Fonts } from '../constants/theme';
-import { RFPercentage } from 'react-native-responsive-fontsize';
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { Colors, Fonts } from "../constants/theme";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const WorkoutCard = ({ title, description, time, button, onPress, buttons = [], onCardPress }) => {
   return (
@@ -36,11 +36,11 @@ const WorkoutCard = ({ title, description, time, button, onPress, buttons = [], 
                 style={[
                   styles.startWorkoutButton,
                   {
-                    backgroundColor: btn.backgroundColor || '#D9D9D9',
-                    height: btn.height,
-                    padding: btn.padding,
+                    backgroundColor: btn.backgroundColor || "#D9D9D9",
+                    // height: btn.height,
+                    // padding: btn.padding,
                     marginTop: index === 0 ? 0 : 10,
-                  }
+                  },
                 ]}
                 onPress={btn.onPress}
               >
@@ -56,72 +56,63 @@ const WorkoutCard = ({ title, description, time, button, onPress, buttons = [], 
 
 export default WorkoutCard;
 
-
 const styles = StyleSheet.create({
   workoutCardContainer: {
     marginTop: 10,
     paddingVertical: 15,
     paddingHorizontal: RFPercentage(1.7),
-    backgroundColor: 'white',
+    backgroundColor: "#080808",
     borderRadius: 21,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 3,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
   },
   textContainer: {
-    width: '67%',
+    width: "67%",
   },
   workoutTitle: {
     fontSize: 18,
     // fontWeight: '600',
-    fontFamily:Fonts.SemiBold,
-    color: 'black',
+    fontFamily: Fonts.SemiBold,
+    color: Colors.white,
   },
   workoutDescription: {
-    color: 'black',
+   color: Colors.white,
     fontSize: 14,
     marginTop: 4,
-    fontFamily:Fonts.Regular,
+    fontFamily: Fonts.Regular,
   },
   rightContent: {
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
-    height: '100%',
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    height: "100%",
   },
   timeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   timeText: {
     marginLeft: 5,
     fontSize: 14,
-    color: 'black',
+    color: "black",
   },
   startWorkoutButton: {
-    width: RFPercentage(14),
-    height: 40,
+    width: RFPercentage(13),
+    height: RFPercentage(4),
     borderRadius: 20,
-    backgroundColor: '#D9D9D9',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    elevation: 3,
+    backgroundColor: "#D9D9D9",
+    alignItems: "center",
+    justifyContent: "center",
   },
   startWorkoutButtonText: {
-    fontSize: 14,
-    color: '#000',
-    fontFamily:Fonts.SemiBold,
-    top:2
+    fontSize: 12,
+    color: "#000",
+    fontFamily: Fonts.SemiBold,
   },
   multiButtonContainer: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+    justifyContent: "center",
+    alignItems: "flex-end",
   },
 });
