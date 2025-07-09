@@ -20,6 +20,7 @@ import { Colors, Fonts } from "../../constants/theme";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import ChartComponent from "../../CommonComponent/Chart";
 
 const data = [
   {
@@ -99,13 +100,18 @@ const Home = () => {
               style={{ width: RFPercentage(7), height: RFPercentage(7), borderWidth: 1.5, borderColor: Colors.primary, borderRadius: 100 }}
             />
           </View>
+          <View style={{width:'90%', alignItems:'center', alignSelf:'center'}}>
+
+          <ChartComponent />
+          </View>
+
 
           {loading ? (
             <ActivityIndicator size="large" color={Colors.primary} style={{ marginTop: 30 }} />
           ) : workoutPlan?.weekly_split ? (
             <>
               <LinearGradient colors={[
-                "rgba(122, 77, 66, 0.4)", "rgba(93, 82, 79, 0.3)",
+                "rgba(6, 6, 6, 0.4)", "rgba(93, 82, 79, 0.3)",
                 // "rgb(237, 136, 113)", "rgb(125, 207, 192)"
                 ]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.planCard}>
                 <View style={styles.iconRow}>
@@ -199,7 +205,8 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 16,
     marginVertical: 10,
-    elevation: 3,
+    elevation: 5,
+    shadowColor:"#6D6D6D"
   },
   planTitle: {
     color: "#fff",

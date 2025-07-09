@@ -1,244 +1,150 @@
-// Aesthetic Workout Progress Screen with Scrollable Day Selector & Circular Stats
-
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-  FlatList,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme, useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
-import { RFPercentage } from "react-native-responsive-fontsize";
+import React from "react";
+import { View, Text, StyleSheet, ScrollView, Dimensions, Image } from "react-native";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import CircularProgress from "react-native-circular-progress-indicator";
+import LinearGradient from "react-native-linear-gradient";
+import { Colors, Fonts } from "../../constants/theme";
 
-import WorkoutCard from "../../CommonComponent/WorkoutCard";
-import TipCard from "./TipCard";
-import { Fonts } from "../../constants/theme";
+const { width } = Dimensions.get("window");
 
-const dummyStats = [
-  {
-    day: "Mon",
-    calories: 320,
-    steps: 5000,
-    heartRate: 89,
-    duration: "45m",
-  },
-  {
-    day: "Tue",
-    calories: 420,
-    steps: 6200,
-    heartRate: 95,
-    duration: "50m",
-  },
-  {
-    day: "Wed",
-    calories: 280,
-    steps: 4200,
-    heartRate: 87,
-    duration: "30m",
-  },
-];
-
-const Workout = () => {
-  const { colors } = useTheme();
-  const navigation = useNavigation();
-  const workoutPlan = useSelector((state) => state.workout.workoutPlan);
-  const loading = workoutPlan === null;
-
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const selectedStats = dummyStats[selectedIndex];
-
-  const renderRoutineCards = () =>
-    workoutPlan.weekly_split.map((dayLabel, idx) => {
-      const dayKey = `Day ${idx + 1}`;
-      const isRestDay = dayLabel.toLowerCase().includes("rest");
-      const exercises = workoutPlan.daily_workouts?.[dayKey] ?? [];
-      const description = isRestDay
-        ? "Take full rest and allow your muscles to recover."
-        : exercises.map((e) => e.name).slice(0, 3).join(", ") + (exercises.length > 3 ? "..." : "");
-
-      return (
-        <WorkoutCard
-          key={dayKey}
-          title={dayLabel}
-          description={description}
-          button={!isRestDay ? "Start now" : null}
-          onPress={
-            !isRestDay
-              ? () =>
-                  navigation.navigate("PullPushDay", {
-                    day: dayKey,
-                    label: dayLabel,
-                    exercises,
-                  })
-              : undefined
-          }
-        />
-      );
-    });
-
-  if (loading) {
-    return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#FFDD03" />
-      </View>
-    );
-  }
-
+const Workouts = () => {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
-      <ScrollView>
-        <View style={styles.container}>
-          <Text style={[styles.header, { backgroundColor: colors.card, color: "black" }]}>Track My Progress</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Building Progress</Text>
 
-          <FlatList
-            horizontal
-            data={dummyStats}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <Pressable
-                onPress={() => setSelectedIndex(index)}
-                style={[styles.dayChip, selectedIndex === index && styles.activeDayChip]}
-              >
-                <Text style={{ color: selectedIndex === index ? "#000" : "#fff" }}>{item.day}</Text>
-              </Pressable>
-            )}
-            contentContainerStyle={{ marginBottom: 20 }}
-            showsHorizontalScrollIndicator={false}
-          />
+      {/* Top Section */}
+      <View style={styles.cardLarge}>
+        <CircularProgress
+          value={89}
+          radius={60}
+          maxValue={100}
+          title={"Percent"}
+          titleColor="#fff"
+          titleStyle={{ fontSize: 12, fontFamily: Fonts.Montserrat_Medium }}
+          valueFontSize={22}
+          valueColor="#fff"
+          activeStrokeWidth={12}
+          inActiveStrokeColor="#3C3C3C"
+          activeStrokeSecondaryColor="#F07C3B"
+          activeStrokeColor="#F34E3A"
+        />
 
-         <View style={styles.statSection}>
-  {/* Calories Bar on Top */}
-  <View style={styles.centerAlign}>
-    <CircularProgress
-      value={selectedStats.calories}
-      radius={70}
-      maxValue={500}
-      title="Calories"
-      activeStrokeColor="#F34E3A"
-      inActiveStrokeColor="#333"
-      titleColor="#fff"
-      titleStyle={{ fontFamily: Fonts.Medium, fontSize: 14 }}
-      valueSuffix=" kcal"
-      valueStyle={{ color: '#fff', fontSize: 16 }}
-    />
-  </View>
-
-  {/* Other Stats Below */}
-  <View style={styles.rowWrap}>
-    <CircularProgress
-      value={selectedStats.steps}
-      radius={50}
-      maxValue={10000}
-      title="Steps"
-      activeStrokeColor="#FF9800"
-      inActiveStrokeColor="#333"
-      titleColor="#fff"
-      titleStyle={{ fontFamily: Fonts.Medium, fontSize: 12 }}
-      valueSuffix=""
-      valueStyle={{ color: '#fff', fontSize: 14 }}
-    />
-    <CircularProgress
-      value={selectedStats.heartRate}
-      radius={50}
-      maxValue={150}
-      title="Heart"
-      activeStrokeColor="#E91E63"
-      inActiveStrokeColor="#333"
-      titleColor="#fff"
-      titleStyle={{ fontFamily: Fonts.Medium, fontSize: 12 }}
-      valueSuffix=" bpm"
-      valueStyle={{ color: '#fff', fontSize: 14 }}
-    />
-    <CircularProgress
-      value={parseInt(selectedStats.duration)}
-      radius={50}
-      maxValue={60}
-      title="Duration"
-      activeStrokeColor="#3F51B5"
-      inActiveStrokeColor="#333"
-      titleColor="#fff"
-      titleStyle={{ fontFamily: Fonts.Medium, fontSize: 12 }}
-      valueSuffix=" min"
-      valueStyle={{ color: '#fff', fontSize: 14 }}
-    />
-  </View>
-</View>
-
-
-          <Text style={[styles.tipsTitle, { color: colors.text }]}>Tips & Tricks</Text>
-          <TipCard color="#DDFF94">{workoutPlan.notes}</TipCard>
-
-          <Text style={[styles.tipsTitle, { color: colors.text }]}>My Routines</Text>
-          {renderRoutineCards()}
+        <View style={styles.activityInfo}>
+          <Text style={styles.totalText}>
+            <Text style={styles.highlight}>15</Text> / 20
+          </Text>
+          <Text style={styles.subLabel}>Total Activity</Text>
+          <Text style={styles.caloriesLabel}>Calories Burned</Text>
+          <Text style={styles.caloriesValue}>50K Cal</Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+
+      {/* Middle Cards */}
+      <View style={styles.cardRow}>
+        <View style={styles.cardSmall}>
+          <View style={styles.iconRow}>
+            <FontAwesome5 name="running" size={16} color="#f44336" />
+            <Text style={styles.cardHighlight}> 45</Text>
+            <Text style={styles.cardDim}> / 60 Km</Text>
+          </View>
+          <Text style={styles.cardLabel}>Calories Burned</Text>
+          <Text style={styles.cardValue}>25K Cal</Text>
+        </View>
+        <View style={styles.cardSmall}>
+          <View style={styles.iconRow}>
+            <FontAwesome5 name="moon" size={16} color="#f44336" />
+            <Text style={styles.cardHighlight}> 21</Text>
+            <Text style={styles.cardDim}> / 25 hrs</Text>
+          </View>
+          <Text style={styles.cardLabel}>Calories Burned</Text>
+          <Text style={styles.cardValue}>25K Cal</Text>
+        </View>
+      </View>
+
+      {/* Monitoring Section */}
+      <Text style={styles.monitoringTitle}>Monitoring</Text>
+      <Text style={styles.monitoringSubtitle}>Daily progress</Text>
+      <View style={styles.barChartCard}>
+        {[
+          { day: "Mon", value: 100, gradient: ["#F34E3A", "#F17C3B","#333"], color: "#f44336" },
+          { day: "Tue", value: 30, gradient: ["#999", "#333"], color: "#fff" },
+          { day: "Wed", value: 70, gradient: ["#F34E3A",  "#F17C3B" , "#333"], color: "#fff" },
+          { day: "Thu", value: 50, gradient: [ "#F17C3B", "#333"], color: "#fff" },
+          { day: "Fri", value: 90, gradient: ["#F34E3A",  "#F17C3B" , "#333"], color: "#fff" },
+          { day: "Sat", value: 20, gradient: ["#999", "#333"], color: "#fff" },
+        ].map((item, idx) => (
+          <View key={idx} style={styles.barContainer}>
+            <Text style={[styles.barValue, { color: item.color }]}>{item.value === 80 ? item.value : ""}</Text>
+            <LinearGradient colors={item.gradient} style={[styles.bar, { height: item.value }]} />
+            <Text style={styles.barDay}>{item.day}</Text>
+          </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
-export default Workout;
-
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: 30, paddingVertical: 30 },
-  header: {
-    fontSize: 20,
-    margin: 10,
-    padding: 10,
-    textAlign: "center",
-    borderRadius: 30,
-    fontFamily: Fonts.SemiBold,
-  },
-  statSection: {
-  alignItems: "center",
-  marginBottom: 30,
-},
-centerAlign: {
-  alignItems: "center",
-  marginBottom: 25,
-},
-rowWrap: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  width: "100%",
-  paddingHorizontal: 10,
-},
-
-  loaderContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  tipsTitle: {
-    fontSize: 25,
-    paddingTop: 30,
-    paddingBottom: 10,
-    fontFamily: Fonts.SemiBold,
-  },
-  statRow: {
+  container: { flex: 1, backgroundColor: Colors.background, padding: 20, paddingTop: 60 },
+  title: { fontSize: 20, color: "#fff", alignSelf: "center", fontFamily: Fonts.Montserrat_Bold },
+  cardLarge: {
+    backgroundColor: "#000",
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  statText: {
-    color: "#fff",
-    fontSize: 16,
-    fontFamily: Fonts.Medium,
-    marginBottom: 10,
-  },
-  dayChip: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    padding: 20,
     borderRadius: 20,
-    backgroundColor: "#1C1C1E",
-    marginRight: 10,
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 30,
+    shadowColor: "#6D6D6D",
+    elevation: 5,
   },
-  activeDayChip: {
-    backgroundColor: "#FFDD03",
+  activityInfo: { flex: 1, marginLeft: 20 },
+  totalText: { fontSize: 22, color: "#888", fontFamily: Fonts.Montserrat_Medium },
+  highlight: { color: "#FF5722", fontFamily: Fonts.Montserrat_Bold },
+  subLabel: { color: "#999", fontSize: 14, marginBottom: 5, fontFamily: Fonts.Montserrat_Medium },
+  caloriesLabel: { color: "#999", fontSize: 14, fontFamily: Fonts.Montserrat_Medium },
+  caloriesValue: { color: "#fff", fontSize: 16, fontFamily: Fonts.Montserrat_Bold },
+  cardRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 20, marginTop: 30 },
+  cardSmall: {
+    width: width / 2.3,
+    backgroundColor: "#000",
+    borderRadius: 20,
+    padding: 15,
+    shadowColor: "#6D6D6D",
+    elevation: 5,
   },
+  iconRow: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
+  cardHighlight: { fontSize: 18, color: "#f44336", fontFamily: Fonts.Montserrat_Bold },
+  cardDim: { fontSize: 14, color: "#888", fontFamily: Fonts.Montserrat_Medium },
+  cardLabel: { color: "#999", fontSize: 13, fontFamily: Fonts.Montserrat_Medium },
+  cardValue: { color: "#fff", fontSize: 16, fontFamily: Fonts.Montserrat_Bold },
+  monitoringTitle: { color: "#fff", fontSize: 18, fontFamily: Fonts.Montserrat_Bold , marginTop:20},
+  monitoringSubtitle: { color: "#888", marginBottom: 10, fontFamily: Fonts.Montserrat_Medium },
+  barChartCard: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "#000",
+    borderRadius: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    shadowColor: "#6D6D6D",
+    elevation: 5,
+  },
+  barContainer: {
+    alignItems: "center",
+    justifyContent: "flex-end", 
+    height: 150, 
+  },
+
+  bar: {
+    width: 16,
+    height: "100%",
+    marginVertical: 5,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+  },
+  barDay: { color: "#fff", fontSize: 12, fontFamily: Fonts.Montserrat_Medium },
+  barValue: { fontSize: 10, marginBottom: 4 },
 });
+
+export default Workouts;

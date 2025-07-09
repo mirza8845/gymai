@@ -51,7 +51,7 @@ const MainNavigator = () => {
   const [planReady, setPlanReady] = useState(false);
   const [hasPlan, setHasPlan] = useState(false);
 
-  const loadingUser = userData === null; 
+  const loadingUser = userData === null;
   const loadingPlan = !planReady;
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const MainNavigator = () => {
     if (userData && isProfileComplete(userData)) {
       checkPlan();
     } else if (userData) {
-      setPlanReady(true); // If user exists but profile is incomplete
+      setPlanReady(true);
     }
   }, [userData]);
 
@@ -83,7 +83,9 @@ const MainNavigator = () => {
     <>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true} />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {loadingUser || loadingPlan ? (
+        {userData === null ? (
+          <Stack.Screen name="AuthStack" component={AuthStack} />
+        ) : loadingPlan ? (
           <Stack.Screen name="Splash" component={Splash} />
         ) : isProfileComplete(userData) && hasPlan ? (
           <Stack.Screen name="Tabs" component={Homestack} />

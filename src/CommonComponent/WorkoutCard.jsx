@@ -8,7 +8,7 @@ import LinearGradient from "react-native-linear-gradient";
 const WorkoutCard = ({ title, description, time, button, onPress, buttons = [], onCardPress }) => {
   return (
     <Pressable onPress={onCardPress}>
-      <LinearGradient colors={["rgb(82, 39, 24)", "rgb(152, 138, 135)",
+      <LinearGradient colors={["rgb(6, 6, 6)", "rgb(2, 2, 2)",
         // "rgba(255, 134, 169, 1)", "rgba(134, 222, 145, 1)"
         ]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.workoutCardContainer}>
         {/* Left Content */}

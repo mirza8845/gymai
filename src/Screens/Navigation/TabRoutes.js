@@ -15,48 +15,70 @@ import HealthIcon from '../../assets/svg/health.svg';
 import HealthIconFill from '../../assets/svg/healthfill.svg';
 import ProfileIcon from '../../assets/svg/profile.svg';
 import ProfileIconFill from '../../assets/svg/profilefill.svg';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 const tabRoutes = [
   {
     name: 'Home',
     component: Home,
     icon: {
-      active: HomeIconFill,
-      inactive: HomeIcon,
+      active: ({ color, size }) => (
+        <MaterialCommunityIcons name="home" color={color} size={size} />
+      ),
+      inactive: ({ color, size }) => (
+        <MaterialCommunityIcons name="home-outline" color={color} size={size} />
+      ),
     },
   },
   {
-    name: 'Workout',
+    name: 'Statics',
     component: Workout,
     icon: {
-      active: WorkoutIconFill,
-      inactive: WorkoutIcon,
+      active: ({ color, size }) => (
+        <MaterialCommunityIcons name="chart-bar" color={color} size={size} />
+      ),
+      inactive: ({ color, size }) => (
+        <MaterialCommunityIcons name="chart-bar" color={color} size={size} />
+      ),
     },
   },
   {
     name: 'JimAI',
     component: JimAI,
     icon: {
-      active: JimAIIconFill,
-      inactive: JimAIIcon,
+      active: ({ color, size }) => (
+        <MaterialCommunityIcons name="robot" color={color} size={size} />
+      ),
+      inactive: ({ color, size }) => (
+        <MaterialCommunityIcons name="robot-outline" color={color} size={size} />
+      ),
     },
   },
   {
     name: 'Health',
     component: Health,
     icon: {
-      active: HealthIconFill,
-      inactive: HealthIcon,
+      active: ({ color, size }) => (
+        <MaterialCommunityIcons name="heart" color={color} size={size} />
+      ),
+      inactive: ({ color, size }) => (
+        <MaterialCommunityIcons name="heart-outline" color={color} size={size} />
+      ),
     },
   },
   {
     name: 'Profile',
     component: Profile,
     icon: {
-      active: ProfileIconFill,
-      inactive: ProfileIcon,
+      active: ({ color, size }) => (
+        <MaterialCommunityIcons name="account" color={color} size={size} />
+      ),
+      inactive: ({ color, size }) => (
+        <MaterialCommunityIcons name="account-outline" color={color} size={size} />
+      ),
     },
-  }
+  },
 ];
 
 export default tabRoutes;

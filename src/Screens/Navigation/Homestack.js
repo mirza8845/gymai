@@ -12,7 +12,11 @@ const Homestack = () => {
       screenOptions={{
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: "white",
-        tabBarStyle: { backgroundColor: "black", paddingTop: RFPercentage(1), height: RFPercentage(8) },
+        tabBarStyle: {
+          backgroundColor: "black",
+          paddingTop: RFPercentage(1),
+          height: RFPercentage(8),
+        },
         headerShown: false,
       }}
     >
@@ -22,8 +26,8 @@ const Homestack = () => {
           name={name}
           component={component}
           options={{
-            tabBarButton: icon === null ? () => null : undefined,
-            tabBarIcon: icon ? ({ focused }) => (focused ? <icon.active width={28} height={28} /> : <icon.inactive width={28} height={28} />) : undefined,
+            tabBarIcon: ({ focused, color, size }) =>
+              focused ? icon.active({ color, size }) : icon.inactive({ color, size }),
           }}
         />
       ))}

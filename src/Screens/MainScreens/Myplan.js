@@ -1,14 +1,21 @@
 import React from "react";
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-import WorkoutCard from "../../CommonComponent/WorkoutCard";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import LinearGradient from "react-native-linear-gradient";
 import CommonDropdown from "../../CommonComponent/CommonDropdown";
 import { Colors, Fonts } from "../../constants/theme";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import LinearGradient from "react-native-linear-gradient";
 
 const Myplan = () => {
   const { colors } = useTheme();
@@ -31,9 +38,23 @@ const Myplan = () => {
           .join(", ") + (exercises?.length > 3 ? "..." : "");
 
       return (
-        <LinearGradient key={dayKey} colors={["rgba(125, 88, 37, 0.6)", "rgba(55, 47, 36, 0.2)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.glassCard}>
+        <LinearGradient
+          key={dayKey}
+          colors={["#1C1C1E", "#2C2C2E"]}
+          style={styles.glassCard}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>{dayLabel}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <MaterialCommunityIcons
+                name={isRest ? "bed" : "dumbbell"}
+                color={isRest ? "#fff" : "#F07C3B"}
+                size={20}
+              />
+              <Text style={styles.cardTitle}>{dayLabel}</Text>
+            </View>
+
             {!isRest && (
               <TouchableOpacity
                 style={styles.editButton}
@@ -49,7 +70,10 @@ const Myplan = () => {
               </TouchableOpacity>
             )}
           </View>
-          <Text style={styles.cardDesc}>{isRest ? "Rest and recovery day" : description}</Text>
+
+          <Text style={styles.cardDesc}>
+            {isRest ? "Rest and recovery day" : description}
+          </Text>
 
           {!isRest && (
             <TouchableOpacity
@@ -88,7 +112,9 @@ const Myplan = () => {
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
               <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
             </TouchableOpacity>
-            <Text style={[styles.headerText, { color: colors.text }]}>Workout plan is unavailable. Please regenerate.</Text>
+            <Text style={[styles.headerText, { color: colors.text }]}>
+              Workout plan is unavailable. Please regenerate.
+            </Text>
           </View>
         </SafeAreaView>
       </SafeAreaProvider>
@@ -111,9 +137,16 @@ const Myplan = () => {
 
           <Text style={[styles.sectionTitle, { marginTop: 30 }]}>Workout Extras</Text>
           <View style={styles.dropdownSection}>
-            {workoutPlan?.warmup?.length > 0 && <CommonDropdown text="Warm-up" data={workoutPlan.warmup} />}
-            {workoutPlan?.cooldown?.length > 0 && <CommonDropdown text="Cool-down" data={workoutPlan.cooldown} />}
-            <CommonDropdown text="Workout Guidelines" data={[workoutPlan?.notes || "No guidelines provided."]} />
+            {workoutPlan?.warmup?.length > 0 && (
+              <CommonDropdown text="Warm-up" data={workoutPlan.warmup} />
+            )}
+            {workoutPlan?.cooldown?.length > 0 && (
+              <CommonDropdown text="Cool-down" data={workoutPlan.cooldown} />
+            )}
+            <CommonDropdown
+              text="Workout Guidelines"
+              data={[workoutPlan?.notes || "No guidelines provided."]}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -160,12 +193,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   glassCard: {
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 16,
     marginBottom: 16,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "#000",
+    borderColor: "#2E2E2E",
     borderWidth: 1,
+    elevation: 4,
     width: "100%",
   },
   cardHeader: {
@@ -202,15 +236,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 50,
-    borderWidth:1, borderColor:'grey'
+    borderWidth: 1,
+    borderColor: "grey",
   },
   viewBtnText: {
     fontSize: 12,
     color: "#ccc",
-    fontFamily:Fonts.Montserrat_Bold
+    fontFamily: Fonts.Montserrat_Bold,
   },
   dropdownSection: {
     paddingBottom: 20,
-    width:'100%'
+    width: "100%",
   },
 });
