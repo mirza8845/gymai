@@ -1,109 +1,13 @@
-// import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-// import React from "react";
-// import AntDesign from "react-native-vector-icons/AntDesign";
-// import { useTheme } from "@react-navigation/native";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import { Fonts } from "../../constants/theme";
-
-// const AddExercise = ({ navigation }) => {
-//   const { colors } = useTheme();
-
-//   return (
-//     <SafeAreaView style={styles.safeArea}>
-//       <ScrollView contentContainerStyle={styles.scrollContainer}>
-//         <View style={styles.headerContainer}>
-//           <Pressable style={styles.addExerciseButton} onPress={() => navigation.navigate("ExerciseForm")}>
-//             <Text style={styles.addExerciseText}>+ Add Exercise</Text>
-//           </Pressable>
-
-//           <View style={styles.dateInfo}>
-//             <Text style={[styles.dateText, { color: colors.text }]}>June 09</Text>
-//             <View style={styles.timeInfo}>
-//               <AntDesign name="clockcircle" size={17} color={colors.text} />
-//               <Text style={[styles.timeText, { color: colors.text }]}>25 Mins</Text>
-//             </View>
-//           </View>
-//         </View>
-//       </ScrollView>
-
-//       <View style={styles.footer}>
-//         <Text style={styles.discardText}>Discard Workout</Text>
-//         <Text style={styles.finishText}>Finish</Text>
-//       </View>
-//     </SafeAreaView>
-//   );
-// };
-
-// export default AddExercise;
-
-// const styles = StyleSheet.create({
-//   safeArea: {
-//     flex: 1,
-//     backgroundColor: "#000",
-//   },
-//   scrollContainer: {
-//     paddingHorizontal: 20,
-//     paddingVertical: 30,
-//     flexGrow: 1,
-//   },
-//   headerContainer: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "flex-start",
-//   },
-//   addExerciseButton: {
-//     paddingTop: 10,
-//   },
-//   addExerciseText: {
-//     fontSize: 20,
-//     color: "white",
-//     // fontWeight: '600',
-//     fontFamily: Fonts.SemiBold,
-//   },
-//   dateInfo: {
-//     gap: 3,
-//     alignItems: "flex-end",
-//   },
-//   dateText: {
-//     fontSize: 16,
-//     fontFamily: Fonts.Medium,
-//   },
-//   timeInfo: {
-//     flexDirection: "row",
-//     gap: 5,
-//     alignItems: "center",
-//   },
-//   timeText: {
-//     fontSize: 17,
-//     fontFamily: Fonts.Medium,
-//   },
-//   footer: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     paddingHorizontal: 20,
-//     paddingVertical: 50,
-//   },
-//   discardText: {
-//     color: "#FF0000",
-//     fontSize: 18,
-//     fontFamily: Fonts.SemiBold,
-//   },
-//   finishText: {
-//     color: "white",
-//     fontSize: 18,
-//     fontFamily: Fonts.Medium,
-//   },
-// });
-
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
-import { Fonts } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import LinearGradient from "react-native-linear-gradient";
 
 const AddExerciseScreen = () => {
   const [name, setName] = useState("");
@@ -165,8 +69,8 @@ const AddExerciseScreen = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: RFPercentage(5) }}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0, top: 0, zIndex:999 }}>
-        <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+      <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0, top: 0, zIndex: 999 }}>
+        <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3)} />
       </TouchableOpacity>
       <Text style={styles.title}>Add Custom Exercise</Text>
 
@@ -191,8 +95,10 @@ const AddExerciseScreen = () => {
       <Text style={styles.label}>Common Mistakes (comma-separated)</Text>
       <TextInput style={styles.input} value={mistakes} onChangeText={setMistakes} placeholder="e.g. Arching back, Rushing reps" multiline placeholderTextColor={"grey"} />
 
-      <TouchableOpacity style={styles.button} onPress={handleAddExercise}>
-        <Text style={styles.buttonText}>Add Exercise</Text>
+      <TouchableOpacity onPress={handleAddExercise} style={styles.saveButton}>
+        <LinearGradient colors={[Colors.primary, Colors.primary]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.gradientButton}>
+          <Text style={styles.saveText}>Save Routine</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -203,28 +109,29 @@ export default AddExerciseScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
-    padding: 20,
+    backgroundColor: Colors.background,
+    paddingHorizontal: 20,
+    paddingTop: 60,
   },
   title: {
-    fontSize: 22,
-    fontFamily: Fonts.SemiBold,
+    fontSize: 20,
+    fontFamily: Fonts.Montserrat_SemiBold,
     color: "#fff",
-    marginBottom: 30,
     textAlign: "center",
+    marginBottom: 20,
   },
   label: {
     fontSize: 14,
     color: "rgba(255, 255, 255,1)",
     marginBottom: 6,
-    fontFamily: Fonts.Medium,
+    fontFamily: Fonts.Montserrat_Medium,
   },
   input: {
     backgroundColor: "transparent",
     padding: 10,
     borderRadius: 10,
     marginBottom: 15,
-    fontFamily: Fonts.Medium,
+    fontFamily: Fonts.Montserrat_Medium,
     textAlignVertical: "top",
     borderWidth: 1,
     borderColor: "rgb(104, 102, 102)",
@@ -240,5 +147,21 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: Fonts.Bold,
     fontSize: 16,
+  },
+  saveButton: {
+    borderRadius: 12,
+    overflow: "hidden",
+    marginTop: RFPercentage(1),
+  },
+  gradientButton: {
+    paddingVertical: RFPercentage(2),
+    paddingHorizontal: RFPercentage(4),
+    alignItems: "center",
+    borderRadius: 12,
+  },
+  saveText: {
+    fontSize: RFPercentage(2),
+    fontFamily: Fonts.Montserrat_SemiBold,
+    color: "white", // darker text on light gradient
   },
 });

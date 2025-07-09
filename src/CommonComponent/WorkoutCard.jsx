@@ -3,53 +3,56 @@ import React from "react";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Colors, Fonts } from "../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import LinearGradient from "react-native-linear-gradient";
 
 const WorkoutCard = ({ title, description, time, button, onPress, buttons = [], onCardPress }) => {
   return (
-    <Pressable style={styles.workoutCardContainer} onPress={onCardPress}>
-      {/* Left Content */}
-      <View style={styles.textContainer}>
-        <Text style={styles.workoutTitle}>{title}</Text>
-        <Text style={styles.workoutDescription}>{description}</Text>
-      </View>
+    <Pressable onPress={onCardPress}>
+      <LinearGradient colors={["rgb(82, 39, 24)", "rgb(152, 138, 135)",
+        // "rgba(255, 134, 169, 1)", "rgba(134, 222, 145, 1)"
+        ]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.workoutCardContainer}>
+        {/* Left Content */}
+        <View style={styles.textContainer}>
+          <Text style={styles.workoutTitle}>{title}</Text>
+          <Text style={styles.workoutDescription}>{description}</Text>
+        </View>
 
-      {/* Right Content: Button or Time */}
-      <View style={styles.rightContent}>
-        {time && (
-          <View style={styles.timeContainer}>
-            <AntDesign name="clockcircle" size={17} color="#000" />
-            <Text style={styles.timeText}>{time}</Text>
-          </View>
-        )}
+        {/* Right Content: Button or Time */}
+        <View style={styles.rightContent}>
+          {time && (
+            <View style={styles.timeContainer}>
+              <AntDesign name="clockcircle" size={17} color="#000" />
+              <Text style={styles.timeText}>{time}</Text>
+            </View>
+          )}
 
-        {button && (
-          <TouchableOpacity style={styles.startWorkoutButton} onPress={onPress}>
-            <Text style={styles.startWorkoutButtonText}>{button}</Text>
-          </TouchableOpacity>
-        )}
+          {button && (
+            <TouchableOpacity style={styles.startWorkoutButton} onPress={onPress}>
+              <Text style={styles.startWorkoutButtonText}>{button}</Text>
+            </TouchableOpacity>
+          )}
 
-        {buttons.length > 0 && (
-          <View style={styles.multiButtonContainer}>
-            {buttons.map((btn, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.startWorkoutButton,
-                  {
-                    backgroundColor: btn.backgroundColor || "#D9D9D9",
-                    // height: btn.height,
-                    // padding: btn.padding,
-                    marginTop: index === 0 ? 0 : 10,
-                  },
-                ]}
-                onPress={btn.onPress}
-              >
-                <Text style={styles.startWorkoutButtonText}>{btn.title}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </View>
+          {buttons.length > 0 && (
+            <View style={styles.multiButtonContainer}>
+              {buttons.map((btn, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.startWorkoutButton,
+                    {
+                      backgroundColor: btn.backgroundColor || "#D9D9D9",
+                      marginTop: index === 0 ? 0 : 10,
+                    },
+                  ]}
+                  onPress={btn.onPress}
+                >
+                  <Text style={styles.startWorkoutButtonText}>{btn.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
+      </LinearGradient>
     </Pressable>
   );
 };
@@ -62,7 +65,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: RFPercentage(1.7),
     backgroundColor: "#080808",
-    borderRadius: 21,
+    borderRadius: 14,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -78,7 +81,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   workoutDescription: {
-   color: Colors.white,
+    color: Colors.white,
     fontSize: 14,
     marginTop: 4,
     fontFamily: Fonts.Regular,

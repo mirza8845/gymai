@@ -3,13 +3,15 @@ import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity } from 
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
-import { Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { Colors, Fonts } from "../../constants/theme";
+import LinearGradient from "react-native-linear-gradient";
 
 const EditRoutineScreen = ({ route, navigation }) => {
   const { dayKey, dayLabel, exercises } = route.params;
   const [editedExercises, setEditedExercises] = useState(exercises);
+  const [showAll, setShowAll] = useState(false); // Toggle for showing more
 
   const updateExerciseField = (index, field, value) => {
     const updated = [...editedExercises];
@@ -49,32 +51,51 @@ const EditRoutineScreen = ({ route, navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: RFPercentage(5) }}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0, top: 0 , zIndex:999}}>
-        <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: RFPercentage(6) }}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <View style={{}}>
+          <AntDesign name="arrowleft" color="white" size={RFPercentage(2.8)} />
+        </View>
       </TouchableOpacity>
+
       <Text style={styles.header}>{dayLabel}</Text>
 
-      {editedExercises.map((exercise, index) => (
-        <View key={index} style={styles.exerciseCard}>
+      {(showAll ? editedExercises : editedExercises.slice(0, 1)).map((exercise, index) => (
+        <LinearGradient key={index} colors={["rgba(255,255,255,0.3)", "rgba(255,255,255,0.02)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.exerciseCard}>
           <Text style={styles.exerciseTitle}>{`Exercise ${index + 1}: ${exercise.name}`}</Text>
 
-          <Text style={styles.label}>Exercise Name</Text>
-          <TextInput style={styles.input} value={exercise.name} onChangeText={(text) => updateExerciseField(index, "name", text)} placeholder="Exercise Name" />
+          <Text style={styles.label}>Name</Text>
+          <TextInput style={styles.input} value={exercise.name} onChangeText={(text) => updateExerciseField(index, "name", text)} placeholder="Exercise Name" placeholderTextColor="#888" />
 
           <Text style={styles.label}>Sets</Text>
-          <TextInput style={styles.input} value={exercise.sets.toString()} onChangeText={(text) => updateExerciseField(index, "sets", parseInt(text))} placeholder="Sets" keyboardType="numeric" />
+          <TextInput
+            style={styles.input}
+            value={exercise.sets.toString()}
+            onChangeText={(text) => updateExerciseField(index, "sets", parseInt(text))}
+            placeholder="Sets"
+            placeholderTextColor="#888"
+            keyboardType="numeric"
+          />
 
           <Text style={styles.label}>Reps</Text>
-          <TextInput style={styles.input} value={exercise.reps} onChangeText={(text) => updateExerciseField(index, "reps", text)} placeholder="Reps" />
+          <TextInput style={styles.input} value={exercise.reps} onChangeText={(text) => updateExerciseField(index, "reps", text)} placeholder="Reps" placeholderTextColor="#888" />
 
           <Text style={styles.label}>Equipment</Text>
-          <TextInput style={styles.input} value={exercise.equipment} onChangeText={(text) => updateExerciseField(index, "equipment", text)} placeholder="Equipment" />
-        </View>
+          <TextInput style={styles.input} value={exercise.equipment} onChangeText={(text) => updateExerciseField(index, "equipment", text)} placeholder="Equipment" placeholderTextColor="#888" />
+        </LinearGradient>
       ))}
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveText}>Save Routine</Text>
+      {/* +N more button */}
+      {!showAll && editedExercises.length > 1 && (
+        <TouchableOpacity onPress={() => setShowAll(true)} style={styles.showMoreBtn}>
+          <Text style={styles.showMoreText}>+{editedExercises.length - 1} more</Text>
+        </TouchableOpacity>
+      )}
+
+      <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
+        <LinearGradient colors={[Colors.primary, Colors.primary]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.gradientButton}>
+          <Text style={styles.saveText}>Save Routine</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -84,54 +105,82 @@ export default EditRoutineScreen;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: RFPercentage(2),
     backgroundColor: "#000",
+    flex: 1,
+  },
+  backButton: {
+    position: "absolute",
+    left: 16,
+    top: 50,
+    zIndex: 10,
+  },
+  backButtonBg: {
+    backgroundColor: "#333",
+    padding: 8,
+    borderRadius: 50,
   },
   header: {
     color: "#fff",
-    fontSize: 22,
-    marginBottom: 20,
+    fontSize: RFPercentage(2.5),
+    fontFamily: Fonts.Montserrat_Bold,
+    marginTop: RFPercentage(6),
+    marginBottom: RFPercentage(3),
     textAlign: "center",
-    fontFamily: Fonts.Bold,
   },
-  label: {
-    color: "#ccc",
-    marginBottom: 4,
-    fontSize: 13,
-    fontFamily: Fonts.Medium,
-  },
-
   exerciseCard: {
-    backgroundColor: "#222",
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 20,
+    borderRadius: 16,
+    padding: RFPercentage(2),
+    marginBottom: RFPercentage(3),
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   exerciseTitle: {
     color: "#fff",
-    fontSize: 16,
-    marginBottom: 10,
-    fontFamily: Fonts.SemiBold,
+    fontSize: RFPercentage(2),
+    marginBottom: RFPercentage(1.5),
+    fontFamily: Fonts.Montserrat_SemiBold,
+  },
+  label: {
+    color: "#aaa",
+    fontSize: RFPercentage(1.8),
+    marginBottom: 6,
+    fontFamily: Fonts.Montserrat_Medium,
   },
   input: {
-    backgroundColor: "transparent",
-    marginBottom: 10,
+    backgroundColor: "#333",
+    borderColor: "#444",
+    borderWidth: 1,
+    borderRadius: 12,
     padding: 10,
-    borderRadius: 10,
-    fontFamily: Fonts.Medium,
-    borderWidth:1,
-    borderColor:'grey',
-    color:'white'
+    color: "#fff",
+    fontFamily: Fonts.Montserrat_Medium,
+    marginBottom: 14,
+  },
+  showMoreBtn: {
+    marginBottom: RFPercentage(2),
+    width: 100,
+    left: 10,
+  },
+  showMoreText: {
+    color: Colors.primary,
+    fontSize: RFPercentage(1.8),
+    fontFamily: Fonts.Montserrat_Medium,
   },
   saveButton: {
-    backgroundColor: "#DDFF94",
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 20,
+    borderRadius: 12,
+    overflow: "hidden",
+    marginTop: RFPercentage(1),
+  },
+  gradientButton: {
+    paddingVertical: RFPercentage(2),
+    paddingHorizontal: RFPercentage(4),
     alignItems: "center",
+    borderRadius: 12,
   },
   saveText: {
-    fontSize: 16,
-    fontFamily: Fonts.Bold,
+    fontSize: RFPercentage(2),
+    fontFamily: Fonts.Montserrat_SemiBold,
+    color: "white", // darker text on light gradient
   },
 });

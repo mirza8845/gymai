@@ -7,6 +7,7 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { Colors, Fonts } from "../../constants/theme";
+import LinearGradient from "react-native-linear-gradient";
 
 const PullPushDay = () => {
   const { colors } = useTheme();
@@ -97,7 +98,7 @@ const PullPushDay = () => {
         {/* Exercises */}
         {exercises?.length > 0 ? (
           exercises.map((exercise, index) => (
-            <View style={styles.exerciseCard} key={index}>
+            <LinearGradient key={index} colors={["rgba(58, 52, 43, 0.6)", "rgba(55, 47, 36, 0.2)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.exerciseCard} >
               {/* Exercise Image */}
               <Image source={require("../../assets/images/pul-up.jpg")} style={styles.exerciseImage} resizeMode="cover" />
               {/* {exercise.imageUrl ? (
@@ -130,7 +131,7 @@ const PullPushDay = () => {
               <TouchableOpacity onPress={() => handleRemoveExercise(index)} style={styles.removeBtn}>
                 <AntDesign name="delete" size={20} color="#fff" />
               </TouchableOpacity>
-            </View>
+            </LinearGradient>
           ))
         ) : (
           <View style={styles.noDataContainer}>
@@ -147,7 +148,7 @@ const PullPushDay = () => {
           </TouchableOpacity>
 
           {exercises?.length > 0 && (
-            <TouchableOpacity style={[styles.primaryBtn, { backgroundColor: "#333" , marginHorizontal:14}]} onPress={handleFinishWorkout}>
+            <TouchableOpacity style={[styles.primaryBtn, { backgroundColor: "#333", marginHorizontal: 14 }]} onPress={handleFinishWorkout}>
               <Text style={styles.btnText}>Finish</Text>
             </TouchableOpacity>
           )}
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     width: "90%",
     alignSelf: "center",
     alignItems: "center",
-    paddingTop: RFPercentage(6),
+    paddingTop: RFPercentage(8),
     paddingBottom: RFPercentage(10),
   },
   headerContainer: {
@@ -180,20 +181,21 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: Fonts.Montserrat_SemiBold,
   },
   exerciseCard: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#1C1C1E",
-    padding: 15,
+    // padding: 15,
     borderRadius: 12,
     marginBottom: 15,
+    height:90
   },
   exerciseImage: {
-    width: 60,
-    height: 60,
+    width: 90,
+    height: 90,
     borderRadius: 8,
     marginRight: 12,
   },
@@ -221,10 +223,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat_Regular,
   },
   removeBtn: {
-    marginLeft: 10,
     backgroundColor: "#333",
     padding: 8,
     borderRadius: 50,
+    right: 15,
   },
   noDataContainer: {
     alignItems: "center",
@@ -251,7 +253,7 @@ const styles = StyleSheet.create({
   primaryBtn: {
     borderRadius: RFPercentage(100),
     alignItems: "center",
-    width: RFPercentage(18),
+    width: RFPercentage(19),
     height: RFPercentage(5.6),
     justifyContent: "center",
   },

@@ -31,7 +31,7 @@ const Myplan = () => {
           .join(", ") + (exercises?.length > 3 ? "..." : "");
 
       return (
-        <LinearGradient key={dayKey} colors={["rgba(255,255,255,0.06)", "rgba(255,255,255,0.02)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.glassCard}>
+        <LinearGradient key={dayKey} colors={["rgba(125, 88, 37, 0.6)", "rgba(55, 47, 36, 0.2)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.glassCard}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>{dayLabel}</Text>
             {!isRest && (
@@ -198,14 +198,15 @@ const styles = StyleSheet.create({
   viewBtn: {
     marginTop: 12,
     alignSelf: "flex-start",
-    backgroundColor: "white",
+    backgroundColor: "transparent",
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 50,
+    borderWidth:1, borderColor:'grey'
   },
   viewBtnText: {
     fontSize: 12,
-    color: "#000",
+    color: "#ccc",
     fontFamily:Fonts.Montserrat_Bold
   },
   dropdownSection: {

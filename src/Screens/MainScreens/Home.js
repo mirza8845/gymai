@@ -10,6 +10,8 @@ import { UserContext } from "../../utils/userContext";
 import { setWorkoutPlan } from "../../redux/Actions";
 import WorkoutCard from "../../CommonComponent/WorkoutCard";
 import DoubleCard from "../../CommonComponent/DoubleCard";
+import LinearGradient from "react-native-linear-gradient";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import gymImg from "../../assets/images/gym.png";
 import WomenGym from "../../assets/images/womangym.png";
@@ -89,7 +91,7 @@ const Home = () => {
           <View style={styles.header}>
             <View>
               <Text style={styles.greetingText}>Hi, {fullName}</Text>
-              <Text style={styles.subGreeting}>Welcome back! Let's hit your goals 💥</Text>
+              <Text style={styles.subGreeting}>Welcome back! Let's hit your goals!</Text>
             </View>
             <Image
               source={require("../../assets/images/noDp.png")}
@@ -102,14 +104,22 @@ const Home = () => {
             <ActivityIndicator size="large" color={Colors.primary} style={{ marginTop: 30 }} />
           ) : workoutPlan?.weekly_split ? (
             <>
-              <View style={styles.planCard}>
-                <Text style={styles.planTitle}>Your {weeklyWorkoutCommitment}-Day Plan</Text>
+              <LinearGradient colors={[
+                "rgba(122, 77, 66, 0.4)", "rgba(93, 82, 79, 0.3)",
+                // "rgb(237, 136, 113)", "rgb(125, 207, 192)"
+                ]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.planCard}>
+                <View style={styles.iconRow}>
+                  <MaterialCommunityIcons name="calendar-multiselect" size={28} color="#fff" />
+                  <Text style={styles.planTitle}>Your {weeklyWorkoutCommitment}-Day Plan</Text>
+                </View>
+
                 <Text style={styles.planSubtitle}>{workoutPlan.weekly_split.join(" • ")}</Text>
 
                 <TouchableOpacity style={styles.planButton} onPress={() => navigation.navigate("MyPlan")}>
                   <Text style={styles.planButtonText}>View Plan</Text>
                 </TouchableOpacity>
-              </View>
+              </LinearGradient>
+
               <View style={{ width: "100%" }}>
                 <Text style={styles.sectionTitle}>Today's Workout</Text>
               </View>
@@ -159,6 +169,13 @@ const styles = StyleSheet.create({
     paddingVertical: 50,
     alignItems: "center",
   },
+  iconRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    gap: 8,
+  },
+
   header: {
     marginBottom: 20,
     flexDirection: "row",
@@ -167,7 +184,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   greetingText: {
-    color: Colors.primary,
+    color: Colors.white,
     fontSize: 24,
     fontFamily: Fonts.Montserrat_SemiBold,
   },
@@ -207,7 +224,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   planButtonText: {
-    color: Colors.primary,
+    color: 'darkgrey',
     fontSize: 16,
     fontFamily: Fonts.Montserrat_SemiBold,
   },
