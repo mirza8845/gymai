@@ -100,20 +100,24 @@ const Home = () => {
               style={{ width: RFPercentage(7), height: RFPercentage(7), borderWidth: 1.5, borderColor: Colors.primary, borderRadius: 100 }}
             />
           </View>
-          <View style={{width:'90%', alignItems:'center', alignSelf:'center'}}>
-
-          <ChartComponent />
+          <View style={{ width: "90%", alignItems: "center", alignSelf: "center" }}>
+            <ChartComponent />
           </View>
-
 
           {loading ? (
             <ActivityIndicator size="large" color={Colors.primary} style={{ marginTop: 30 }} />
           ) : workoutPlan?.weekly_split ? (
             <>
-              <LinearGradient colors={[
-                "rgba(6, 6, 6, 0.4)", "rgba(93, 82, 79, 0.3)",
-                // "rgb(237, 136, 113)", "rgb(125, 207, 192)"
-                ]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.planCard}>
+              <LinearGradient
+                colors={[
+                  "rgba(6, 6, 6, 0.4)",
+                  "rgba(93, 82, 79, 0.3)",
+                  // "rgb(237, 136, 113)", "rgb(125, 207, 192)"
+                ]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.planCard}
+              >
                 <View style={styles.iconRow}>
                   <MaterialCommunityIcons name="calendar-multiselect" size={28} color="#fff" />
                   <Text style={styles.planTitle}>Your {weeklyWorkoutCommitment}-Day Plan</Text>
@@ -206,7 +210,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginVertical: 10,
     elevation: 5,
-    shadowColor:"#6D6D6D"
+    shadowColor: "#6D6D6D",
   },
   planTitle: {
     color: "#fff",
@@ -229,9 +233,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: RFPercentage(18),
     alignSelf: "center",
+    borderWidth: 1,
+    borderColor: "grey",
   },
   planButtonText: {
-    color: 'darkgrey',
+    color: "darkgrey",
     fontSize: 16,
     fontFamily: Fonts.Montserrat_SemiBold,
   },

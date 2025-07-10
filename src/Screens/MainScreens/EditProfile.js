@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth from "@react-native-firebase/auth";
 import { launchImageLibrary } from "react-native-image-picker";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { Colors, Fonts } from "../../constants/theme";
 const EditProfile = () => {
   const { userData, setUserData } = useContext(UserContext);
 
@@ -121,11 +122,11 @@ const EditProfile = () => {
         </View>
 
         <View style={styles.formSection}>
-          <CommonInput label="Full name" placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
-          <CommonInput label="Mobile Number" placeholder="Enter your Mobile Number" value={mobileNumber} onChangeText={setMobileNumber} />
-          <CommonInput label="Date of birth" placeholder="Enter your Date of birth" value={dob} onChangeText={setDob} />
-          <CommonInput label="Weight" placeholder="Enter your Weight" value={weight} onChangeText={setWeight} />
-          <CommonInput label="Height" placeholder="Enter your Height" value={height} onChangeText={setHeight} />
+          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
+          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter your Mobile Number" value={mobileNumber} onChangeText={setMobileNumber} />
+          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter your Date of birth" value={dob} onChangeText={setDob} />
+          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter your Weight" value={weight} onChangeText={setWeight} />
+          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter your Height" value={height} onChangeText={setHeight} />
         </View>
 
         <Pressable style={styles.updateButton} onPress={handleUpdate}>
@@ -140,7 +141,7 @@ export default EditProfile;
 
 // Styles unchanged (can be customized further)
 const styles = StyleSheet.create({
-  safeArea: { flex: 1 },
+  safeArea: { flex: 1, backgroundColor: Colors.background },
   profileContainer: {
     paddingHorizontal: 20,
     paddingVertical: 40,
@@ -159,23 +160,23 @@ const styles = StyleSheet.create({
   statValue: { color: "white", fontWeight: "bold", fontSize: 18 },
   statLabel: { color: "white", fontWeight: "200", fontSize: 18 },
   formSection: {
-    width: "85%",
+    width: "90%",
     alignSelf: "center",
     paddingHorizontal: 10,
     marginBottom: 30,
   },
   updateButton: {
-    backgroundColor: "white",
-    paddingVertical: 7,
-    paddingHorizontal: 30,
+    backgroundColor: Colors.primary,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 50,
     alignSelf: "center",
     marginBottom: 50,
   },
   updateButtonText: {
-    color: "black",
-    fontSize: 18,
-    fontWeight: "bold",
+    color: "white",
+    fontSize: 16,
+    fontFamily:Fonts.Montserrat_Medium
   },
   imageContainer: {
     alignSelf: "center",

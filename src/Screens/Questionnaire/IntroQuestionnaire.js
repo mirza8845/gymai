@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/AntDesign";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Button from "../../CommonComponent/Button";
 import { Colors, Fonts } from "../../constants/theme";
-import img3 from "../../assets/images/img3.jpg";
+import img3 from "../../assets/images/img33.jpg";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 const IntroQuestionnaire = () => {
