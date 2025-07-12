@@ -16,8 +16,10 @@ const Homestack = () => {
           backgroundColor: "black",
           paddingTop: RFPercentage(1),
           height: RFPercentage(8),
+          borderTopWidth: 0,
         },
         headerShown: false,
+        tabBarHideOnKeyboard: true,
       }}
     >
       {tabRoutes.map(({ name, component, icon }, index) => (
@@ -26,8 +28,7 @@ const Homestack = () => {
           name={name}
           component={component}
           options={{
-            tabBarIcon: ({ focused, color, size }) =>
-              focused ? icon.active({ color, size }) : icon.inactive({ color, size }),
+            tabBarIcon: ({ focused, color, size }) => (focused ? icon.active({ color, size }) : icon.inactive({ color, size })),
           }}
         />
       ))}
