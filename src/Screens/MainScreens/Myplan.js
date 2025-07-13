@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
     width: "90%",
     alignSelf: "center",
     alignItems: "center",
+    marginTop:20
   },
   headerWrapper: {
     marginTop: RFPercentage(3),
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   glassCard: {
-    borderRadius: 20,
+    borderRadius: 16,
     padding: 16,
     marginBottom: 16,
     backgroundColor: "#000",

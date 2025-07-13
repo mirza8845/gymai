@@ -135,11 +135,13 @@ export default Health;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background, // Assuming dark bg
+    backgroundColor: Colors.background, 
   },
   scrollContainer: {
-    padding: 20,
     paddingBottom: 40,
+    width:'90%',
+    alignSelf:'center',
+    marginTop:30
   },
   title: {
     color: "#fff",
@@ -173,9 +175,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     padding: 20,
     borderRadius: 20,
-    marginBottom: 20,
     shadowColor: "#6D6D6D",
     elevation: 5,
+    marginTop:20
   },
   cardTitle: {
     fontSize: 16,
@@ -208,20 +210,21 @@ const styles = StyleSheet.create({
   },
   gymPic: {
     width: "100%",
-    borderRadius: 30,
+    borderRadius: 20,
   },
   recipeOfTheDayText: {
     position: "absolute",
     top: 0,
     right: 0,
-    backgroundColor: "#FFDD03",
-    fontSize: 16,
+    backgroundColor: Colors.primary,
+    fontSize: 14,
     paddingHorizontal: 12,
     paddingVertical: 4,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
     borderBottomLeftRadius: 20,
-    fontFamily: Fonts.Montserrat_Bold,
+    fontFamily: Fonts.Montserrat_Regular,
+    color:'white'
   },
   recipeDetailsContainer: {
     position: "absolute",

@@ -75,7 +75,7 @@ const Login = () => {
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <>
                   <View style={styles.inputView}>
-                    <CommonInput icon={require("../../assets/images/mail.png")} placeholder="Email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
+                    <CommonInput img={require("../../assets/images/mail.png")} placeholder="Email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
 
                     {touched.email && errors.email && (
                       <View style={{ width: "90%" }}>
@@ -83,7 +83,7 @@ const Login = () => {
                       </View>
                     )}
                     <CommonInput
-                      icon={require("../../assets/images/lock.png")}
+                      img={require("../../assets/images/lock.png")}
                       placeholder="Password"
                       secureTextEntry={true}
                       value={values.password}

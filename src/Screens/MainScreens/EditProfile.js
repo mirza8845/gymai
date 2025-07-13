@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Image, StyleSheet, Pressable, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import profileImg from "../../assets/images/womanpic.png";
+import profileImg from "../../assets/images/noDp.png";
 import Heading from "../../CommonComponent/Heading";
 import Paragraph from "../../CommonComponent/Paragraph";
 import CommonInput from "../../CommonComponent/CommonInput";
@@ -12,6 +12,8 @@ import auth from "@react-native-firebase/auth";
 import { launchImageLibrary } from "react-native-image-picker";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Colors, Fonts } from "../../constants/theme";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+
 const EditProfile = () => {
   const { userData, setUserData } = useContext(UserContext);
 
@@ -75,8 +77,8 @@ const EditProfile = () => {
       <ScrollView>
         <View style={styles.profileContainer}>
           <View style={{ marginTop: RFPercentage(3), alignItems: "center", justifyContent: "center" }}>
-            <TouchableOpacity onPress={handleSelectImage} style={styles.profileImg}>
-              <Image source={imageUri ? { uri: imageUri } : profileImg} style={styles.profileImg} />
+            <TouchableOpacity onPress={handleSelectImage} style={[styles.profileImg, { borderWidth: 1, borderColor: Colors.primary, alignItems: "center", justifyContent: "center" }]}>
+              <Image source={imageUri ? { uri: imageUri } : profileImg} style={{ width: 145, height: 145, borderRadius: 100 }} />
               <View style={styles.editIcon}>
                 <TouchableOpacity onPress={handleSelectImage}>
                   <EditIcon width={16} height={16} />
@@ -91,42 +93,14 @@ const EditProfile = () => {
           <View style={{ bottom: 20 }}>
             <Paragraph title={auth().currentUser?.email} />
           </View>
-          <Text style={styles.birthdayText}>
-            <Text style={styles.birthdayLabel}>Birthday: </Text>
-            <Text style={styles.birthdayValue}>{userData?.dob || "N/A"}</Text>
-          </Text>
-
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>
-                {userData?.weight}
-                {"\n"}
-              </Text>
-              <Text style={styles.statLabel}>Weight</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>
-                {userData?.age || "N/A"}
-                {"\n"}
-              </Text>
-              <Text style={styles.statLabel}>Years Old</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>
-                {userData?.height}
-                {"\n"}
-              </Text>
-              <Text style={styles.statLabel}>Height</Text>
-            </View>
-          </View>
         </View>
 
         <View style={styles.formSection}>
-          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
-          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter your Mobile Number" value={mobileNumber} onChangeText={setMobileNumber} />
-          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter your Date of birth" value={dob} onChangeText={setDob} />
-          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter your Weight" value={weight} onChangeText={setWeight} />
-          <CommonInput icon={require('../../assets/images/user.png')} placeholder="Enter your Height" value={height} onChangeText={setHeight} />
+          <CommonInput icon={"user"} placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
+          <CommonInput icon={"phone"} placeholder="Enter your Mobile Number" value={mobileNumber} onChangeText={setMobileNumber} />
+          <CommonInput icon={"calendar-alt"} placeholder="Enter your Date of birth" value={dob} onChangeText={setDob} />
+          <CommonInput icon={"weight"} placeholder="Enter your Weight" value={weight} onChangeText={setWeight} />
+          <CommonInput icon={"ruler-vertical"} placeholder="Enter your Height" value={height} onChangeText={setHeight} />
         </View>
 
         <Pressable style={styles.updateButton} onPress={handleUpdate}>
@@ -144,12 +118,12 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: Colors.background },
   profileContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 40,
     alignItems: "center",
+    paddingTop: 20,
   },
   birthdayText: { marginTop: 0 },
-  birthdayLabel: { color: "white", fontWeight: "bold" },
-  birthdayValue: { color: "white", fontWeight: "200" },
+  birthdayLabel: { color: "white", fontFamily: Fonts.Montserrat_Medium },
+  birthdayValue: { color: "white", fontFamily: Fonts.Montserrat_Regular },
   statsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -157,13 +131,13 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   statItem: { alignItems: "center", height: 23 },
-  statValue: { color: "white", fontWeight: "bold", fontSize: 18 },
-  statLabel: { color: "white", fontWeight: "200", fontSize: 18 },
+  statValue: { color: "white", fontSize: 17, fontFamily: Fonts.Montserrat_Medium },
+  statLabel: { color: "white", fontFamily: Fonts.Montserrat_Regular, fontSize: 16 },
   formSection: {
     width: "90%",
     alignSelf: "center",
-    paddingHorizontal: 10,
-    marginBottom: 30,
+    alignItems: "center",
+    marginTop:20
   },
   updateButton: {
     backgroundColor: Colors.primary,
@@ -171,12 +145,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 50,
     alignSelf: "center",
-    marginBottom: 50,
+    marginTop:50
   },
   updateButtonText: {
     color: "white",
     fontSize: 16,
-    fontFamily:Fonts.Montserrat_Medium
+    fontFamily: Fonts.Montserrat_Medium,
   },
   imageContainer: {
     alignSelf: "center",

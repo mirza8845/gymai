@@ -104,14 +104,14 @@ const SignUp = () => {
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <>
                   <View style={styles.inputView}>
-                    <CommonInput icon={require("../../assets/images/user.png")} placeholder="Username" value={values.name} onChangeText={handleChange("name")} handleBlur={handleBlur("name")} />
+                    <CommonInput img={require("../../assets/images/user.png")} placeholder="Username" value={values.name} onChangeText={handleChange("name")} handleBlur={handleBlur("name")} />
                     {touched.name && errors.name && (
                       <View style={{ width: "90%" }}>
                         <Text style={{ color: Colors.primary, fontFamily: Fonts.Montserrat_Regular, fontSize: RFPercentage(1.6), top: 2 }}>{errors.name}</Text>
                       </View>
                     )}
 
-                    <CommonInput icon={require("../../assets/images/mail.png")} placeholder="Email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
+                    <CommonInput img={require("../../assets/images/mail.png")} placeholder="Email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
                     {touched.email && errors.email && (
                       <View style={{ width: "90%" }}>
                         <Text style={{ color: Colors.primary, fontFamily: Fonts.Montserrat_Regular, fontSize: RFPercentage(1.6), top: 2 }}>{errors.email}</Text>
@@ -119,7 +119,7 @@ const SignUp = () => {
                     )}
 
                     <CommonInput
-                      icon={require("../../assets/images/lock.png")}
+                      img={require("../../assets/images/lock.png")}
                       placeholder="Password"
                       secureTextEntry={true}
                       value={values.password}

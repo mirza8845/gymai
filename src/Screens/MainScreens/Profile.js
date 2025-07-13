@@ -1,41 +1,34 @@
 import React, { useContext } from "react";
 import { View, Text, ScrollView, Image, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import profileImg from "../../assets/images/womanpic.png";
+import profileImg from "../../assets/images/noDp.png";
 import Heading from "../../CommonComponent/Heading";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../utils/userContext";
 import { Colors, Fonts } from "../../constants/theme";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import auth from "@react-native-firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-// SVGs
-import Profilesvg from "../../assets/svg/anotherProfile.svg";
-import Favourite from "../../assets/svg/bigstar.svg";
-import Retake from "../../assets/svg/retake.svg";
-import Setting from "../../assets/svg/setting.svg";
-import Help from "../../assets/svg/help.svg";
-import Logout from "../../assets/svg/logout.svg";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 const Profile = () => {
   const navigation = useNavigation();
   const { userData, setUserData } = useContext(UserContext);
 
   const profileOptions = [
-    { icon: Profilesvg, title: "Profile", navigateTo: "EditProfile" },
-    { icon: Favourite, title: "Favourite" },
-    { icon: Retake, title: "Retake Questionnaire" },
-    { icon: Setting, title: "Setting" },
-    { icon: Help, title: "Help" },
-    { icon: Logout, title: "Logout" },
+    { icon: "user", title: "Profile", navigateTo: "EditProfile" },
+    { icon: "star", title: "Favourite" },
+    { icon: "redo", title: "Retake Questionnaire", navigateTo: "genderQuestionnaire" },
+    { icon: "cog", title: "Setting" },
+    { icon: "question-circle", title: "Help" },
+    { icon: "sign-out-alt", title: "Logout" },
   ];
 
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem("email");
       await AsyncStorage.removeItem("password");
-      setUserData(null);
+      navigation.navigate("login");
+      // setUserData(null);
     } catch (error) {
       console.log("Logout error:", error);
     }
@@ -45,7 +38,7 @@ const Profile = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.profileCard}>
-          <Image source={profileImg} style={styles.profileImage} />
+          <Image source={profileImg} resizeMode="contain" style={[styles.profileImage, { borderWidth: 1, borderColor: Colors.primary }]} />
           <Heading title={userData?.fullName} />
           <Text style={styles.email}>{auth().currentUser?.email}</Text>
 
@@ -85,7 +78,7 @@ const Profile = () => {
                 }
               }}
             >
-              <item.icon width={20} height={20} />
+              <FontAwesome5 name={item.icon} size={20} color="#fff" />
               <Text style={styles.optionText}>{item.title}</Text>
             </Pressable>
           ))}
@@ -122,25 +115,23 @@ const styles = StyleSheet.create({
   },
   email: {
     color: "#999",
-    fontFamily: Fonts.Medium,
-    marginTop: 5,
+    fontFamily: Fonts.Montserrat_Medium,
   },
   birthdayText: {
     flexDirection: "row",
-    marginTop: 5,
   },
   birthdayLabel: {
     color: "#fff",
-    fontFamily: Fonts.SemiBold,
+    fontFamily: Fonts.Montserrat_Medium,
   },
   birthdayValue: {
     color: "#999",
-    fontFamily: Fonts.Regular,
+    fontFamily: Fonts.Montserrat_Regular,
   },
   statsContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginTop: 20,
+    marginTop: 30,
     width: "100%",
   },
   statItem: {

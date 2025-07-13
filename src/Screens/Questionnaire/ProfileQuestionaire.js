@@ -125,10 +125,10 @@ const ProfileQuestionaire = () => {
         </View>
 
         <View style={styles.formSection}>
-          <CommonInput icon={require("../../assets/images/user.png")} placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
-          <CommonInput icon={require("../../assets/images/user.png")} placeholder="Enter your Nick name" value={nickname} onChangeText={setNickname} />
-          <CommonInput icon={require("../../assets/images/mail.png")} placeholder="Enter your Email" value={email} editable={false} textInputStyle={{ color: "#888" }} />
-          <CommonInput icon={require("../../assets/images/mail.png")} placeholder="Enter your Mobile Number" value={mobile} onChangeText={setMobile} />
+          <CommonInput img={require("../../assets/images/user.png")} placeholder="Enter Your Full Name" value={fullName} onChangeText={setFullName} />
+          <CommonInput icon={"user-edit"} placeholder="Enter your Nick name" value={nickname} onChangeText={setNickname} />
+          <CommonInput img={require("../../assets/images/mail.png")} placeholder="Enter your Email" value={email} editable={false} textInputStyle={{ color: "#888" }} />
+          <CommonInput icon={"phone"} placeholder="Enter your Mobile Number" value={mobile} onChangeText={setMobile} />
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleStart}>

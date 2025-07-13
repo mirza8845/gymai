@@ -38,7 +38,10 @@ const WorkoutGenerating = () => {
           });
 
         Toast.show({ type: "success", text1: "Workout Plan Ready", text2: "Redirecting..." });
-        navigation.navigate("Tabs");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Tabs" }],
+        });
       } catch (error) {
         console.error("Workout generation failed:", error);
         Toast.show({ type: "error", text1: "Error", text2: "Could not generate plan" });

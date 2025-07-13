@@ -3,13 +3,22 @@ import { View, Text, TextInput, StyleSheet, Image } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { Fonts } from "../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
-const CommonInput = ({ icon, placeholder, value, onChangeText, secureTextEntry = false, handleBlur, editable = true }) => {
+const CommonInput = ({ img, icon, placeholder, value, onChangeText, secureTextEntry = false, handleBlur, editable = true }) => {
   const { colors } = useTheme();
 
   return (
     <View style={styles.inputContainer}>
-      <Image source={icon} resizeMode="contain" style={{ width: RFPercentage(2.5), height: RFPercentage(2.5) }} />
+      {icon ? (
+        <>
+          <FontAwesome5 name={icon} size={20} color="#555555" />
+        </>
+      ) : (
+        <>
+          <Image source={img} resizeMode="contain" style={{ width: RFPercentage(2.5), height: RFPercentage(2.5) }} />
+        </>
+      )}
       <TextInput
         style={styles.input}
         placeholder={placeholder}
@@ -49,6 +58,6 @@ const styles = StyleSheet.create({
     fontSize: RFPercentage(1.8),
     width: "90%",
     height: RFPercentage(6.8),
-    paddingLeft:RFPercentage(2)
+    paddingLeft: RFPercentage(2),
   },
 });

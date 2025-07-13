@@ -17,83 +17,58 @@ import EditRoutineScreen from "../MainScreens/EditRoutine";
 import StartWorkoutScreen from "../MainScreens/StartNewWorkout";
 import AddRoutineScreen from "../MainScreens/AddRoutine";
 import { StatusBar } from "react-native";
+import Onboarding from "../Onboarding";
+import Login from "../Login";
+import SignUp from "../SignUp";
+import IntroQuestionnaire from "../Questionnaire/IntroQuestionnaire";
+import GenderQuestionnaire from "../Questionnaire/GenderQuestionnaire";
+import AgeQuestionnaire from "../Questionnaire/AgeQuestionnaire";
+import HeightQuestionnaire from "../Questionnaire/HeightQuestionnaire";
+import GoalsQuestionnaire from "../Questionnaire/GoalsQuestionnaire";
+import CurrentPhysique from "../Questionnaire/CurrentPhysique";
+import GymExperience from "../Questionnaire/GymExperience";
+import AvailiabiltyQuestioniare from "../Questionnaire/AvailiabiltyQuestioniare";
+import Modifications from "../Questionnaire/Modifications";
+import AvailableEquipment from "../Questionnaire/AvailableEquipment";
+import Challenges from "../Questionnaire/Challenges";
+import DietaryPreferences from "../Questionnaire/DietaryPreferences";
+import Diets from "../Questionnaire/Diets";
+import HealthQuestionaire from "../Questionnaire/HealthQuestionaire";
+import ProfileQuestionaire from "../Questionnaire/ProfileQuestionaire";
+import WorkoutGenerating from "../Questionnaire/WorkoutGenerating";
+import ForgetPassword from "../ForgetPassword";
+import Decider from "./Decider";
 
 const Stack = createNativeStackNavigator();
 
-const isProfileComplete = (user) => {
-  if (!user) return false;
-  const requiredFields = [
-    "age",
-    "height",
-    "weight",
-    "gender",
-    "availableEquipment",
-    "currentDiet",
-    "currentPhysique",
-    "dietaryPreferences",
-    "energyLevel",
-    "fitnessChallenge",
-    "foodAllergies",
-    "goal",
-    "goalPhysique",
-    "gymExperience",
-    "sleepHours",
-    "waterIntakeLiters",
-    "weeklyWorkoutCommitment",
-    "fullName",
-  ];
-  return requiredFields.every((f) => user[f]);
-};
-
 const MainNavigator = () => {
-  const { userData } = useContext(UserContext);
-
-  const [planReady, setPlanReady] = useState(false);
-  const [hasPlan, setHasPlan] = useState(false);
-
-  const loadingUser = userData === null;
-  const loadingPlan = !planReady;
-
-  useEffect(() => {
-    const checkPlan = async () => {
-      const current = auth().currentUser;
-      if (!current) {
-        setPlanReady(true);
-        return;
-      }
-
-      try {
-        const snap = await firestore().collection("workouts").doc(current.uid).get();
-        setHasPlan(snap.exists);
-      } catch (err) {
-        console.log("🔥 Plan check error:", err.message);
-      } finally {
-        setPlanReady(true);
-      }
-    };
-
-    if (userData && isProfileComplete(userData)) {
-      checkPlan();
-    } else if (userData) {
-      setPlanReady(true);
-    }
-  }, [userData]);
-
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true} />
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {userData === null ? (
-          <Stack.Screen name="AuthStack" component={AuthStack} />
-        ) : loadingPlan ? (
-          <Stack.Screen name="Splash" component={Splash} />
-        ) : isProfileComplete(userData) && hasPlan ? (
-          <Stack.Screen name="Tabs" component={Homestack} />
-        ) : (
-          <Stack.Screen name="AuthStack" component={AuthStack} />
-        )}
-
-        {/* Additional Screens */}
+      <Stack.Navigator initialRouteName="Decider" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Decider" component={Decider} />
+        <Stack.Screen name="Splash" component={Splash} />
+        <Stack.Screen name="Onboarding" component={Onboarding} />
+        <Stack.Screen name="login" component={Login} />
+        <Stack.Screen name="signup" component={SignUp} />
+        <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+        <Stack.Screen name="introQuestionnaire" component={IntroQuestionnaire} />
+        <Stack.Screen name="genderQuestionnaire" component={GenderQuestionnaire} />
+        <Stack.Screen name="ageQuestionnaire" component={AgeQuestionnaire} />
+        <Stack.Screen name="heightQuestionnaire" component={HeightQuestionnaire} />
+        <Stack.Screen name="goalsQuestionnaire" component={GoalsQuestionnaire} />
+        <Stack.Screen name="currentPhysique" component={CurrentPhysique} />
+        <Stack.Screen name="gymExperience" component={GymExperience} />
+        <Stack.Screen name="availiabiltyQuestioniare" component={AvailiabiltyQuestioniare} />
+        <Stack.Screen name="modifications" component={Modifications} />
+        <Stack.Screen name="availableEquipment" component={AvailableEquipment} />
+        <Stack.Screen name="challenges" component={Challenges} />
+        <Stack.Screen name="dietaryPreferences" component={DietaryPreferences} />
+        <Stack.Screen name="diets" component={Diets} />
+        <Stack.Screen name="healthQuestionaire" component={HealthQuestionaire} />
+        <Stack.Screen name="profileQuestionaire" component={ProfileQuestionaire} />
+        <Stack.Screen name="WorkoutGenerating" component={WorkoutGenerating} />
+        <Stack.Screen name="Tabs" component={Homestack} />
         <Stack.Screen name="MyPlan" component={Myplan} />
         <Stack.Screen name="EditRoutineScreen" component={EditRoutineScreen} />
         <Stack.Screen name="PullPushDay" component={PullPushDay} />
