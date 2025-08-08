@@ -8,6 +8,8 @@ import { Colors, Fonts } from "../../constants/theme";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import LinearGradient from "react-native-linear-gradient";
+import { useDispatch, useSelector } from "react-redux";
+import { setWorkoutPlan } from "../../redux/Actions";
 
 const AddExerciseScreen = () => {
   const [name, setName] = useState("");
@@ -17,6 +19,8 @@ const AddExerciseScreen = () => {
   const [properForm, setProperForm] = useState("");
   const [tips, setTips] = useState("");
   const [mistakes, setMistakes] = useState("");
+  const dispatch = useDispatch();
+  const workoutPlan = useSelector((state) => state.workout.workoutPlan);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -58,6 +62,16 @@ const AddExerciseScreen = () => {
         },
         { merge: true }
       );
+
+      // Update Redux
+      const updatedPlan = {
+        ...workoutPlan,
+        daily_workouts: {
+          ...workoutPlan.daily_workouts,
+          [day]: updatedExercises,
+        },
+      };
+      dispatch(setWorkoutPlan(updatedPlan));
 
       Toast.show({ type: "success", text1: "Exercise added!" });
       navigation.goBack();

@@ -8,12 +8,15 @@ import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { Colors, Fonts } from "../../constants/theme";
 import LinearGradient from "react-native-linear-gradient";
+import { useDispatch, useSelector } from "react-redux";
+import { setWorkoutPlan } from "../../redux/Actions";
 
 const PullPushDay = () => {
-  const { colors } = useTheme();
   const route = useRoute();
   const navigation = useNavigation();
   const { day, label, exercises } = route.params;
+  const dispatch = useDispatch();
+  const workoutPlan = useSelector((state) => state.workout.workoutPlan);
 
   const handleRemoveExercise = async (indexToRemove) => {
     try {
@@ -27,9 +30,20 @@ const PullPushDay = () => {
       if (!currentExercises) throw new Error("No exercises found for this day");
 
       const updatedExercises = currentExercises.filter((_, idx) => idx !== indexToRemove);
+
       await docRef.update({
         [`plan.daily_workouts.${day}`]: updatedExercises,
       });
+
+      // Update Redux
+      const updatedPlan = {
+        ...workoutPlan,
+        daily_workouts: {
+          ...workoutPlan.daily_workouts,
+          [day]: updatedExercises,
+        },
+      };
+      dispatch(setWorkoutPlan(updatedPlan));
 
       Toast.show({
         type: "success",
@@ -54,10 +68,9 @@ const PullPushDay = () => {
       if (!doc.exists) throw new Error("Workout plan not found");
 
       const currentPlan = doc.data().plan;
-      const updatedSplit = currentPlan.weekly_split.filter((item, index) => {
-        const currentDayKey = `Day ${index + 1}`;
-        return currentDayKey !== day;
-      });
+      const dayNumber = parseInt(day.split(" ")[1]);
+
+      const updatedSplit = currentPlan.weekly_split.filter((_, index) => index + 1 !== dayNumber);
 
       const updates = {
         [`plan.daily_workouts.${day}`]: firestore.FieldValue.delete(),
@@ -65,6 +78,15 @@ const PullPushDay = () => {
       };
 
       await docRef.update(updates);
+
+      // Update Redux
+      const { [day]: removed, ...restWorkouts } = workoutPlan.daily_workouts;
+      const updatedPlan = {
+        ...workoutPlan,
+        daily_workouts: restWorkouts,
+        weekly_split: updatedSplit,
+      };
+      dispatch(setWorkoutPlan(updatedPlan));
 
       Toast.show({
         type: "success",
@@ -98,7 +120,7 @@ const PullPushDay = () => {
         {/* Exercises */}
         {exercises?.length > 0 ? (
           exercises.map((exercise, index) => (
-            <LinearGradient key={index} colors={["rgba(58, 52, 43, 0.6)", "rgba(55, 47, 36, 0.2)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.exerciseCard} >
+            <LinearGradient key={index} colors={["rgba(58, 52, 43, 0.6)", "rgba(55, 47, 36, 0.2)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.exerciseCard}>
               {/* Exercise Image */}
               <Image source={require("../../assets/images/pul-up.jpg")} style={styles.exerciseImage} resizeMode="cover" />
               {/* {exercise.imageUrl ? (
@@ -191,7 +213,7 @@ const styles = StyleSheet.create({
     // padding: 15,
     borderRadius: 12,
     marginBottom: 15,
-    height:90
+    height: 90,
   },
   exerciseImage: {
     width: 90,

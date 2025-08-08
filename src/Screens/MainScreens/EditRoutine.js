@@ -7,11 +7,15 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Colors, Fonts } from "../../constants/theme";
 import LinearGradient from "react-native-linear-gradient";
+import { setWorkoutPlan } from "../../redux/Actions";
+import { useDispatch, useSelector } from "react-redux";
 
 const EditRoutineScreen = ({ route, navigation }) => {
   const { dayKey, dayLabel, exercises } = route.params;
   const [editedExercises, setEditedExercises] = useState(exercises);
   const [showAll, setShowAll] = useState(false); // Toggle for showing more
+  const dispatch = useDispatch();
+  const workoutPlan = useSelector((state) => state.workout.workoutPlan);
 
   const updateExerciseField = (index, field, value) => {
     const updated = [...editedExercises];
@@ -33,6 +37,16 @@ const EditRoutineScreen = ({ route, navigation }) => {
           { merge: true }
         );
 
+      // Update local Redux state
+      const updatedPlan = {
+        ...workoutPlan,
+        daily_workouts: {
+          ...workoutPlan.daily_workouts,
+          [dayKey]: editedExercises,
+        },
+      };
+      dispatch(setWorkoutPlan(updatedPlan));
+
       Toast.show({
         type: "success",
         text1: `${dayLabel} updated!`,
@@ -50,6 +64,7 @@ const EditRoutineScreen = ({ route, navigation }) => {
     }
   };
 
+  
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: RFPercentage(6) }}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>

@@ -13,6 +13,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Colors, Fonts } from "../../constants/theme";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Toast from "react-native-toast-message";
 
 const EditProfile = () => {
   const { userData, setUserData } = useContext(UserContext);
@@ -68,8 +69,19 @@ const EditProfile = () => {
       height: height.trim(),
     };
 
-    setUserData(updatedData);
-    await AsyncStorage.setItem("userData", JSON.stringify(updatedData));
+    try {
+      setUserData(updatedData);
+      await AsyncStorage.setItem("userData", JSON.stringify(updatedData));
+      Toast.show({
+        type: "success",
+        text1: "Profile updated successfully!",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Failed to update profile. Please try again.",
+      });
+    }
   };
 
   return (
@@ -137,7 +149,7 @@ const styles = StyleSheet.create({
     width: "90%",
     alignSelf: "center",
     alignItems: "center",
-    marginTop:20
+    marginTop: 20,
   },
   updateButton: {
     backgroundColor: Colors.primary,
@@ -145,7 +157,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 50,
     alignSelf: "center",
-    marginTop:50
+    marginTop: 50,
   },
   updateButtonText: {
     color: "white",
