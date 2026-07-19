@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Animated, Easing, Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import workout from "../../assets/images/WorkOut.png";
+import workout from "../../assets/images/workout.png";
 import appleicon from "../../assets/images/Nutrition.png";
 import personsicon from "../../assets/images/Community.png";
 import stepActive from "../../assets/images/stepperactive.png";

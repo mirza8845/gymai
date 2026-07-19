@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from '../../utils/userContext';
@@ -33,17 +33,14 @@ const isProfileComplete = (user) => {
 
 const Decider = () => {
   const navigation = useNavigation();
-  const { userData } = useContext(UserContext);
-  const [checking, setChecking] = useState(true); // added flag to wait
+  const { userData, loading } = useContext(UserContext);
 
   useEffect(() => {
-    const decide = async () => {
-      if (!userData) {
-        // Wait for userData to load
-        return;
-      }
+    if (loading) return; // still fetching, wait
 
+    const decide = async () => {
       const current = auth().currentUser;
+
       if (!current) {
         navigation.replace('login');
         return;
@@ -64,15 +61,13 @@ const Decider = () => {
       } catch (error) {
         console.log("🔥 error in Decider:", error);
         navigation.replace('Onboarding');
-      } finally {
-        setChecking(false);
       }
     };
 
     decide();
-  }, [userData]);
+  }, [loading]);
 
-  if (!userData || checking) {
+  if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color={Colors.primary} />
@@ -80,7 +75,7 @@ const Decider = () => {
     );
   }
 
-  return null; // we never actually render UI
+  return null;
 };
 
 export default Decider;

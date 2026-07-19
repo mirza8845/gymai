@@ -45,7 +45,7 @@ const MainNavigator = () => {
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent={true} />
-      <Stack.Navigator initialRouteName="Decider" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Decider" component={Decider} />
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Onboarding" component={Onboarding} />

@@ -7,6 +7,7 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserByEmail = async () => {
@@ -27,11 +28,13 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         console.error("Error fetching user by stored email:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUserByEmail();
   }, []);
 
-  return <UserContext.Provider value={{ userData, setUserData }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ userData, setUserData, loading }}>{children}</UserContext.Provider>;
 };
