@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator } from "react-native";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
@@ -7,7 +7,7 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 
 import { UserContext } from "../../utils/userContext";
-import { setWorkoutPlan } from "../../redux/Actions";
+import { setWorkoutPlan, setWorkoutLoading } from "../../redux/Actions";
 import WorkoutCard from "../../CommonComponent/WorkoutCard";
 import DoubleCard from "../../CommonComponent/DoubleCard";
 import LinearGradient from "react-native-linear-gradient";
@@ -46,11 +46,11 @@ const Home = () => {
   const { fullName, weeklyWorkoutCommitment } = userData || {};
 
   const workoutPlan = useSelector((state) => state.workout.workoutPlan);
-  const [loading, setLoading] = useState(true);
+  const loading = useSelector((state) => state.workout.loading);
 
   const fetchWorkoutPlan = useCallback(async () => {
     try {
-      setLoading(true);
+      dispatch(setWorkoutLoading(true));
       const user = auth().currentUser;
       if (!user) return;
 
@@ -65,7 +65,7 @@ const Home = () => {
     } catch (err) {
       console.log("Workout plan fetch error:", err.message);
     } finally {
-      setLoading(false);
+      dispatch(setWorkoutLoading(false));
     }
   }, [dispatch]);
 
@@ -76,11 +76,26 @@ const Home = () => {
   );
 
   const { workoutDayKey, firstDayExercises, firstWorkoutDay } = useMemo(() => {
-    const firstDay = workoutPlan?.weekly_split?.find((day) => !day.toLowerCase().includes("rest"));
-    const key = firstDay?.split(":")[0]?.trim();
+    if (!workoutPlan?.weekly_split) {
+      return { workoutDayKey: null, firstDayExercises: null, firstWorkoutDay: null };
+    }
+    // Pick today's day index (0=Sun … 6=Sat), map to Day 1–7
+    const todayIndex = new Date().getDay(); // 0-6
+    // Rotate so Monday=0 matches Day 1
+    const dayIndex = todayIndex === 0 ? 6 : todayIndex - 1;
+    // Clamp to plan length
+    const clampedIndex = dayIndex % workoutPlan.weekly_split.length;
+    const todayLabel = workoutPlan.weekly_split[clampedIndex];
+    const isRest = todayLabel?.toLowerCase().includes("rest");
+
+    if (isRest) {
+      return { workoutDayKey: null, firstDayExercises: null, firstWorkoutDay: todayLabel };
+    }
+
+    const key = `Day ${clampedIndex + 1}`;
     return {
       workoutDayKey: key,
-      firstWorkoutDay: firstDay,
+      firstWorkoutDay: todayLabel,
       firstDayExercises: workoutPlan?.daily_workouts?.[key],
     };
   }, [workoutPlan]);

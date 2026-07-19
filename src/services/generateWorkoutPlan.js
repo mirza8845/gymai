@@ -1,4 +1,5 @@
 import axios from "axios";
+import { GROQ_API_KEY } from "../config/keys";
 
 // Helper to sanitize Unicode characters
 const sanitizeText = (str) =>
@@ -164,31 +165,68 @@ RULES
 
     const safePrompt = sanitizeText(prompt);
 
+    console.log("🤖 [AI] Sending request to Groq...");
+    console.log("🤖 [AI] userData being sent:", JSON.stringify({
+      fullName: userData?.fullName,
+      age: userData?.age,
+      gender: userData?.gender,
+      goal: userData?.goal,
+      gymExperience: userData?.gymExperience,
+      weeklyWorkoutCommitment: userData?.weeklyWorkoutCommitment,
+    }, null, 2));
+
     const response = await axios.post(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBNunMEcP-_CGwc4JHk5DPkTH3IU69GLR0",
+      "https://api.groq.com/openai/v1/chat/completions",
       {
-        contents: [
+        model: "llama-3.3-70b-versatile",
+        messages: [
           {
-            parts: [
-              {
-                text: safePrompt,
-              },
-            ],
+            role: "user",
+            content: safePrompt,
           },
         ],
+        temperature: 0.7,
+        max_tokens: 8192,
       },
       {
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${GROQ_API_KEY}`,
         },
       }
     );
 
-    const rawText = response.data.candidates[0].content.parts[0].text;
-    const cleanedJson = rawText.replace(/^```json\n/, "").replace(/\n```$/, "");
-    return JSON.parse(cleanedJson);
+    console.log("✅ [AI] Got response from Groq. HTTP status:", response.status);
+    console.log("✅ [AI] Response choices count:", response.data?.choices?.length);
+
+    const rawText = response.data.choices[0].message.content;
+    console.log("📄 [AI] Raw text from Groq (first 300 chars):", rawText?.slice(0, 300));
+    console.log("📄 [AI] Raw text from Groq (last 100 chars):", rawText?.slice(-100));
+
+    // Robustly extract the JSON object regardless of fence style or extra whitespace
+    const firstBrace = rawText.indexOf("{");
+    const lastBrace = rawText.lastIndexOf("}");
+    if (firstBrace === -1 || lastBrace === -1) {
+      throw new Error(`No JSON object found in Groq response. Raw: ${rawText.slice(0, 200)}`);
+    }
+    const cleanedJson = rawText.slice(firstBrace, lastBrace + 1);
+    console.log("🔍 [AI] Cleaned JSON (first 200 chars):", cleanedJson?.slice(0, 200));
+
+    let parsed;
+    try {
+      parsed = JSON.parse(cleanedJson);
+    } catch (parseError) {
+      throw new Error(`JSON.parse failed: ${parseError.message}. Raw snippet: ${cleanedJson.slice(0, 200)}`);
+    }
+    console.log("✅ [AI] JSON parsed successfully. Keys:", Object.keys(parsed));
+    console.log("✅ [AI] weekly_split:", parsed?.weekly_split);
+    return parsed;
   } catch (error) {
-    console.log("Error generating workout plan:", error.message);
+    console.log("❌ [AI] Error generating workout plan:", error.message);
+    if (error.response) {
+      console.log("❌ [AI] HTTP error status:", error.response.status);
+      console.log("❌ [AI] HTTP error data:", JSON.stringify(error.response.data, null, 2));
+    }
     throw error;
   }
 };

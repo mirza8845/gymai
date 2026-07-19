@@ -1,15 +1,18 @@
 import React, { useEffect, useContext, useState } from "react";
-import { View, Text, ActivityIndicator, StyleSheet, Image } from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
+import { useDispatch } from "react-redux";
 import { generateWorkoutPlan } from "../../services/generateWorkoutPlan";
+import { setWorkoutPlan } from "../../redux/Actions";
 import { UserContext } from "../../utils/userContext";
 import { Colors, Fonts } from "../../constants/theme";
 
 const WorkoutGenerating = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const { userData } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +24,13 @@ const WorkoutGenerating = () => {
         return;
       }
 
+      // Guard: ensure userData is loaded before calling AI
+      if (!userData || !userData.fullName) {
+        Toast.show({ type: "error", text1: "Error", text2: "User profile not loaded. Please go back and try again." });
+        setLoading(false);
+        return;
+      }
+
       try {
         const uid = user.uid;
         const weekStart = new Date();
@@ -28,6 +38,7 @@ const WorkoutGenerating = () => {
 
         const workoutPlan = await generateWorkoutPlan(userData);
 
+        // Save to Firestore
         await firestore()
           .collection("workouts")
           .doc(uid)
@@ -37,6 +48,9 @@ const WorkoutGenerating = () => {
             createdAt: firestore.FieldValue.serverTimestamp(),
           });
 
+        // Also hydrate Redux immediately so Home screen has it without a refetch
+        dispatch(setWorkoutPlan(workoutPlan));
+
         Toast.show({ type: "success", text1: "Workout Plan Ready", text2: "Redirecting..." });
         navigation.reset({
           index: 0,
@@ -44,7 +58,7 @@ const WorkoutGenerating = () => {
         });
       } catch (error) {
         console.error("Workout generation failed:", error);
-        Toast.show({ type: "error", text1: "Error", text2: "Could not generate plan" });
+        Toast.show({ type: "error", text1: "Generation Failed", text2: error.message || "Could not generate plan. Please try again." });
       } finally {
         setLoading(false);
       }
@@ -55,7 +69,6 @@ const WorkoutGenerating = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Image source={loadingGif} style={styles.image} resizeMode="contain" /> */}
       <Text style={styles.text}>Creating your personalized workout plan...</Text>
       <ActivityIndicator size="large" color={Colors.primary} />
     </View>
@@ -78,10 +91,5 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     color: "white",
     fontFamily: Fonts.Montserrat_SemiBold,
-  },
-  image: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
   },
 });
