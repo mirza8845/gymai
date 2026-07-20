@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:148417258727:android:92842e933b840105e46e42",
+        "mobilesdk_app_id": "1:148417258727:android:39b4776aafdb82eae46e42",
         "android_client_info": {
-          "package_name": "com.myapp"
+          "package_name": "com.gymai"
         }
       },
       "oauth_client": [],
