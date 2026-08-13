@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    paddingBottom: 5,
+    gap: 10,
+    paddingBottom: 12,
   },
   radioOuter: {
     height: 24,

@@ -96,7 +96,7 @@ const CurrentPhysique = () => {
     <View style={[styles.screen, { backgroundColor: Colors.background }]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
         </TouchableOpacity>
         <Heading title={title} />
       </View>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingTop: RFPercentage(10),
-    paddingHorizontal: RFPercentage(2),
+    paddingHorizontal: RFPercentage(2.5),
   },
   previewPlaceholder: {
     backgroundColor: "white",

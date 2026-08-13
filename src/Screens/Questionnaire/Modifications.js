@@ -62,7 +62,7 @@ const Modifications = () => {
       <View style={styles.container}>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
-            <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+            <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
           </TouchableOpacity>
           <Heading title={"Modifications"} />
         </View>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     paddingTop: RFPercentage(10),
-    paddingHorizontal: RFPercentage(2),
+    paddingHorizontal: RFPercentage(2.8),
   },
   container: {
     // flexGrow: 1,
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
     padding: 18,
     minHeight: RFPercentage(25),
     marginTop: RFPercentage(13),
-    marginHorizontal: RFPercentage(2),
   },
   input: {
     fontSize: 16,

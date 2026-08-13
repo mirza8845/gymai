@@ -60,14 +60,14 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Montserrat_Medium,
   },
   primaryMessage: {
-    fontSize: RFPercentage(2.1),
+    fontSize: RFPercentage(2),
     // fontWeight: 500,
     // paddingVertical: 30,
     fontFamily: Fonts.Montserrat_Medium,
     marginTop: RFPercentage(5),
   },
   secondaryMessage: {
-    fontSize: RFPercentage(2.1),
+    fontSize: RFPercentage(2),
     // fontWeight:500,
     fontFamily: Fonts.Montserrat_Medium,
     marginTop: RFPercentage(5),

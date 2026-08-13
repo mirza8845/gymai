@@ -1,66 +1,90 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator } from "react-native";
-import { useNavigation, useTheme } from "@react-navigation/native";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
-
 import { UserContext } from "../../utils/userContext";
 import { setWorkoutPlan } from "../../redux/Actions";
-import WorkoutCard from "../../CommonComponent/WorkoutCard";
-import DoubleCard from "../../CommonComponent/DoubleCard";
 import LinearGradient from "react-native-linear-gradient";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import gymImg from "../../assets/images/gym.png";
-import WomenGym from "../../assets/images/womangym.png";
-import MenGym from "../../assets/images/mengym.png";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Colors, Fonts } from "../../constants/theme";
 
-import { useFocusEffect } from "@react-navigation/native";
-import { RFPercentage } from "react-native-responsive-fontsize";
-import ChartComponent from "../../CommonComponent/Chart";
-
-const data = [
-  {
-    leftItem: {
-      image: WomenGym,
-      title: "When Should I Stretch?",
-      duration: "5 Minutes",
-    },
-    rightItem: {
-      image: MenGym,
-      title: "Split squats vs lunges",
-      duration: "3 Minutes",
-    },
-  },
-];
+const darkColors = {
+  background: "#000000",
+  primary: "#F34E3A",
+  primaryLight: "#F17C3B",
+  surface: "#000000",
+  surfaceElevated: "#1A1A1A",
+  primaryDark: "#D83A28",
+  textPrimary: "#FFFFFF",
+  textSecondary: "#888888",
+  textMuted: "#666768",
+  border: "#3C3C3C",
+  success: "#10B981",
+  warning: "#F59E0B",
+  error: "#EF4444",
+  gradientStart: "#F34E3A",
+  gradientEnd: "#FF6B4A",
+};
 
 const Home = () => {
-  const { colors } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
   const { userData } = useContext(UserContext);
-  const { fullName, weeklyWorkoutCommitment } = userData || {};
-
+  const { fullName, profileImage } = userData || {};
   const workoutPlan = useSelector((state) => state.workout.workoutPlan);
+  const [weekStart, setWeekStart] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [planExpired, setPlanExpired] = useState(false);
+
+  useEffect(() => {
+    const checkPlanExpiry = async () => {
+      const uid = auth().currentUser.uid;
+      const doc = await firestore().collection("workouts").doc(uid).get();
+      if (!doc.exists) return;
+      const data = doc.data();
+      const nextDue = data.nextPlanDue.toDate();
+      const now = new Date();
+      if (now >= nextDue) {
+        setPlanExpired(true);
+      } else {
+        setPlanExpired(false);
+      }
+    };
+    checkPlanExpiry();
+  }, []);
 
   const fetchWorkoutPlan = useCallback(async () => {
     try {
       setLoading(true);
       const user = auth().currentUser;
       if (!user) return;
-
       const doc = await firestore().collection("workouts").doc(user.uid).get();
-
       if (doc.exists) {
-        const planInDb = doc.data().plan;
+        const data = doc.data();
+        console.log("Fetched workout data:", data);
+
+        // The plan is inside the 'plan' property
+        const planInDb = data.plan;
+        setWeekStart(data?.weekStart);
         dispatch(setWorkoutPlan(planInDb));
-      } else {
-        console.log("No workout plan found in DB");
       }
     } catch (err) {
       console.log("Workout plan fetch error:", err.message);
@@ -69,101 +93,575 @@ const Home = () => {
     }
   }, [dispatch]);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchWorkoutPlan();
-    }, [fetchWorkoutPlan])
-  );
+  useEffect(() => {
+    fetchWorkoutPlan();
+  }, [fetchWorkoutPlan]);
 
-  const { workoutDayKey, firstDayExercises, firstWorkoutDay } = useMemo(() => {
-    const firstDay = workoutPlan?.weekly_split?.find((day) => !day.toLowerCase().includes("rest"));
-    const key = firstDay?.split(":")[0]?.trim();
+  const {
+    currentDayKey,
+    currentDayExercises,
+    currentWorkoutDay,
+    isRestDay,
+    todayShifted,
+  } = useMemo(() => {
+    if (!workoutPlan?.weekly_split || !weekStart) return {};
+    const weekStartDate = weekStart.toDate();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Calculate difference in days
+    const diffTime = today.getTime() - weekStartDate.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    // Ensure non-negative index
+    const adjustedIndex =
+      diffDays >= 0 ? diffDays % workoutPlan.weekly_split.length : 0;
+
+    const todayPlanDay = workoutPlan.weekly_split[adjustedIndex];
+    const dayKey = todayPlanDay?.split(":")[0]?.trim();
+    const exercises = workoutPlan?.daily_workouts?.[dayKey] || [];
+    const restDay = todayPlanDay?.toLowerCase().includes("rest");
+
     return {
-      workoutDayKey: key,
-      firstWorkoutDay: firstDay,
-      firstDayExercises: workoutPlan?.daily_workouts?.[key],
+      currentDayKey: dayKey,
+      currentWorkoutDay: todayPlanDay,
+      currentDayExercises: exercises,
+      isRestDay: restDay,
+      todayShifted: adjustedIndex,
     };
+  }, [workoutPlan, weekStart]);
+
+  const workoutStats = useMemo(() => {
+    if (!workoutPlan?.daily_workouts) return null;
+    let totalExercises = 0,
+      totalSets = 0;
+
+    Object.values(workoutPlan.daily_workouts).forEach((dayExercises) => {
+      totalExercises += dayExercises.length;
+      dayExercises.forEach((ex) => {
+        // Access sets from workoutDetails
+        const sets = ex.workoutDetails?.sets || 3;
+        totalSets += sets;
+      });
+    });
+
+    const workoutDays = workoutPlan.weekly_split.filter(
+      (day) => !day.toLowerCase().includes("rest"),
+    ).length;
+
+    return { totalExercises, totalSets, workoutDays };
   }, [workoutPlan]);
+
+  const quickActions = [
+    {
+      icon: "calendar",
+      label: "Today's Focus",
+      gradient: ["#F34E3A", "#F17C3B"],
+      screen: "TodaysFocusScreen",
+      onPress: () =>
+        navigation.navigate("TodaysFocusScreen", {
+          day: currentDayKey,
+          workoutPlan: workoutPlan,
+        }),
+    },
+    {
+      icon: "book",
+      label: "Form Tips",
+      gradient: ["#F34E3A", "#F17C3B"],
+      screen: "FormTipsLibraryScreen",
+    },
+    {
+      icon: "barbell",
+      label: "Equipment Workouts",
+      gradient: ["#F34E3A", "#F17C3B"],
+      screen: "EquipmentWorkoutsScreen",
+    },
+    {
+      icon: "water",
+      label: "Hydration",
+      gradient: ["#F34E3A", "#F17C3B"],
+      screen: "HydrationTrackerScreen",
+    },
+  ];
+
+  const recoveryMetrics = [
+    {
+      icon: "water",
+      label: "Water",
+      value: `0/${workoutPlan?.recovery?.hydration?.target_liters || 2} L`,
+      gradient: ["#F34E3A", "#F17C3B"],
+    },
+    {
+      icon: "bed",
+      label: "Sleep",
+      value: `${workoutPlan?.recovery?.sleep?.target_hours || 7}h`,
+      gradient: ["#F34E3A", "#F17C3B"],
+    },
+    {
+      icon: "walk",
+      label: "Recovery",
+      value: workoutPlan?.recovery?.active_recovery?.length || 0,
+      gradient: ["#F34E3A", "#F17C3B"],
+    },
+  ];
+
+  const renderExercisePreview = (exercises) =>
+    exercises.slice(0, 3).map((exercise, index) => (
+      <View key={`${exercise.id}-${index}`} style={styles.exerciseTag}>
+        <Text style={styles.exerciseTagText}>{exercise.name}</Text>
+        <Text style={styles.exerciseDetails}>
+          {exercise.workoutDetails?.sets || 3}×
+          {exercise.workoutDetails?.reps || "8-12"}
+        </Text>
+      </View>
+    ));
+
+  const renderWarmupCooldown = (items) =>
+    items?.map((item, idx) => (
+      <View key={`${item.name}-${idx}`} style={styles.exerciseTag}>
+        <Text style={styles.exerciseTagText}>{item.name}</Text>
+        <Text style={styles.exerciseDetails}>{item.duration}</Text>
+      </View>
+    ));
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={[styles.safeArea, { backgroundColor: Colors.background }]}>
-        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
           <View style={styles.header}>
-            <View>
-              <Text style={styles.greetingText}>Hi, {fullName}</Text>
-              <Text style={styles.subGreeting}>Welcome back! Let's hit your goals!</Text>
+            <View style={{ width: "85%" }}>
+              <Text style={styles.greetingText}>Welcome back,</Text>
+              <Text style={styles.userName}>{fullName || "User"}</Text>
+              {workoutPlan?.goal && (
+                <Text style={styles.notesText}>Goal: {workoutPlan.goal}</Text>
+              )}
             </View>
-            <Image
-              source={require("../../assets/images/noDp.png")}
-              resizeMode="contain"
-              style={{ width: RFPercentage(7), height: RFPercentage(7), borderWidth: 1.5, borderColor: Colors.primary, borderRadius: 100 }}
-            />
+            <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+              <View style={styles.profileContainer}>
+                <Image
+                  source={
+                    profileImage
+                      ? { uri: profileImage }
+                      : require("../../assets/images/noDp.png")
+                  }
+                  style={styles.profileImage}
+                />
+                <View style={styles.onlineIndicator} />
+              </View>
+            </TouchableOpacity>
           </View>
-          <View style={{ width: "90%", alignItems: "center", alignSelf: "center" }}>
-            <ChartComponent />
-          </View>
 
-          {loading ? (
-            <ActivityIndicator size="large" color={Colors.primary} style={{ marginTop: 30 }} />
-          ) : workoutPlan?.weekly_split ? (
-            <>
-              <LinearGradient
-                colors={[
-                  "rgba(6, 6, 6, 0.4)",
-                  "rgba(93, 82, 79, 0.3)",
-                  // "rgb(237, 136, 113)", "rgb(125, 207, 192)"
-                ]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.planCard}
-              >
-                <View style={styles.iconRow}>
-                  <MaterialCommunityIcons name="calendar-multiselect" size={28} color="#fff" />
-                  <Text style={styles.planTitle}>Your {weeklyWorkoutCommitment}-Day Plan</Text>
-                </View>
-
-                <Text style={styles.planSubtitle}>{workoutPlan.weekly_split.join(" • ")}</Text>
-
-                <TouchableOpacity style={styles.planButton} onPress={() => navigation.navigate("MyPlan")}>
-                  <Text style={styles.planButtonText}>View Plan</Text>
+          {/* Quick Actions */}
+          <View style={styles.actionsContainer}>
+            <Text style={styles.sectionTitle}>Quick Access</Text>
+            <View style={styles.actionsGrid}>
+              {quickActions.map((action, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.actionButton}
+                  onPress={() => {
+                    if (action.onPress) {
+                      action.onPress();
+                    } else {
+                      navigation.navigate(action.screen);
+                    }
+                  }}
+                >
+                  <LinearGradient
+                    colors={action.gradient}
+                    style={styles.actionIcon}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Ionicons name={action.icon} size={24} color="#fff" />
+                  </LinearGradient>
+                  <Text style={styles.actionLabel}>{action.label}</Text>
                 </TouchableOpacity>
-              </LinearGradient>
+              ))}
+            </View>
+          </View>
 
-              <View style={{ width: "100%" }}>
-                <Text style={styles.sectionTitle}>Today's Workout</Text>
+          {/* Workout Stats */}
+          {workoutStats && (
+            <View>
+              <Text style={styles.sectionTitle}>Your Stats</Text>
+              <LinearGradient
+                colors={["#000000", "#1A1A1A"]}
+                style={styles.statsGradient}
+              >
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>
+                    {workoutStats.workoutDays}
+                  </Text>
+                  <Text style={styles.statLabel}>Workout Days</Text>
+                </View>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>
+                    {workoutStats.totalExercises}
+                  </Text>
+                  <Text style={styles.statLabel}>Exercises</Text>
+                </View>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>{workoutStats.totalSets}</Text>
+                  <Text style={styles.statLabel}>Total Sets</Text>
+                </View>
+              </LinearGradient>
+            </View>
+          )}
+
+          {/* Today's Workout */}
+          {!loading && workoutPlan?.weekly_split && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Today's Plan</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("MyPlan")}>
+                  <Text style={styles.seeAllText}>View All</Text>
+                </TouchableOpacity>
               </View>
 
-              {firstDayExercises ? (
-                <WorkoutCard
-                  title={firstWorkoutDay?.split(":")[1]?.trim() || "Workout"}
-                  description={
-                    firstDayExercises
-                      .map((ex) => ex.name)
-                      .slice(0, 2)
-                      .join(", ") + "..."
-                  }
-                  button="Start now"
+              {!isRestDay &&
+              currentDayExercises &&
+              currentDayExercises.length > 0 ? (
+                <TouchableOpacity
+                  style={styles.workoutCard}
                   onPress={() =>
                     navigation.navigate("WorkoutDetails", {
-                      day: workoutDayKey,
-                      exercises: firstDayExercises,
+                      day: currentDayKey,
+                      exercises: currentDayExercises,
+                      warmup: workoutPlan.warmup,
+                      cooldown: workoutPlan.cooldown,
                     })
                   }
-                />
-              ) : (
-                <Text style={styles.restText}>Rest day or workout not available.</Text>
-              )}
+                >
+                  <LinearGradient
+                    colors={["#000000", "#1A1A1A"]}
+                    style={styles.workoutGradient}
+                  >
+                    <View style={styles.workoutHeader}>
+                      <View>
+                        <Text style={styles.workoutDay}>{currentDayKey}</Text>
+                        <Text style={styles.workoutName}>
+                          {currentWorkoutDay?.split(":")[1]?.trim() ||
+                            "Workout"}
+                        </Text>
+                      </View>
+                      <LinearGradient
+                        colors={["#F34E3A", "#F17C3B"]}
+                        style={styles.startButton}
+                      >
+                        <Ionicons name="play" size={20} color="#fff" />
+                      </LinearGradient>
+                    </View>
+                    <Text style={styles.workoutExercises}>
+                      {currentDayExercises.length} exercises •{" "}
+                      {currentDayExercises.reduce(
+                        (acc, ex) => acc + (ex.workoutDetails?.sets || 3),
+                        0,
+                      )}{" "}
+                      sets
+                    </Text>
 
-              <View style={{ width: "100%" }}>
-                <Text style={styles.sectionTitle}>Quick Reads</Text>
-                <FlatList data={data} keyExtractor={(item, index) => index.toString()} horizontal renderItem={({ item }) => <DoubleCard {...item} />} showsHorizontalScrollIndicator={false} />
+                    {/* Warmup */}
+                    {workoutPlan.warmup && workoutPlan.warmup.length > 0 && (
+                      <View style={{ marginBottom: 12 }}>
+                        <Text style={styles.sectionTitle}>Warmup</Text>
+                        <View style={styles.exercisePreview}>
+                          {renderWarmupCooldown(workoutPlan.warmup)}
+                        </View>
+                      </View>
+                    )}
+
+                    {/* Exercises preview */}
+                    <View style={styles.exercisePreview}>
+                      {renderExercisePreview(currentDayExercises)}
+                    </View>
+
+                    {/* Cooldown */}
+                    {workoutPlan.cooldown &&
+                      workoutPlan.cooldown.length > 0 && (
+                        <View style={{ marginTop: 12 }}>
+                          <Text style={styles.sectionTitle}>Cooldown</Text>
+                          <View style={styles.exercisePreview}>
+                            {renderWarmupCooldown(workoutPlan.cooldown)}
+                          </View>
+                        </View>
+                      )}
+
+                    {/* Guidelines */}
+                    {workoutPlan.workout_guidelines && (
+                      <View style={styles.guidelinesContainer}>
+                        <View style={styles.guidelineItem}>
+                          <FontAwesome5
+                            name="dumbbell"
+                            size={14}
+                            color="#ffffffff"
+                          />
+                          <Text style={styles.guidelineText}>
+                            Focus: {workoutPlan.workout_guidelines.focus}
+                          </Text>
+                        </View>
+                        <View style={styles.guidelineItem}>
+                          <Ionicons name="time" size={14} color="#ffffffff" />
+                          <Text style={styles.guidelineText}>
+                            Rest:{" "}
+                            {workoutPlan.workout_guidelines.rest_between_sets}
+                          </Text>
+                        </View>
+                      </View>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+              ) : isRestDay ? (
+                <View style={styles.restCard}>
+                  <LinearGradient
+                    colors={["#000000", "#1A1A1A"]}
+                    style={styles.restGradient}
+                  >
+                    <Ionicons
+                      name="bed"
+                      size={40}
+                      color={darkColors.textSecondary}
+                    />
+                    <Text style={styles.restTitle}>Rest Day</Text>
+                    <Text style={styles.restText}>Time for recovery</Text>
+                    {workoutPlan?.recovery?.active_recovery &&
+                      workoutPlan.recovery.active_recovery.map(
+                        (activity, idx) => (
+                          <Text key={idx} style={styles.recoveryActivity}>
+                            • {activity}
+                          </Text>
+                        ),
+                      )}
+                  </LinearGradient>
+                </View>
+              ) : (
+                <View style={styles.restCard}>
+                  <LinearGradient
+                    colors={["#000000", "#1A1A1A"]}
+                    style={styles.restGradient}
+                  >
+                    <Ionicons
+                      name="alert-circle"
+                      size={40}
+                      color={darkColors.textSecondary}
+                    />
+                    <Text style={styles.restTitle}>No Workout Today</Text>
+                    <Text style={styles.restText}>Check your weekly plan</Text>
+                  </LinearGradient>
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* Recovery Metrics */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Recovery Metrics</Text>
+            <LinearGradient
+              colors={["#000000", "#1A1A1A"]}
+              style={styles.recoveryGradient}
+            >
+              {recoveryMetrics.map((metric, idx) => (
+                <View key={idx} style={styles.recoveryMetric}>
+                  <LinearGradient
+                    colors={["#000000", "#1A1A1A"]}
+                    style={styles.metricIcon}
+                  >
+                    <Ionicons name={metric.icon} size={20} color="#fff" />
+                  </LinearGradient>
+                  <View>
+                    <Text style={styles.metricValue}>{metric.value}</Text>
+                    <Text style={styles.metricLabel}>{metric.label}</Text>
+                  </View>
+                </View>
+              ))}
+            </LinearGradient>
+          </View>
+
+          {/* Nutrition */}
+          {workoutPlan?.nutrition && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Nutrition</Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Nutrition")}
+                >
+                  <Text style={styles.seeAllText}>Details</Text>
+                </TouchableOpacity>
               </View>
-            </>
-          ) : (
-            <Text style={styles.descriptionText}>You have no saved workout plan. Finish your profile and generate a plan first.</Text>
+              <TouchableOpacity
+                style={styles.nutritionCard}
+                onPress={() => navigation.navigate("Nutrition")}
+              >
+                <LinearGradient
+                  colors={["#000000", "#1A1A1A"]}
+                  style={styles.nutritionGradient}
+                >
+                  <View style={styles.nutritionHeader}>
+                    <View>
+                      <Text style={styles.nutritionCalories}>
+                        {workoutPlan.nutrition.daily_calories} kcal
+                      </Text>
+                      <Text style={styles.nutritionLabel}>Daily Goal</Text>
+                    </View>
+                    <LinearGradient
+                      colors={["#F34E3A", "#F17C3B"]}
+                      style={styles.nutritionIcon}
+                    >
+                      <Ionicons name="nutrition" size={24} color="#fff" />
+                    </LinearGradient>
+                  </View>
+                  <View style={styles.macrosContainer}>
+                    <View style={styles.macroItem}>
+                      <Text style={styles.macroValue}>
+                        {workoutPlan.nutrition.protein_g}g
+                      </Text>
+                      <Text style={styles.macroLabel}>Protein</Text>
+                    </View>
+                    <View style={styles.macroItem}>
+                      <Text style={styles.macroValue}>
+                        {workoutPlan.nutrition.carbs_g}g
+                      </Text>
+                      <Text style={styles.macroLabel}>Carbs</Text>
+                    </View>
+                    <View style={styles.macroItem}>
+                      <Text style={styles.macroValue}>
+                        {workoutPlan.nutrition.fat_g}g
+                      </Text>
+                      <Text style={styles.macroLabel}>Fat</Text>
+                    </View>
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Weekly Plan */}
+          {!loading && workoutPlan?.weekly_split && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Weekly Plan</Text>
+                <Text style={styles.planDuration}>
+                  {
+                    workoutPlan.weekly_split.filter(
+                      (day) => !day.toLowerCase().includes("rest"),
+                    ).length
+                  }{" "}
+                  days/week
+                </Text>
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.weekScroll}
+              >
+                {workoutPlan.weekly_split.map((day, idx) => {
+                  const isRest = day.toLowerCase().includes("rest");
+                  const dayKey = day.split(":")[0].trim();
+                  const exercises = workoutPlan.daily_workouts?.[dayKey] || [];
+                  const isToday = idx === todayShifted;
+
+                  return (
+                    <TouchableOpacity
+                      key={idx}
+                      style={[styles.dayCard, isToday && styles.todayCard]}
+                      onPress={() =>
+                        !isRest &&
+                        exercises.length > 0 &&
+                        navigation.navigate("WorkoutDetails", {
+                          day: dayKey,
+                          exercises,
+                        })
+                      }
+                    >
+                      <LinearGradient
+                        colors={
+                          isToday
+                            ? ["#F34E3A", "#F17C3B"]
+                            : ["#000000", "#1A1A1A"]
+                        }
+                        style={styles.dayGradient}
+                      >
+                        <Text
+                          style={[styles.dayName, isToday && styles.todayText]}
+                        >
+                          {dayKey}
+                        </Text>
+                        {isRest ? (
+                          <Ionicons
+                            name="bed"
+                            size={20}
+                            color={isToday ? "#fff" : darkColors.textSecondary}
+                          />
+                        ) : (
+                          <FontAwesome5
+                            name="dumbbell"
+                            size={16}
+                            color={isToday ? "#fff" : darkColors.textSecondary}
+                          />
+                        )}
+                        <Text
+                          style={[
+                            styles.dayStatus,
+                            isToday && styles.todayText,
+                          ]}
+                        >
+                          {isRest ? "Rest" : `${exercises.length} ex`}
+                        </Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          )}
+
+          {loading && (
+            <ActivityIndicator
+              size="large"
+              color={darkColors.primary}
+              style={{ marginVertical: 30 }}
+            />
           )}
         </ScrollView>
+
+        {planExpired && (
+          <View style={styles.overlayContainer}>
+            <View style={styles.overlayBlur} />
+
+            <View style={styles.expiredCard}>
+              <Ionicons
+                name="alert-circle"
+                size={46}
+                color={Colors.primary}
+                style={{ marginBottom: 10 }}
+              />
+
+              <Text style={styles.expiredTitle}>Your Plan Has Ended</Text>
+              <Text style={styles.expiredMessage}>
+                Your weekly fitness plan is complete. Create your new plan to
+                continue your progress.
+              </Text>
+
+              <TouchableOpacity
+                style={styles.newPlanBtn}
+                onPress={() => navigation.navigate("WorkoutGenerating")}
+              >
+                <LinearGradient
+                  colors={[darkColors.primary, darkColors.primaryLight]}
+                  style={styles.newPlanGradient}
+                >
+                  <Text style={styles.newPlanText}>Create New Plan</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -171,92 +669,442 @@ const Home = () => {
 
 export default Home;
 
+// Styles remain the same...
 const styles = StyleSheet.create({
-  safeArea: { flex: 1 },
+  safeArea: {
+    flex: 1,
+    backgroundColor: darkColors.background,
+  },
   scrollContainer: {
+    paddingVertical: 20,
     width: "90%",
     alignSelf: "center",
-    paddingVertical: 50,
-    alignItems: "center",
   },
-  iconRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    gap: 8,
-  },
-
   header: {
-    marginBottom: 20,
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
-    width: "100%",
+    marginBottom: 24,
   },
   greetingText: {
-    color: Colors.white,
-    fontSize: 24,
-    fontFamily: Fonts.Montserrat_SemiBold,
-  },
-  subGreeting: {
-    color: "#777",
-    fontSize: 14,
+    color: darkColors.textSecondary,
+    fontSize: 16,
     fontFamily: Fonts.Montserrat_Regular,
+  },
+  userName: {
+    color: darkColors.textPrimary,
+    fontSize: 24,
+    fontFamily: Fonts.Montserrat_Bold,
     marginTop: 4,
   },
-  planCard: {
-    backgroundColor: "#080808",
-    padding: 20,
-    borderRadius: 16,
-    marginVertical: 10,
-    elevation: 5,
-    shadowColor: "#6D6D6D",
-  },
-  planTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontFamily: Fonts.Montserrat_SemiBold,
-  },
-  planSubtitle: {
-    color: "#ccc",
+  notesText: {
+    color: darkColors.textSecondary,
     fontSize: 14,
-    marginVertical: 10,
     fontFamily: Fonts.Montserrat_Regular,
-    lineHeight: 20,
+    marginTop: 8,
+    fontStyle: "italic",
   },
-  planButton: {
-    backgroundColor: "transparent",
-    paddingVertical: 8,
+  profileContainer: {
+    position: "relative",
+  },
+  profileImage: {
+    width: 50,
+    height: 50,
     borderRadius: 25,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-    width: RFPercentage(18),
-    alignSelf: "center",
-    borderWidth: 1,
-    borderColor: "grey",
+    borderWidth: 2,
+    borderColor: darkColors.primary,
   },
-  planButtonText: {
-    color: "darkgrey",
-    fontSize: 16,
-    fontFamily: Fonts.Montserrat_SemiBold,
+  onlineIndicator: {
+    position: "absolute",
+    bottom: 2,
+    right: 2,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: darkColors.success,
+    borderWidth: 2,
+    borderColor: darkColors.background,
+  },
+  statsGradient: {
+    flexDirection: "row",
+    borderRadius: 20,
+    padding: 20,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: "center",
+  },
+  statValue: {
+    color: darkColors.textPrimary,
+    fontSize: 20,
+    fontFamily: Fonts.Montserrat_Bold,
+    marginBottom: 4,
+  },
+  statLabel: {
+    color: darkColors.textSecondary,
+    fontSize: 12,
+    fontFamily: Fonts.Montserrat_Medium,
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: darkColors.border,
+    marginHorizontal: 10,
+  },
+  actionsContainer: {
+    marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 20,
-    color: Colors.white,
-    marginTop: 20,
-    fontFamily: Fonts.Montserrat_SemiBold,
+    color: darkColors.textPrimary,
+    fontSize: 18,
+    fontFamily: Fonts.Montserrat_Bold,
+    marginBottom: 16,
   },
-  descriptionText: {
-    fontSize: 16,
-    color: "#666",
+  actionsGrid: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  actionButton: {
+    alignItems: "center",
+    flex: 1,
+  },
+  actionIcon: {
+    width: 60,
+    height: 60,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 8,
+    shadowColor: "#6D6D6D",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  actionLabel: {
+    color: darkColors.textSecondary,
+    fontSize: 12,
+    fontFamily: Fonts.Montserrat_Medium,
+    textAlign: "center",
+  },
+  section: {
+    marginTop: 24,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 16,
+  },
+  seeAllText: {
+    color: darkColors.primary,
+    fontSize: 14,
+    fontFamily: Fonts.Montserrat_Medium,
+  },
+  workoutCard: {
+    borderRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#6D6D6D",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  workoutGradient: {
+    padding: 20,
+    borderRadius: 20,
+  },
+  workoutHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 12,
+  },
+  workoutDay: {
+    color: darkColors.textSecondary,
+    fontSize: 14,
+    fontFamily: Fonts.Montserrat_Medium,
+    marginBottom: 4,
+  },
+  workoutName: {
+    color: darkColors.textPrimary,
+    fontSize: 20,
+    fontFamily: Fonts.Montserrat_Bold,
+  },
+  startButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  workoutExercises: {
+    color: darkColors.textSecondary,
+    fontSize: 14,
     fontFamily: Fonts.Montserrat_Regular,
-    marginTop: 10,
+    marginBottom: 12,
+  },
+  exercisePreview: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 12,
+  },
+  exerciseTag: {
+    backgroundColor: "rgba(137, 120, 118, 0.2)",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(115, 109, 108, 0.3)",
+  },
+  exerciseTagText: {
+    color: darkColors.textPrimary,
+    fontSize: 12,
+    fontFamily: Fonts.Montserrat_Medium,
+    marginBottom: 2,
+  },
+  exerciseDetails: {
+    color: darkColors.textSecondary,
+    fontSize: 10,
+    fontFamily: Fonts.Montserrat_Regular,
+  },
+  guidelinesContainer: {
+    marginTop: 8,
+  },
+  guidelineItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  guidelineText: {
+    color: darkColors.textSecondary,
+    fontSize: 12,
+    fontFamily: Fonts.Montserrat_Regular,
+    marginLeft: 6,
+    flex: 1,
+  },
+  restCard: {
+    borderRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#6D6D6D",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  restGradient: {
+    padding: 24,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  restTitle: {
+    color: darkColors.textPrimary,
+    fontSize: 18,
+    fontFamily: Fonts.Montserrat_Bold,
+    marginTop: 12,
+    marginBottom: 4,
   },
   restText: {
-    fontSize: 16,
-    color: "#999",
+    color: darkColors.textSecondary,
+    fontSize: 14,
     fontFamily: Fonts.Montserrat_Regular,
-    marginTop: 10,
+  },
+  recoveryActivity: {
+    color: darkColors.textSecondary,
+    fontSize: 12,
+    fontFamily: Fonts.Montserrat_Regular,
+  },
+  recoveryGradient: {
+    flexDirection: "row",
+    borderRadius: 20,
+    padding: 20,
+  },
+  recoveryMetric: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  metricIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+    shadowColor: "#6D6D6D",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  metricValue: {
+    color: darkColors.textPrimary,
+    fontSize: 16,
+    fontFamily: Fonts.Montserrat_Bold,
+    marginBottom: 2,
+  },
+  metricLabel: {
+    color: darkColors.textSecondary,
+    fontSize: 12,
+    fontFamily: Fonts.Montserrat_Medium,
+  },
+  nutritionCard: {
+    borderRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#6D6D6D",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  nutritionGradient: {
+    padding: 20,
+    borderRadius: 20,
+  },
+  nutritionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  nutritionCalories: {
+    color: darkColors.textPrimary,
+    fontSize: 24,
+    fontFamily: Fonts.Montserrat_Bold,
+  },
+  nutritionLabel: {
+    color: darkColors.textSecondary,
+    fontSize: 14,
+    fontFamily: Fonts.Montserrat_Regular,
+  },
+  nutritionIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  macrosContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  macroItem: {
+    alignItems: "center",
+  },
+  macroValue: {
+    color: darkColors.textPrimary,
+    fontSize: 16,
+    fontFamily: Fonts.Montserrat_Bold,
+    marginBottom: 4,
+  },
+  macroLabel: {
+    color: darkColors.textSecondary,
+    fontSize: 12,
+    fontFamily: Fonts.Montserrat_Medium,
+  },
+  planDuration: {
+    color: darkColors.textSecondary,
+    fontSize: 14,
+    fontFamily: Fonts.Montserrat_Medium,
+  },
+  weekScroll: {
+    paddingRight: 20,
+  },
+  dayCard: {
+    borderRadius: 16,
+    overflow: "hidden",
+    marginRight: 12,
+    minWidth: 80,
+    shadowColor: "#6D6D6D",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  dayGradient: {
+    padding: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    minHeight: 100,
+    justifyContent: "center",
+  },
+  todayCard: {
+    shadowColor: "#F34E3A",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  dayName: {
+    color: darkColors.textPrimary,
+    fontSize: 14,
+    fontFamily: Fonts.Montserrat_Bold,
+    marginBottom: 8,
+  },
+  todayText: {
+    color: "#fff",
+  },
+  dayStatus: {
+    color: darkColors.textSecondary,
+    fontSize: 12,
+    fontFamily: Fonts.Montserrat_Medium,
+    marginTop: 4,
+  },
+  overlayContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
+  },
+  overlayBlur: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.9)",
+  },
+  expiredCard: {
+    width: "85%",
+    backgroundColor: "#111",
+    padding: 24,
+    borderRadius: 18,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  expiredTitle: {
+    color: "white",
+    fontSize: 20,
+    fontFamily: Fonts.Montserrat_Bold,
+    marginBottom: 6,
+    textAlign: "center",
+  },
+  expiredMessage: {
+    color: "gray",
+    fontSize: 14,
+    fontFamily: Fonts.Montserrat_Regular,
+    textAlign: "center",
+    marginBottom: 20,
+    lineHeight: 20,
+  },
+  newPlanBtn: {
+    width: "100%",
+  },
+  newPlanGradient: {
+    paddingVertical: 12,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+  newPlanText: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: Fonts.Montserrat_Bold,
   },
 });

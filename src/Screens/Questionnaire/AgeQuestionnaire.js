@@ -26,6 +26,7 @@ const AgeQuestionnaire = () => {
   const [loading, setLoading] = useState(false);
 
   console.log(selectedAgeIndex);
+  console.log(selectedWeight);
 
   // Pre-fill values from context
   useEffect(() => {
@@ -104,9 +105,9 @@ const AgeQuestionnaire = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.background }]}>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%", paddingHorizontal: RFPercentage(2) }}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%", paddingHorizontal: RFPercentage(2.8) }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.4)} />
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
         </TouchableOpacity>
         <Heading title="Age & Weight" />
       </View>

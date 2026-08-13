@@ -22,4 +22,30 @@ export const Colors = {
   primary: "#F34E3A",
   white: "white",
   grey: "#3656565",
+   secondary: '#7B68EE',
+  accent: '#FF6B6B',
+   surface: '#1A1A1A',
+  text: '#FFFFFF',
+  textSecondary: 'rgba(255, 255, 255, 0.7)',
+  success: '#4CAF50',
+  warning: '#FF9800',
+  error: '#F44336',
+  border: 'rgba(255, 255, 255, 0.1)',
+};
+
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
+};
+
+export const BorderRadius = {
+  sm: 4,
+  md: 8,
+  lg: 12,
+  xl: 16,
+  round: 999,
 };

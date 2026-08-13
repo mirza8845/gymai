@@ -81,8 +81,8 @@ export default function HeightQuestionnaire() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center", paddingTop: RFPercentage(10) }}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.4)} />
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 25 }}>
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
         </TouchableOpacity>
         <Heading title="Height Selection" />
       </View>

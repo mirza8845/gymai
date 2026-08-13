@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Animated, Easing, Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import workout from "../../assets/images/WorkOut.png";
+import workout from "../../assets/images/workout.png";
 import appleicon from "../../assets/images/Nutrition.png";
 import personsicon from "../../assets/images/Community.png";
 import stepActive from "../../assets/images/stepperactive.png";
@@ -61,11 +61,11 @@ const Onboarding = () => {
   return (
     <View style={styles.container}>
       <StatusBar translucent={true} backgroundColor={"transparent"} barStyle={"light-content"} />
-      <Animated.Image source={steps[stepIndex].image} style={styles.backgroundImage} resizeMode="cover" />
+      <Animated.Image source={steps[stepIndex]?.image} style={styles.backgroundImage} resizeMode="cover" />
       <LinearGradient colors={["rgba(0, 0, 0, 0.4)", "rgba(0, 0, 0, 1)"]} style={styles.gradient}>
         <Animated.View style={[styles.content]}>
-          <Text style={styles.description}>{steps[stepIndex].text}</Text>
-          <Text style={{ color: "#656565", fontFamily: Fonts.Montserrat_Italic, fontSize: 16,  }}>Be an Inspiration</Text>
+          <Text style={styles.description}>{steps[stepIndex]?.text}</Text>
+          <Text style={{ color: "#d8d4d4ff", fontFamily: Fonts.Montserrat_Italic, fontSize: 16,  }}>Be an Inspiration</Text>
 
           <View style={styles.stepperline}>
             {steps.map((_, index) => (

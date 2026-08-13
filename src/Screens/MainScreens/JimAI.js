@@ -1,43 +1,51 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Image, ScrollView, StyleSheet, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity } from "react-native";
+import { 
+  View, 
+  Text, 
+  Image, 
+  ScrollView, 
+  StyleSheet, 
+  TextInput, 
+  KeyboardAvoidingView, 
+  Platform, 
+  TouchableOpacity,
+  Alert 
+} from "react-native";
 import Avatar from "../../assets/images/Avatar.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from "react-native-vector-icons/Feather";
 import { Colors, Fonts } from "../../constants/theme";
-import axios from "axios";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AnimatedDots from "../../utils/dotsAnimations";
-
-const GEMINI_API_KEY = "AIzaSyBNunMEcP-_CGwc4JHk5DPkTH3IU69GLR0";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+import chatService from "../../services/chatService";
+// If you're using the functional export version, import like this instead:
+// import { sendMessage, clearHistory } from "./groqService";
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([
     {
       type: "ai",
-      text: "Hello, I’m GymAI! I’m your virtual fitness coach. How can I help you?",
+      text: "Hello, I'm GymAI! I'm your virtual fitness coach. How can I help you?",
     },
   ]);
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [typingDots, setTypingDots] = useState("");
   const scrollRef = useRef();
 
+  // Optional: Load conversation history on mount
   useEffect(() => {
-    let interval;
-    if (isTyping) {
-      let dotCount = 1;
-      interval = setInterval(() => {
-        setTypingDots("•".repeat(dotCount));
-        dotCount = (dotCount % 3) + 1;
-      }, 500);
-    } else {
-      setTypingDots("");
-    }
-
-    return () => clearInterval(interval);
-  }, [isTyping]);
+    // If you want to load previous conversation history
+    // const history = chatService.getHistory();
+    // if (history.length > 0) {
+    //   // Convert history to chat messages format
+    //   const chatHistory = history.map(msg => ({
+    //     type: msg.role === 'user' ? 'user' : 'ai',
+    //     text: msg.content
+    //   }));
+    //   setMessages(chatHistory);
+    // }
+  }, []);
 
   const handleSend = async () => {
     if (inputText.trim() === "") return;
@@ -47,75 +55,102 @@ const ChatScreen = () => {
     setInputText("");
     setIsTyping(true);
 
-    const aiReply = await fetchGeminiResponse(inputText);
-    setIsTyping(false);
-    setMessages((prev) => [...prev, { type: "ai", text: aiReply }]);
+    try {
+      // Use Groq service to get response
+      const aiReply = await chatService.sendMessage(inputText);
+      
+      // If using functional export:
+      // const aiReply = await sendMessage(inputText);
+      
+      setIsTyping(false);
+      setMessages((prev) => [...prev, { type: "ai", text: aiReply }]);
+    } catch (error) {
+      setIsTyping(false);
+      console.error("Chat Error:", error.message);
+      
+      // Handle different error types
+      let errorMessage = "Oops! Something went wrong. Please try again.";
+      
+      if (error.message.includes("Too many requests")) {
+        errorMessage = "Please wait a moment before sending another message.";
+      } else if (error.message.includes("Failed to get response")) {
+        errorMessage = "Network error. Please check your connection.";
+      }
+      
+      setMessages((prev) => [...prev, { 
+        type: "ai", 
+        text: errorMessage 
+      }]);
+      
+      // Optional: Show alert for critical errors
+      // Alert.alert("Error", errorMessage, [{ text: "OK" }]);
+    }
   };
 
-  const systemPrompt = `
-You are GymAI, a virtual fitness trainer and coach.
-
-Speak like a real gym coach — direct, confident, and motivational.
-Always provide concise, relevant answers focused on fitness guidance.
-Avoid saying "Alright", "Sure", or long introductions — get to the point.
-Never say you are an AI or language model.
-Only give practical gym-related advice in 1–3 short sentences.
-`;
-
-  const fetchGeminiResponse = async (text) => {
-    try {
-      const response = await axios.post(
-        GEMINI_URL,
+  // Optional: Function to clear conversation history
+  const clearChatHistory = () => {
+    Alert.alert(
+      "Clear Chat History",
+      "Are you sure you want to clear all chat history?",
+      [
+        { text: "Cancel", style: "cancel" },
         {
-          contents: [
-            {
-              parts: [{ text: systemPrompt + "\n\nUser: " + text }],
-            },
-          ],
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          text: "Clear",
+          style: "destructive",
+          onPress: () => {
+            setMessages([
+              {
+                type: "ai",
+                text: "Hello, I'm GymAI! I'm your virtual fitness coach. How can I help you?",
+              },
+            ]);
+            chatService.clearHistory();
+            // If using functional export:
+            // clearHistory();
+          }
         }
-      );
-
-      const aiText = response?.data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      return aiText || "I'm here to help you with your fitness goals!";
-    } catch (error) {
-      console.error("Gemini Error:", error.message);
-      return "Oops! Something went wrong. Try again.";
-    }
+      ]
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.flex} keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 30}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"} 
+        style={styles.flex} 
+        keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 30}
+      >
         {/* Header */}
         <View style={styles.headerContainer}>
-          <View
-            style={{
-              width: RFPercentage(8),
-              height: RFPercentage(8),
-              backgroundColor: "black",
-              borderRadius: 100,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <MaterialCommunityIcons name="robot" color="white" size={28} style={{ bottom: 3 }} />
+          <View style={styles.robotIconContainer}>
+            <MaterialCommunityIcons 
+              name="robot" 
+              color="white" 
+              size={28} 
+              style={styles.robotIcon} 
+            />
           </View>
-          <View>
+          <View style={styles.headerTextContainer}>
             <Text style={styles.headerTitle}>GymAI</Text>
             <View style={styles.statusWrapper}>
               <View style={styles.statusDot} />
               <Text style={styles.statusText}>Always active</Text>
             </View>
           </View>
+          
+          {/* Optional: Clear chat button */}
+          {/* <TouchableOpacity onPress={clearChatHistory} style={styles.clearButton}>
+            <Feather name="trash-2" color="#888" size={20} />
+          </TouchableOpacity> */}
         </View>
 
         {/* Messages */}
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} ref={scrollRef} onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}>
+        <ScrollView 
+          style={styles.scrollView} 
+          showsVerticalScrollIndicator={false} 
+          ref={scrollRef} 
+          onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
+        >
           {messages.map((msg, idx) =>
             msg.type === "user" ? (
               <View key={idx} style={styles.messageRowRight}>
@@ -125,16 +160,7 @@ Only give practical gym-related advice in 1–3 short sentences.
               </View>
             ) : (
               <View key={idx} style={styles.messageRow}>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    backgroundColor: "black",
-                    borderRadius: 20,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <View style={styles.smallRobotContainer}>
                   <MaterialCommunityIcons name="robot" color="white" size={22} />
                 </View>
                 <View style={styles.messageBubbleReceived}>
@@ -144,21 +170,16 @@ Only give practical gym-related advice in 1–3 short sentences.
             )
           )}
 
-          {/* Typing Animation */}
-
+          {/* Typing Indicator */}
           {isTyping && (
             <View style={styles.messageRow}>
-              <View
-                style={{
-                  width: 40,
-                  height: 40,
-                  backgroundColor: "black",
-                  borderRadius: 20,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <MaterialCommunityIcons name="robot" color="white" size={22} style={{ bottom: 2 }} />
+              <View style={styles.smallRobotContainer}>
+                <MaterialCommunityIcons 
+                  name="robot" 
+                  color="white" 
+                  size={22} 
+                  style={styles.smallRobotIcon} 
+                />
               </View>
               <View style={styles.messageBubbleReceived}>
                 <AnimatedDots />
@@ -167,13 +188,34 @@ Only give practical gym-related advice in 1–3 short sentences.
           )}
         </ScrollView>
 
-        {/* Input */}
+        {/* Input Area */}
         <View style={styles.inputRow}>
           <View style={styles.textInputContainer}>
-            <TextInput style={styles.textInput} placeholder="Type a message..." placeholderTextColor="#72777A" value={inputText} onChangeText={setInputText} onSubmitEditing={handleSend} />
+            <TextInput 
+              style={styles.textInput} 
+              placeholder="Type a message..." 
+              placeholderTextColor="#72777A" 
+              value={inputText} 
+              onChangeText={setInputText}
+              onSubmitEditing={handleSend}
+              multiline={true}
+              maxLength={500}
+            />
           </View>
-          <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
-            <Feather name="send" color="white" size={23} style={{ top: 1, right: 1 }} />
+          <TouchableOpacity 
+            onPress={handleSend} 
+            style={[
+              styles.sendButton,
+              !inputText.trim() && styles.sendButtonDisabled
+            ]}
+            disabled={!inputText.trim() || isTyping}
+          >
+            <Feather 
+              name="send" 
+              color={!inputText.trim() || isTyping ? "#666" : "white"} 
+              size={23} 
+              style={styles.sendIcon} 
+            />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -203,9 +245,19 @@ const styles = StyleSheet.create({
     borderBottomColor: "#333",
     paddingBottom: 8,
   },
-  avatarImageLarge: {
-    width: 60,
-    height: 60,
+  robotIconContainer: {
+    width: RFPercentage(8),
+    height: RFPercentage(8),
+    backgroundColor: "black",
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  robotIcon: {
+    bottom: 3,
+  },
+  headerTextContainer: {
+    flex: 1,
   },
   headerTitle: {
     color: "#fff",
@@ -229,6 +281,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.Montserrat_Medium,
   },
+  clearButton: {
+    padding: 8,
+  },
   scrollView: {
     flex: 1,
     paddingHorizontal: 20,
@@ -238,15 +293,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 12,
-    marginBottom: 50,
+    marginBottom: 20,
   },
   messageRowRight: {
     alignItems: "flex-end",
     marginBottom: 20,
   },
-  avatarImageSmall: {
+  smallRobotContainer: {
     width: 40,
     height: 40,
+    backgroundColor: "black",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  smallRobotIcon: {
+    bottom: 2,
   },
   messageBubbleReceived: {
     backgroundColor: "black",
@@ -256,6 +318,8 @@ const styles = StyleSheet.create({
     padding: 15,
     maxWidth: "75%",
     elevation: 3,
+    minHeight: 50,
+    justifyContent: "center",
   },
   messageBubbleSent: {
     backgroundColor: "#F34E3A",
@@ -270,6 +334,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 15,
     fontFamily: Fonts.Montserrat_Medium,
+    lineHeight: 22,
   },
   inputRow: {
     flexDirection: "row",
@@ -290,6 +355,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#333",
+    minHeight: 50,
+    maxHeight: 100,
   },
   textInput: {
     color: "#fff",
@@ -297,18 +364,21 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     fontFamily: Fonts.Montserrat_Medium,
-  },
-  micIcon: {
-    color: "#888",
-    marginLeft: 10,
+    maxHeight: 80,
   },
   sendButton: {
     backgroundColor: "#F34E3A",
-    // padding: 12,
     borderRadius: RFPercentage(100),
     justifyContent: "center",
     alignItems: "center",
     width: RFPercentage(5),
     height: RFPercentage(5),
+  },
+  sendButtonDisabled: {
+    backgroundColor: "#333",
+  },
+  sendIcon: {
+    top: 1,
+    right: 1,
   },
 });

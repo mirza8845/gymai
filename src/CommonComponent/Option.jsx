@@ -9,7 +9,7 @@ const Option = ({ label, selected, onPress }) => {
 
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={onPress}>
-      <Text style={[styles.text, { color: selected ? "white" : "#555555" }]}>{label.length > 20 ? label.substring(0, 20) + "..." : label}</Text>
+      <Text style={[styles.text, { color: selected ? "white" : "#555555" }]} numberOfLines={1}>{label.length > 20 ? label.substring(0, 20) + "..." : label}</Text>
       <View style={[styles.radioOuter, selected && styles.radioOuterSelected]}>{selected && <View style={styles.radioInner} />}</View>
     </TouchableOpacity>
   );
@@ -17,8 +17,8 @@ const Option = ({ label, selected, onPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "90%",
-    height: 46,
+    width: "100%",
+    height: 50,
     backgroundColor: "#080808",
     borderRadius: 30,
     paddingHorizontal: 10,
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   text: {
-    fontSize: RFPercentage(2),
+    fontSize: RFPercentage(1.9),
     color: "#555555",
     width: "70%",
     paddingLeft: 20,

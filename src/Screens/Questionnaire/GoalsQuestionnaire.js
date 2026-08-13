@@ -87,7 +87,7 @@ const GoalsQuestionnaire = () => {
     <ScrollView style={[styles.container, { backgroundColor: Colors.background }]} contentContainerStyle={{paddingBottom:50}}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.4)} />
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
         </TouchableOpacity>
         <Heading title="Your Goals" />
       </View>
@@ -111,7 +111,7 @@ export default GoalsQuestionnaire;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: RFPercentage(2),
+    paddingHorizontal: RFPercentage(2.8),
     paddingTop: RFPercentage(10),
   },
   goalNote: {
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.8)",
   },
   goalsContainer: {
-    gap: 12,
+    gap: 10,
     marginTop: RFPercentage(3),
     alignItems: "center",
   },

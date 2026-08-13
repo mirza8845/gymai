@@ -73,7 +73,7 @@ const GenderQuestionnaire = () => {
     <View style={styles.screen}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width:'100%' }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.4)} />
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
         </TouchableOpacity>
         <Heading title="What’s Your Gender" />
       </View>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: "center",
-    paddingHorizontal: RFPercentage(2),
+    paddingHorizontal: RFPercentage(2.8),
     paddingTop: RFPercentage(10),
     backgroundColor:Colors.background
   },

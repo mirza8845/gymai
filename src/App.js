@@ -1,12 +1,13 @@
 import { StyleSheet } from "react-native";
 import React from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
-import MainNavigator from "./Screens/Navigation/MainNavigation";
+import MainNavigator from "./screens/Navigation/MainNavigation";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "./utils/toastConfig";
 import { UserProvider } from "./utils/userContext";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import 'react-native-get-random-values';
 
 const App = () => {
 

@@ -38,5 +38,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: RFPercentage(2),
     fontFamily: Fonts.Medium,
+    lineHeight:RFPercentage(2.5)
   },
 });

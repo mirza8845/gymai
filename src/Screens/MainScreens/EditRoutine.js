@@ -188,10 +188,10 @@ const styles = StyleSheet.create({
     marginTop: RFPercentage(1),
   },
   gradientButton: {
-    paddingVertical: RFPercentage(2),
+    paddingVertical: RFPercentage(1.6),
     paddingHorizontal: RFPercentage(4),
     alignItems: "center",
-    borderRadius: 12,
+    borderRadius: 100,
   },
   saveText: {
     fontSize: RFPercentage(2),

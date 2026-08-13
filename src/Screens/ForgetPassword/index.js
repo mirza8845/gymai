@@ -69,7 +69,7 @@ const ForgetPassword = () => {
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <>
                   <View style={styles.inputView}>
-                    <CommonInput icon={require("../../assets/images/mail.png")} placeholder="Enter email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
+                    <CommonInput img={require("../../assets/images/mail.png")} placeholder="Enter email" value={values.email} onChangeText={handleChange("email")} handleBlur={handleBlur("email")} />
                     {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
                     <View style={{ marginTop: RFPercentage(7.5) }}>
                       <Button title="Send Link" onPress={handleSubmit} loader={loading} disbaled={loading} />

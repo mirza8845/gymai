@@ -15,8 +15,9 @@ const Homestack = () => {
         tabBarStyle: {
           backgroundColor: "black",
           paddingTop: RFPercentage(1),
-          height: RFPercentage(8),
-          borderTopWidth: 0,
+          height: RFPercentage(10),
+          borderTopWidth: 1,
+          borderTopColor:"gray"
         },
         headerShown: false,
         tabBarHideOnKeyboard: true,

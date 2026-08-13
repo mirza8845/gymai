@@ -70,12 +70,12 @@ const Diets = () => {
       <ScrollView contentContainerStyle={[styles.container, { backgroundColor: Colors.background }]} keyboardShouldPersistTaps="handled">
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
-            <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+            <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
           </TouchableOpacity>
           <Heading title="Your Diet" />
         </View>
         <Paragraph title="How would you describe your current diet?" />
-        <View style={{ paddingTop: RFPercentage(6), paddingBottom: 30, gap: 15, }}>
+        <View style={{ paddingTop: RFPercentage(6), paddingBottom: 30, gap: 12, }}>
           {dietsOption.map((opt, index) => (
             <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
           ))}
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     paddingTop: RFPercentage(10),
-    paddingHorizontal: RFPercentage(2),
+    paddingHorizontal: RFPercentage(2.8),
     alignItems: "center",
   },
 });

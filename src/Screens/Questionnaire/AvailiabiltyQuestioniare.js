@@ -72,7 +72,7 @@ const AvailiabiltyQuestioniare = () => {
     <View style={[styles.container, { backgroundColor: Colors.background }]}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(4)} />
+          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
         </TouchableOpacity>
         <Heading title={"Availability"} />
       </View>
@@ -94,7 +94,7 @@ export default AvailiabiltyQuestioniare;
 const styles = StyleSheet.create({
   container: {
     paddingTop: RFPercentage(10),
-    paddingHorizontal: RFPercentage(2),
+    paddingHorizontal: RFPercentage(2.8),
     alignItems: "center",
     flex:1
   },

@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     borderRightColor: 'rgba(255, 255, 255, 0.5)',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 255, 255, 0.5)',
+    top:40
   },
   success: {
     backgroundColor: 'white',
