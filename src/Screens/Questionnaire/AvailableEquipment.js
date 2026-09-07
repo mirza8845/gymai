@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Heading from "../../CommonComponent/Heading";
@@ -49,44 +49,44 @@ const AvailableEquipment = () => {
           return [];
         } else {
           // Select "Everything" - select all options except "Nothing"
-          const allExceptNothing = equipmentOptions.filter(opt => 
-            opt !== "Nothing" && opt !== "Everything"
+          const allExceptNothing = equipmentOptions.filter(
+            (opt) => opt !== "Nothing" && opt !== "Everything",
           );
           return ["Everything", ...allExceptNothing];
         }
       }
-      
+
       // If selecting "Nothing"
       if (item === "Nothing") {
         if (prev.includes("Nothing")) {
           // Deselect "Nothing"
-          return prev.filter(eq => eq !== "Nothing");
+          return prev.filter((eq) => eq !== "Nothing");
         } else {
           // Select "Nothing" - clear all other selections
           return ["Nothing"];
         }
       }
-      
+
       // If selecting other options
       if (prev.includes("Nothing")) {
         // If "Nothing" is selected, clear it when selecting other options
-        const newSelection = prev.filter(eq => eq !== "Nothing");
-        return newSelection.includes(item) 
-          ? newSelection.filter(eq => eq !== item)
+        const newSelection = prev.filter((eq) => eq !== "Nothing");
+        return newSelection.includes(item)
+          ? newSelection.filter((eq) => eq !== item)
           : [...newSelection, item];
       }
-      
+
       if (prev.includes("Everything")) {
         // If "Everything" is selected, deselect it when modifying other selections
-        const newSelection = prev.filter(eq => eq !== "Everything");
+        const newSelection = prev.filter((eq) => eq !== "Everything");
         return newSelection.includes(item)
-          ? newSelection.filter(eq => eq !== item)
+          ? newSelection.filter((eq) => eq !== item)
           : [...newSelection, item];
       }
-      
+
       // Normal toggle for other items
-      return prev.includes(item) 
-        ? prev.filter(eq => eq !== item)
+      return prev.includes(item)
+        ? prev.filter((eq) => eq !== item)
         : [...prev, item];
     });
   };
@@ -132,16 +132,31 @@ const AvailableEquipment = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.background }]}>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 0 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => navigation.goBack()}
+          style={{ position: "absolute", left: 0 }}
+        >
+          <AntDesign
+            name="arrowleft"
+            color={"white"}
+            size={RFPercentage(3.1)}
+          />
         </TouchableOpacity>
         <Heading title="Available equipment" />
       </View>
 
       <Paragraph title="What equipment do you have access to? You can start with nothing!" />
 
-      <View
+      <ScrollView
         style={{
           gap: 12,
           paddingTop: 60,
@@ -150,11 +165,17 @@ const AvailableEquipment = () => {
         }}
       >
         {equipmentOptions.map((title, index) => (
-          <DoubleButton key={index} title={title} selected={selectedEquipment.includes(title)} onPress={() => toggleEquipment(title)} />
+          <DoubleButton
+            key={index}
+            title={title}
+            selected={selectedEquipment.includes(title)}
+            onPress={() => toggleEquipment(title)}
+          />
         ))}
+      </ScrollView>
+      <View style={{ bottom: RFPercentage(5) }}>
+        <Button title="Continue" onPress={handleContinue} />
       </View>
-
-      <Button title="Continue" onPress={handleContinue} />
     </View>
   );
 };
@@ -166,6 +187,6 @@ const styles = StyleSheet.create({
     paddingTop: RFPercentage(10),
     paddingHorizontal: RFPercentage(2.8),
     // alignItems: "center",
-    flex:1
+    flex: 1,
   },
 });

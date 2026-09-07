@@ -1,6 +1,8 @@
-import { SET_WORKOUT_PLAN } from "./Actions";
+import { SET_WORKOUT_PLAN, SET_WORKOUT_LOADING } from "./Actions";
+
 const initialState = {
   workoutPlan: null,
+  loading: false,
 };
 
 const workoutReducer = (state = initialState, action) => {
@@ -9,6 +11,11 @@ const workoutReducer = (state = initialState, action) => {
       return {
         ...state,
         workoutPlan: action.payload,
+      };
+    case SET_WORKOUT_LOADING:
+      return {
+        ...state,
+        loading: action.payload,
       };
     default:
       return state;

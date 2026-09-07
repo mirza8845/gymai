@@ -15,6 +15,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import LinearGradient from "react-native-linear-gradient";
+import { useSelector } from "react-redux";
 
 const darkColors = {
   background: "#000000",
@@ -38,6 +39,7 @@ const WorkoutDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { exercise, day, exercises, warmup, cooldown } = route.params;
+  const workoutPlan = useSelector((state) => state.workout.workoutPlan);
 
   /** -------- helpers ---------- */
   const SectionCard = ({ title, children, icon }) => (
@@ -245,7 +247,10 @@ const WorkoutDetails = () => {
       cooldown,
       exerciseIndex,
       totalExercises: exercises.length,
-      allExercises: exercises, 
+      allExercises: exercises,
+      planId: workoutPlan?.planId || null,
+      planVersion: workoutPlan?.schemaVersion || 1,
+      weekNumber: workoutPlan?.weekNumber || 1,
     });
   };
 
@@ -256,6 +261,9 @@ const WorkoutDetails = () => {
       warmup,
       cooldown,
       allExercises: exercises,
+      planId: workoutPlan?.planId || null,
+      planVersion: workoutPlan?.schemaVersion || 1,
+      weekNumber: workoutPlan?.weekNumber || 1,
     });
   };
 

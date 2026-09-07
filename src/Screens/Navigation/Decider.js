@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect , useState} from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from '../../utils/userContext';
@@ -40,13 +40,9 @@ const Decider = () => {
   console.log('userLoading............', userLoading);
 
   useEffect(() => {
-    const decide = async () => {
-      // 🔸 Wait for user data to finish loading
-      if (userLoading) {
-        console.log('Still loading user data...');
-        return;
-      }
+   
 
+    const decide = async () => {
       const current = auth().currentUser;
 
       // 🔸 If user not logged in → go to login
@@ -85,8 +81,6 @@ const Decider = () => {
       } catch (error) {
         console.log("🔥 error in Decider:", error);
         navigation.replace('Onboarding');
-      } finally {
-        setChecking(false);
       }
     };
 

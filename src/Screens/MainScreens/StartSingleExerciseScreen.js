@@ -41,8 +41,8 @@ const darkColors = {
 const StartSingleExerciseScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { exercise, warmup, cooldown, day, exerciseIndex, totalExercises } =
-    route.params;
+  const { exercise, warmup, cooldown, day, exerciseIndex, totalExercises,
+    planId, planVersion, weekNumber } = route.params;
 
   const [currentSet, setCurrentSet] = useState(1);
   const [isResting, setIsResting] = useState(false);
@@ -174,6 +174,16 @@ const StartSingleExerciseScreen = () => {
         workoutId: null, // single exercise
         workoutDate: today,
         date: today,
+
+        // progression data
+        planId: planId || null,
+        planVersion: planVersion || 1,
+        weekNumber: weekNumber || null,
+        completed: true,
+        skipped: false,
+        rpe: calculateDifficulty(totalRepsCompleted, targetReps),
+        pain: null,
+        painLevel: null,
 
         // optional extras
         day,

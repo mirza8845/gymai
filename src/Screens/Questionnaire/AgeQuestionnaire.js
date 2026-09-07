@@ -1,4 +1,11 @@
-import { Pressable, StyleSheet, Text, View, Dimensions, TouchableOpacity } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
@@ -97,17 +104,40 @@ const AgeQuestionnaire = () => {
   const renderItem = useCallback(
     (item, index) => (
       <View style={styles.pickerItem}>
-        <Text style={[styles.pickerItemText, index === selectedAgeIndex && styles.selectedPickerItemText]}>{item}</Text>
+        <Text
+          style={[
+            styles.pickerItemText,
+            index === selectedAgeIndex && styles.selectedPickerItemText,
+          ]}
+        >
+          {item}
+        </Text>
       </View>
     ),
-    [selectedAgeIndex]
+    [selectedAgeIndex],
   );
 
   return (
     <View style={[styles.container, { backgroundColor: Colors.background }]}>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%", paddingHorizontal: RFPercentage(2.8) }}>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={{ position: "absolute", left: 20 }}>
-          <AntDesign name="arrowleft" color={"white"} size={RFPercentage(3.1)} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          paddingHorizontal: RFPercentage(2.8),
+        }}
+      >
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => navigation.goBack()}
+          style={{ position: "absolute", left: 20 }}
+        >
+          <AntDesign
+            name="arrowleft"
+            color={"white"}
+            size={RFPercentage(3.1)}
+          />
         </TouchableOpacity>
         <Heading title="Age & Weight" />
       </View>
@@ -138,13 +168,27 @@ const AgeQuestionnaire = () => {
 
       <View style={styles.weightToggle}>
         <Pressable onPress={() => setUnit("kg")}>
-          <Text style={[styles.unitText, unit === "kg" && { color: "black", fontWeight: "bold" }]}>KG</Text>
+          <Text
+            style={[
+              styles.unitText,
+              unit === "kg" && { color: "black", fontWeight: "bold" },
+            ]}
+          >
+            KG
+          </Text>
         </Pressable>
 
         <View style={styles.verticalDivider} />
 
         <Pressable onPress={() => setUnit("LB")}>
-          <Text style={[styles.unitText, unit === "LB" && { color: "black", fontWeight: "bold" }]}>LB</Text>
+          <Text
+            style={[
+              styles.unitText,
+              unit === "LB" && { color: "black", fontWeight: "bold" },
+            ]}
+          >
+            LB
+          </Text>
         </Pressable>
       </View>
 
@@ -180,8 +224,14 @@ const AgeQuestionnaire = () => {
           },
         }}
       />
-
-      <Button title="Continue" onPress={handleContinue} loader={loading} disbaled={loading} />
+      <View style={{ width: "90%", alignSelf: "center", alignItems: "center" }}>
+        <Button
+          title="Continue"
+          onPress={handleContinue}
+          loader={loading}
+          disbaled={loading}
+        />
+      </View>
     </View>
   );
 };

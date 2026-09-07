@@ -21,6 +21,7 @@ import Toast from "react-native-toast-message";
 import LinearGradient from "react-native-linear-gradient";
 import { useDispatch, useSelector } from "react-redux";
 import { setWorkoutPlan } from "../../redux/Actions";
+import { WorkoutHistoryService } from "../../services/firebaseWorkoutHistory";
 
 const darkColors = {
   background: "#000000",
@@ -109,22 +110,34 @@ const PullPushDay = () => {
 
       const currentPlan = doc.data().plan;
 
-      // Update workout completion status
-      await docRef.update({
-        [`plan.completed_workouts.${day}`]: {
+      const today = new Date().toISOString().split("T")[0];
+      const workoutData = {
+        planId: currentPlan?.planId || null,
+        planVersion: currentPlan?.schemaVersion || 1,
+        weekNumber: doc.data()?.weekNumber || 1,
+        day: day,
+        exercises: exercises.map((ex) => ({
+          id: ex.id,
+          name: ex.name,
+          target: ex.target,
+          bodyPart: ex.bodyPart,
+          equipment: ex.equipment,
+          sets: ex.workoutDetails?.sets || 3,
+          reps: 0,
+          targetReps: ex.workoutDetails?.reps || "8-12",
+          weightUsed: 0,
           completed: true,
-          completedAt: new Date(),
-          exercises: exercises.length,
-          sets: exercises.reduce(
-            (total, ex) => total + (ex.workoutDetails?.sets || 0),
-            0,
-          ),
-        },
-      });
+          skipped: false,
+          setData: [],
+          notes: "",
+        })),
+        totalExercises: exercises.length,
+        date: today,
+        completionStatus: "completed",
+        completionPercentage: 100,
+      };
 
-      // Get warmup and cooldown data
-      const warmup = workoutPlan?.warmup || [];
-      const cooldown = workoutPlan?.cooldown || [];
+      await WorkoutHistoryService.logCompletedWorkout(uid, workoutData);
 
       Toast.show({
         type: "success",

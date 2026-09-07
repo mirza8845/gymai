@@ -82,7 +82,7 @@ const AvailiabiltyQuestioniare = () => {
           <Option key={index} label={opt} selected={selectedOption === opt} onPress={() => setSelectedOption(opt)} />
         ))}
       </View>
-      <View style={{ top: RFPercentage(5) }}>
+      <View style={{ top: RFPercentage(5), width:"100%" }}>
         <Button title="Continue" onPress={handleContinue} />
       </View>
     </View>

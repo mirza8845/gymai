@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 30,
+    width:"100%",
   },
   logo: {
     width: 50,
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 1,
     borderColor: "#F34E3A",
-    width: RFPercentage(22),
+    width: "100%",
     height: RFPercentage(6),
     marginTop: 45,
   },

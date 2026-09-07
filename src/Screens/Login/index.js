@@ -98,7 +98,7 @@ const Login = () => {
                     <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("ForgetPassword")} style={styles.forgotWrapper}>
                       <Text style={[styles.forgotAndSignUpText]}>Forgot Password?</Text>
                     </TouchableOpacity>
-                    <View style={{ marginTop: RFPercentage(10) }}>
+                    <View style={{ marginTop: RFPercentage(10), width:"100%" }}>
                       <Button title="Log In" onPress={handleSubmit} loader={loading} disbaled={loading} />
                     </View>
                   </View>

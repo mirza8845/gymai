@@ -8,7 +8,6 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { UserContext } from "../../utils/userContext";
@@ -85,31 +84,17 @@ console.log("userdata.........",userData)
       setError(null);
       setStatusMessage("Creating your personalized workout plan...");
 
-      const uid = user.uid;
-      const weekStart = new Date();
-      weekStart.setHours(0, 0, 0, 0);
-
       setStatusMessage("Analyzing your profile...");
 
-
-      // Generate workout using ExerciseDB
-      const workoutPlan = await generateExerciseDBWorkoutPlan(userData);
-
-      setStatusMessage("Saving your workout plan...");
-
-      // Save to Firestore
-      await firestore()
-        .collection("workouts")
-        .doc(uid)
-        .set({
-          weekStart: firestore.Timestamp.fromDate(weekStart),
-          nextPlanDue: firestore.Timestamp.fromDate(
-            new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000)
-          ),
-          plan: workoutPlan,
-          createdAt: firestore.FieldValue.serverTimestamp(),
-          source: "ExerciseDB",
-        });
+      // Generate the workout plan. This now calls the `generateWorkoutPlan`
+      // Cloud Function, which reads the saved questionnaire profile
+      // server-side and both builds AND saves the plan to
+      // `workouts/{uid}` itself — there is no separate client-side
+      // Firestore write anymore (previously this screen wrote the plan
+      // itself right after generating it locally; see
+      // src/services/generateWorkoutPlan.js for the migration details).
+      setStatusMessage("Building your workout plan...");
+      await generateExerciseDBWorkoutPlan(userData);
 
       Toast.show({
         type: "success",

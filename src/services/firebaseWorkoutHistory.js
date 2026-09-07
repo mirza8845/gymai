@@ -39,7 +39,10 @@ export const WorkoutHistoryService = {
         restTime: exerciseData.restTime || 60,
         duration: exerciseData.duration || 0,
         calories: exerciseData.calories || 0,
-        difficulty: exerciseData.difficulty || 3, // 1-5 scale
+        difficulty: exerciseData.difficulty || 3,
+        rpe: exerciseData.rpe || null,
+        pain: exerciseData.pain || null,
+        painLevel: exerciseData.painLevel || null,
         notes: exerciseData.notes || "",
         workoutId: exerciseData.workoutId || null,
         workoutDate:
@@ -99,14 +102,32 @@ export const WorkoutHistoryService = {
           0,
         ) || 0;
 
+      const completedExercises =
+        workoutData.exercises?.filter((ex) => ex.completed && !ex.skipped).length || 0;
+      const skippedExercises =
+        workoutData.exercises?.filter((ex) => ex.skipped).length || 0;
+      const completionPercentage =
+        workoutData.totalExercises > 0
+          ? Math.round(
+              ((completedExercises + skippedExercises * 0.5) /
+                workoutData.totalExercises) *
+                100,
+            )
+          : 0;
+
       const workoutLog = {
         userId,
+        planId: workoutData.planId || null,
+        planVersion: workoutData.planVersion || null,
+        weekNumber: workoutData.weekNumber || null,
         day: workoutData.day || "Workout",
         warmup: workoutData.warmup?.length || 0,
         cooldown: workoutData.cooldown?.length || 0,
         exercises: workoutData.exercises || [],
         totalExercises:
           workoutData.totalExercises || workoutData.exercises?.length || 0,
+        completedExercises,
+        skippedExercises,
         totalSets,
         totalReps,
         totalWeight: Math.round(totalWeight),
@@ -118,6 +139,8 @@ export const WorkoutHistoryService = {
         intensity:
           workoutData.intensity || this.calculateIntensity(workoutData),
         difficulty: workoutData.difficulty || 3,
+        completionStatus: workoutData.completionStatus || "completed",
+        completionPercentage,
         prAchieved: workoutData.PRAchieved || false,
         notes: workoutData.notes || "",
         completedAt: timestamp,
@@ -1117,6 +1140,70 @@ export const WorkoutHistoryService = {
       return { success: true };
     } catch (error) {
       console.error("Error clearing workout history:", error);
+      throw error;
+    }
+  },
+
+  // Get workout history filtered by planId
+  async getWorkoutHistoryByPlan(userId, planId, limit = 50) {
+    try {
+      const snapshot = await workoutHistoryCollection(userId)
+        .where("planId", "==", planId)
+        .orderBy("completedAt", "desc")
+        .limit(limit)
+        .get();
+
+      return snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        completedAt: doc.data().completedAt?.toDate() || null,
+      }));
+    } catch (error) {
+      console.error("Error fetching workout history by plan:", error);
+      throw error;
+    }
+  },
+
+  // Log a skipped workout
+  async logSkippedWorkout(userId, workoutData) {
+    try {
+      const timestamp = firestore.FieldValue.serverTimestamp();
+      const workoutRef = workoutHistoryCollection(userId).doc();
+
+      const workoutLog = {
+        userId,
+        planId: workoutData.planId || null,
+        planVersion: workoutData.planVersion || null,
+        weekNumber: workoutData.weekNumber || null,
+        day: workoutData.day || "Workout",
+        exercises: workoutData.exercises || [],
+        totalExercises:
+          workoutData.totalExercises || workoutData.exercises?.length || 0,
+        completedExercises: 0,
+        skippedExercises: workoutData.exercises?.length || 0,
+        totalSets: 0,
+        totalReps: 0,
+        totalWeight: 0,
+        duration: 0,
+        caloriesBurned: 0,
+        completionStatus: "skipped",
+        completionPercentage: 0,
+        notes: workoutData.notes || "Workout skipped",
+        completedAt: timestamp,
+        type: "full",
+        date: workoutData.date || new Date().toISOString().split("T")[0],
+        timestamp: new Date().getTime(),
+      };
+
+      await workoutRef.set(workoutLog);
+
+      return {
+        success: true,
+        id: workoutRef.id,
+        ...workoutLog,
+      };
+    } catch (error) {
+      console.error("Error logging skipped workout:", error);
       throw error;
     }
   },

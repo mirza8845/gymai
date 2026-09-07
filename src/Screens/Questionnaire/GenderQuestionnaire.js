@@ -98,7 +98,7 @@ const GenderQuestionnaire = () => {
         <Text style={[styles.other, { color: colors.text, fontFamily:Fonts.Montserrat_Regular, fontSize:18 }]}>Selected Gender: <Text style={{fontFamily:Fonts.Montserrat_Bold}}>{gender ? gender : "None"}</Text></Text>
       </View>
 
-      <View style={{ marginTop: RFPercentage(7) }}>
+      <View style={{ marginTop: RFPercentage(7), width:"100%" }}>
         <Button title="Continue" onPress={handleContinue} loader={loading} disbaled={loading} />
       </View>
     </View>

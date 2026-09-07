@@ -22,6 +22,7 @@ import auth from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import LinearGradient from "react-native-linear-gradient";
 import { UserContext } from "../../utils/userContext";
+import { callValidateWorkoutPlan } from "../../services/workoutApi";
 
 const darkColors = {
   background: "#000000",
@@ -321,6 +322,33 @@ const ManualWorkout = () => {
         text2: "Please add at least one exercise to your workout",
       });
       return;
+    }
+
+    // Safety check (Step 4): manually-typed exercises never went through the
+    // generated-plan engine's equipment/injury filtering, so before saving
+    // we ask the backend to check any exercise that matches a known catalog
+    // entry by name against the user's saved equipment and reported
+    // limitations (see functions/src/functions/validateWorkoutPlan.ts).
+    // This is fail-open by design: if the check itself can't be reached
+    // (offline, etc.) we warn but still allow the save, since this is an
+    // additive safety layer on top of existing behavior, not a hard
+    // dependency the manual-workout flow didn't previously have.
+    try {
+      const validation = await callValidateWorkoutPlan(workoutPlan.daily_workouts);
+      const { valid, errors } = validation || {};
+      if (valid === false && Array.isArray(errors) && errors.length > 0) {
+        Toast.show({
+          type: "error",
+          text1: "Please review this workout",
+          text2:
+            errors.length === 1
+              ? errors[0]
+              : `${errors[0]} (+${errors.length - 1} more)`,
+        });
+        return;
+      }
+    } catch (validationError) {
+      console.warn("Manual workout safety check failed, allowing save:", validationError);
     }
 
     try {

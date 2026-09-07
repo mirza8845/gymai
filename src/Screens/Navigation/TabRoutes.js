@@ -1,7 +1,6 @@
 
 import Home from '../MainScreens/Home';
 import Workout from '../MainScreens/Workout';
-import JimAI from '../MainScreens/JimAI';
 import Health from '../MainScreens/Health';
 import Profile from '../MainScreens/Profile';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -29,18 +28,6 @@ const tabRoutes = [
       ),
       inactive: ({ color, size }) => (
         <MaterialCommunityIcons name="chart-bar" color={color} size={size} />
-      ),
-    },
-  },
-  {
-    name: 'GymAI',
-    component: JimAI,
-    icon: {
-      active: ({ color, size }) => (
-        <MaterialCommunityIcons name="robot" color={color} size={size} />
-      ),
-      inactive: ({ color, size }) => (
-        <MaterialCommunityIcons name="robot-outline" color={color} size={size} />
       ),
     },
   },

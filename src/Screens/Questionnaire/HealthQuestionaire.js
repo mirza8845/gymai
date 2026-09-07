@@ -151,7 +151,7 @@ const HealthQuestionaire = () => {
           <View style={styles.selectorLineLeft} />
         </View>
       </View>
-      <View style={{ top: RFPercentage(1) }}>
+      <View style={{ top: RFPercentage(1) , width:"90%"}}>
         <Button title="Continue" onPress={handleContinue} />
       </View>
     </View>

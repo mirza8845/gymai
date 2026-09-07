@@ -26,7 +26,7 @@ export default Button;
 
 const styles = StyleSheet.create({
   button: {
-    width: RFPercentage(22),
+    width: "100%",
     height: RFPercentage(6),
     borderRadius: RFPercentage(6),
     backgroundColor: Colors.primary,

@@ -152,7 +152,7 @@ export default function HeightQuestionnaire() {
         />
       </View>
 
-      <View style={{ marginTop: RFPercentage(5) }}>
+      <View style={{ marginTop: RFPercentage(5) , width:"90%"}}>
         <Button title="Continue" onPress={handleContinue} loader={loading} disbaled={loading} />
       </View>
     </ScrollView>

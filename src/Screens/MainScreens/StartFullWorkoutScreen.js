@@ -20,6 +20,7 @@ import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import auth from "@react-native-firebase/auth";
 import { WorkoutHistoryService } from "../../services/firebaseWorkoutHistory";
+import { useSelector } from "react-redux";
 
 const darkColors = {
   background: "#000000",
@@ -64,6 +65,8 @@ const StartFullWorkoutScreen = () => {
     totalWeightLifted: 0,
     totalReps: 0,
   });
+  const [currentRpe, setCurrentRpe] = useState(5);
+  const [currentPain, setCurrentPain] = useState(false);
 
   const currentExercise = allExercises[currentExerciseIndex];
   const totalExercises = allExercises.length;
@@ -71,6 +74,7 @@ const StartFullWorkoutScreen = () => {
   const restTime = currentExercise?.workoutDetails?.restSeconds || 60;
   const targetReps = currentExercise?.workoutDetails?.reps || "8-12";
   const userId = auth().currentUser?.uid;
+  const workoutPlan = useSelector((state) => state.workout.workoutPlan);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -154,6 +158,11 @@ const StartFullWorkoutScreen = () => {
 
         setData: exerciseSets,
         order: currentExerciseIndex + 1,
+        completed: true,
+        skipped: false,
+        rpe: currentRpe,
+        pain: currentPain ? "Discomfort reported" : null,
+        painLevel: currentPain ? 1 : 0,
 
         date: today,
         workoutDate: today,
@@ -214,10 +223,55 @@ const StartFullWorkoutScreen = () => {
       setCurrentSet(1);
       setRepCount(0);
       setWeightUsed(0);
+      setCurrentRpe(5);
+      setCurrentPain(false);
     } else if (currentPhase === "exercise") {
       setCurrentPhase("cooldown");
     } else if (currentPhase === "cooldown") {
       setCurrentPhase("completed");
+    }
+  };
+
+  const handleSkipExercise = () => {
+    const today = new Date().toISOString().split("T")[0];
+    const skippedExerciseData = {
+      id: currentExercise.id,
+      name: currentExercise.name,
+      target: currentExercise.target,
+      bodyPart: currentExercise.bodyPart,
+      equipment: currentExercise.equipment,
+      sets: currentExercise?.workoutDetails?.sets || 3,
+      reps: 0,
+      targetReps,
+      weightUsed: 0,
+      duration: 0,
+      calories: 0,
+      setData: [],
+      order: currentExerciseIndex + 1,
+      completed: false,
+      skipped: true,
+      rpe: null,
+      pain: null,
+      painLevel: null,
+      date: today,
+      workoutDate: today,
+      type: "workout",
+    };
+
+    setCompletedExercisesData((prev) => [...prev, skippedExerciseData]);
+
+    const nextIndex = currentExerciseIndex + 1;
+    if (nextIndex < totalExercises) {
+      setCurrentExerciseIndex(nextIndex);
+      setCurrentSet(1);
+      setRepCount(0);
+      setWeightUsed(0);
+      setCurrentRpe(5);
+      setCurrentPain(false);
+    } else {
+      if (currentPhase === "exercise") {
+        setCurrentPhase("cooldown");
+      }
     }
   };
 
@@ -266,6 +320,9 @@ const StartFullWorkoutScreen = () => {
 
         // Prepare workout data for logging
         const workoutData = {
+          planId: workoutPlan?.planId || null,
+          planVersion: workoutPlan?.schemaVersion || 1,
+          weekNumber: workoutPlan?.weekNumber || 1,
           day,
           warmup,
           cooldown,
@@ -284,7 +341,8 @@ const StartFullWorkoutScreen = () => {
           setData: setData,
           intensity: calculateWorkoutIntensity(duration, allExercises.length),
           PRAchieved: checkForPRs(completedExercisesData),
-          date: today, // 🔥 ADD THIS
+          completionStatus: "completed",
+          date: today,
           workoutDate: today,
         };
 
@@ -641,21 +699,60 @@ const StartFullWorkoutScreen = () => {
               </>
             )}
 
+          {/* RPE Selector */}
+          <View style={styles.rpeContainer}>
+            <Text style={styles.rpeLabel}>Effort Level (RPE)</Text>
+            <View style={styles.rpeButtons}>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rpe) => (
+                <TouchableOpacity
+                  key={rpe}
+                  style={[
+                    styles.rpeButton,
+                    currentRpe === rpe && styles.rpeButtonActive,
+                  ]}
+                  onPress={() => setCurrentRpe(rpe)}
+                >
+                  <Text
+                    style={[
+                      styles.rpeButtonText,
+                      currentRpe === rpe && styles.rpeButtonTextActive,
+                    ]}
+                  >
+                    {rpe}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          {/* Pain Toggle */}
+          <TouchableOpacity
+            style={[
+              styles.painButton,
+              currentPain && styles.painButtonActive,
+            ]}
+            onPress={() => setCurrentPain(!currentPain)}
+          >
+            <MaterialCommunityIcons
+              name={currentPain ? "alert" : "alert-outline"}
+              size={20}
+              color={currentPain ? darkColors.error : darkColors.textSecondary}
+            />
+            <Text
+              style={[
+                styles.painButtonText,
+                currentPain && styles.painButtonTextActive,
+              ]}
+            >
+              {currentPain ? "Pain Reported" : "No Pain"}
+            </Text>
+          </TouchableOpacity>
+
           {/* Action Buttons */}
           <View style={styles.exerciseActions}>
             <TouchableOpacity
               style={styles.skipExerciseButton}
-              onPress={() => {
-                const nextIndex = currentExerciseIndex + 1;
-                if (nextIndex < totalExercises) {
-                  setCurrentExerciseIndex(nextIndex);
-                  setCurrentSet(1);
-                  setRepCount(0);
-                  setWeightUsed(0);
-                } else {
-                  setCurrentPhase("cooldown");
-                }
-              }}
+              onPress={handleSkipExercise}
               disabled={isSaving}
             >
               <Text style={styles.skipExerciseText}>Skip Exercise</Text>
@@ -1548,6 +1645,69 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Montserrat-Medium",
     marginLeft: 6,
+  },
+  rpeContainer: {
+    marginBottom: 16,
+    alignItems: "center",
+  },
+  rpeLabel: {
+    color: darkColors.textSecondary,
+    fontSize: 14,
+    fontFamily: "Montserrat-Medium",
+    marginBottom: 10,
+  },
+  rpeButtons: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 6,
+  },
+  rpeButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 1,
+    borderColor: darkColors.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  rpeButtonActive: {
+    backgroundColor: darkColors.primary,
+    borderColor: darkColors.primary,
+  },
+  rpeButtonText: {
+    color: darkColors.textSecondary,
+    fontSize: 12,
+    fontFamily: "Montserrat-Bold",
+  },
+  rpeButtonTextActive: {
+    color: "#fff",
+  },
+  painButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 1,
+    borderColor: darkColors.border,
+    marginBottom: 16,
+    gap: 8,
+  },
+  painButtonActive: {
+    backgroundColor: "rgba(239, 68, 68, 0.15)",
+    borderColor: darkColors.error,
+  },
+  painButtonText: {
+    color: darkColors.textSecondary,
+    fontSize: 14,
+    fontFamily: "Montserrat-Medium",
+  },
+  painButtonTextActive: {
+    color: darkColors.error,
   },
   exercisesPreview: {
     paddingHorizontal: 20,

@@ -132,7 +132,7 @@ const SignUp = () => {
                       </View>
                     )}
 
-                    <View style={{ marginTop: RFPercentage(8) }}>
+                    <View style={{ marginTop: RFPercentage(8), width:"100%" }}>
                       <Button title="Sign Up" onPress={handleSubmit} loader={loading} disbaled={loading} />
                     </View>
                   </View>
